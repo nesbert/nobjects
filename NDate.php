@@ -21,11 +21,49 @@ class NDate
      */
     public static function datetime($time = 'now')
     {
-        if (is_string($time) && !is_numeric($time)) {
-            $time = strtotime($time);
-        }
+        switch (true) {
+            case empty($time):
+            case is_int($time) && $time <= 0:
+            default:
+                return date('Y-m-d H:i:s');
 
-        return date('Y-m-d H:i:s', $time);
+            case is_array($time):
+                $time['hour'] = isset($time['hour']) ? $time['hour'] : 0;
+                $time['minute'] = isset($time['minute']) ? $time['minute'] : 0;
+                $time['second'] = isset($time['second']) ? $time['second'] : 0;
+                if (!empty($time['ampm'])
+                    && strtoupper($time['ampm']) == 'PM'
+                    && $time['hour'] < 12) {
+                    $time['hour'] += 12;
+                }
+                return date('Y-m-d H:i:s', mktime(
+                    $time['hour'],
+                    $time['minute'],
+                    $time['second'],
+                    $time['month'],
+                    $time['day'],
+                    $time['year']
+                ));
+                break;
+
+            case NValidate::isNumber($time):
+                return date('Y-m-d H:i:s', $time);
+
+            case is_string($time) && $time != '0000-00-00 00:00:00':
+                return date('Y-m-d H:i:s', strtotime($time));
+        }
+    }
+
+    /**
+     * Returns the current time measured in the number of seconds since the
+     * Unix Epoch (January 1 1970 00:00:00 GMT) in GMT
+     *
+     * @return integer
+     * @author John Faircloth
+     **/
+    public static function gmtimestamp()
+    {
+       return strtotime(gmdate('Y-m-d H:i:s'));
     }
 
     /**
@@ -116,7 +154,7 @@ class NDate
             while ($next_day < $end) {
                 $next_day_time = strtotime(date('Y-m-d', $next_day) . ' +1day'); // add a day
                 $range[date($keyDateFormat, $next_day_time)] = date($valueDateFormat, $next_day_time);
-                $next_day += DAY; // add a day
+                $next_day += self::DAY; // add a day
             }
         }
 
