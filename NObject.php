@@ -20,8 +20,7 @@ abstract class NObject
         call_user_func_array(array($this, '__initializeParents'), $args);
 
         // if an array or object load using fromArray
-        if (NValidate::isAssociativeArray($args[0])
-            || is_object($args[0])) {
+        if (!empty($args[0]) && (NValidate::isAssociativeArray($args[0]) || is_object($args[0]))) {
             $this->fromArray((array)$args[0]);
         }
     }
