@@ -1,11 +1,13 @@
 <?php
+namespace NObjects;
+
 /**
  * A wrapper class to mcrypt for encryption/decryption which supports a wide
  * variety of block algorithms.
  *
  * @author Nesbert Hidalgo
  **/
-class NCipher
+class Cipher
 {
     const LEVEL1 = 1;
     const LEVEL2 = 2;

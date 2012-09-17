@@ -1,8 +1,11 @@
 <?php
-class NCipherTest extends PHPUnit_Framework_TestCase
+namespace NObjects\Tests;
+use NObjects;
+
+class CipherTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var NCipher
+     * @var Cipher
      */
     protected $o;
 
@@ -14,7 +17,7 @@ class NCipherTest extends PHPUnit_Framework_TestCase
             );
         }
 
-        $this->o = new NCipher;
+        $this->o = new Cipher;
     }
 
     protected function tearDown()
@@ -25,16 +28,16 @@ class NCipherTest extends PHPUnit_Framework_TestCase
     protected function all($s, $l = 1, $k = null)
     {
         $e = $this->o->encrypt($s, $l, $k);
-        $this->assertEquals($e, NCipher::encrypt($s, $l, $k));
+        $this->assertEquals($e, Cipher::encrypt($s, $l, $k));
 
         $d = $this->o->decrypt($e, $l, $k);
         $this->assertEquals($s, $d);
-        $this->assertEquals($d, NCipher::decrypt($e, $l, $k));
-        $this->assertEquals($s, NCipher::decrypt($e, $l, $k));
+        $this->assertEquals($d, Cipher::decrypt($e, $l, $k));
+        $this->assertEquals($s, Cipher::decrypt($e, $l, $k));
 
         if ($k) {
-            $this->assertNotEquals($d, NCipher::decrypt($e, $l, $k.'m'));
-            $this->assertNotEquals($s, NCipher::decrypt($e, $l, $k.'m'));
+            $this->assertNotEquals($d, Cipher::decrypt($e, $l, $k.'m'));
+            $this->assertNotEquals($s, Cipher::decrypt($e, $l, $k.'m'));
         }
     }
 
@@ -42,7 +45,7 @@ class NCipherTest extends PHPUnit_Framework_TestCase
     {
         $s = 'www.creovel.org';
         $e = $this->o->encrypt($s);
-        $this->assertEquals($e, NCipher::encrypt($s));
+        $this->assertEquals($e, Cipher::encrypt($s));
     }
 
     public function testDecrypt()
