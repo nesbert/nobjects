@@ -1,5 +1,6 @@
 <?php
-namespace NObjects\Tests; 
+namespace NObjects\Tests;
+use NObjects\Date;
 
 class DateTest extends \PHPUnit_Framework_TestCase
 {

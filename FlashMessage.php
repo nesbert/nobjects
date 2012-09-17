@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Session messages helper used for application notices.
  *
  * @author Nesbert Hidalgo
  **/
-class NFlashMessage
+class FlashMessage
 {
     private static $messages = array();
 
@@ -30,7 +32,7 @@ class NFlashMessage
     /**
      * Returns current messages.
      * @param bool $unsetMessages
-     * @return NFlashMessage|NFlashMessage[]|bool
+     * @return FlashMessage|FlashMessage[]|bool
      */
     public static function get($unsetMessages = true)
     {
@@ -65,7 +67,7 @@ class NFlashMessage
      *
      * @param string $message
      * @param string $type
-     * @return NFlashMessage[]
+     * @return FlashMessage[]
      **/
     public static function notice($message, $type = self::TYPE_NOTICE)
     {
@@ -80,7 +82,7 @@ class NFlashMessage
      * Alias for self::message($message, 'error').
      *
      * @param string $message Message for flash notice
-     * @return NFlashMessage[]
+     * @return FlashMessage[]
      **/
     public static function error($message = null)
     {
@@ -91,7 +93,7 @@ class NFlashMessage
      * Alias for self::message($message, 'warning').
      *
      * @param string $message Message for flash notice
-     * @return NFlashMessage[]
+     * @return FlashMessage[]
      **/
     public static function warning($message = null)
     {
@@ -102,7 +104,7 @@ class NFlashMessage
      * Alias for self::message($message, 'success').
      *
      * @param string $message Message for flash notice
-     * @return NFlashMessage[]
+     * @return FlashMessage[]
      **/
     public static function success($message = null)
     {
@@ -111,7 +113,7 @@ class NFlashMessage
 
     /**
      * @static
-     * @return NFlashMessage[]
+     * @return FlashMessage[]
      */
     public static function getMessages()
     {
@@ -122,7 +124,7 @@ class NFlashMessage
         $messages = array();
 
         foreach (self::$messages as $data) {
-            $messages[] = new NFlashMessage($data[0], $data[1]);
+            $messages[] = new FlashMessage($data[0], $data[1]);
         }
 
         return $messages;

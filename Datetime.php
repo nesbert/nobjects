@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Utility DateTime helper.
  * 
  * @author Nesbert Hidalgo
  */
-class NDateTime extends DateTime
+class DateTime extends \DateTime
 {
     /**
      * Global date format string.
@@ -18,10 +20,10 @@ class NDateTime extends DateTime
      * Similar to DateTime construct but accepts unix timestamp as well.
      *
      * @param string $time
-     * @param DateTimeZone|null $timezone
-     * @return NDateTime
+     * @param \DateTimeZone $timezone
+     * @return \NObjects\DateTime
      */
-    public function __construct($time = 'now', DateTimeZone $timezone = null)
+    public function __construct($time = 'now', \DateTimeZone $timezone = null)
     {
         if (is_numeric($time)) {
             $time = date('Y-m-d H:i:s', $time);
@@ -102,13 +104,13 @@ class NDateTime extends DateTime
      *
      * @param Datetime|String $now
      * @param bool $absolute
-     * @return DateInterval
+     * @return \DateInterval
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */
     public function diff($now = 'now', $absolute = false) {
-        if(!($now instanceOf NDateTime)
+        if(!($now instanceOf DateTime)
             || !($now instanceOf DateTime)) {
-            $now = new NDateTime($now);
+            $now = new DateTime($now);
         }
         return parent::diff($now, $absolute);
     }
@@ -116,7 +118,7 @@ class NDateTime extends DateTime
     /**
      * Return Age in Years.
      *
-     * @param Datetime|String $now
+     * @param \Datetime|String $now
      * @return Integer
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */

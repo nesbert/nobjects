@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Date utility helper.
  *
  * @author Nesbert Hidalgo
  */
-class NDate
+class Date
 {
     // time in seconds
     const MINUTE = 60;
@@ -46,7 +48,7 @@ class NDate
                 ));
                 break;
 
-            case NValidate::isNumber($time):
+            case Validate::isNumber($time):
                 return date('Y-m-d H:i:s', $time);
 
             case is_string($time) && $time != '0000-00-00 00:00:00':

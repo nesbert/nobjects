@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Utility validation helper.
  *
  * @author Nesbert Hidalgo
  */
-class NValidate
+class Validate
 {
     /**
      * Check if string is a valid email address.
@@ -64,9 +66,9 @@ class NValidate
     public static function isDateString($string)
     {
         try {
-            $date = new DateTime($string);
+            $date = new \DateTime($string);
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -275,6 +277,6 @@ class NValidate
      **/
     public static function inString($needle, $haystack)
     {
-        return NString::contains($needle, $haystack);
+        return String::contains($needle, $haystack);
     }    
 }

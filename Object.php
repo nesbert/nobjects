@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Base object for model.
  *
  * @author Nesbert Hidalgo
  */
-abstract class NObject
+abstract class Object
 {
     // instance methods
 
@@ -20,7 +22,7 @@ abstract class NObject
         call_user_func_array(array($this, '__initializeParents'), $args);
 
         // if an array or object load using fromArray
-        if (!empty($args[0]) && (NValidate::isAssociativeArray($args[0]) || is_object($args[0]))) {
+        if (!empty($args[0]) && (Validate::isAssociativeArray($args[0]) || is_object($args[0]))) {
             $this->fromArray((array)$args[0]);
         }
     }
@@ -38,7 +40,7 @@ abstract class NObject
      * key equals property name and set{PropertyName} method exists.
      *
      * @param array $params
-     * @return NObject
+     * @return Object
      */
     public function fromArray(Array $params)
     {
@@ -64,7 +66,7 @@ abstract class NObject
         // only reflect an object once
         static $props;
         if (empty($props[$class])) {
-            $props[$class] = $this->__getAllReflectionProperties(new ReflectionClass($this));
+            $props[$class] = $this->__getAllReflectionProperties(new \ReflectionClass($this));
         }
 
         $array = array();
@@ -101,10 +103,10 @@ abstract class NObject
     }
 
     /**
-     * @param ReflectionClass $class
-     * @return array|ReflectionProperty[]
+     * @param \ReflectionClass $class
+     * @return array|\ReflectionProperty[]
      */
-    private function __getAllReflectionProperties(ReflectionClass $class)
+    private function __getAllReflectionProperties(\ReflectionClass $class)
     {
         $props = $class->getProperties();
 

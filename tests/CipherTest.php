@@ -1,6 +1,6 @@
 <?php
 namespace NObjects\Tests;
-use NObjects;
+use NObjects\Cipher;
 
 class CipherTest extends \PHPUnit_Framework_TestCase
 {

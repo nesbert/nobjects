@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Utility directory helper.
  *
  * @author Nesbert Hidalgo
  */
-class NDirectory
+class Directory
 {
     /**
      * Get an array of directory listings with $options for flexibility.
@@ -95,7 +97,7 @@ class NDirectory
             'showInvisible' => $showInvisible
             ));
         foreach ($files as $k => $file) {
-            if ( NString::endsWith('.'.$file_type, $file) ) {
+            if ( String::endsWith('.'.$file_type, $file) ) {
                 $files[basename($file, '.'.$file_type)] = $path.DIRECTORY_SEPARATOR.$file;
             }
             unset($files[$k]);

@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Utility format helper.
  *
  * @author Nesbert Hidalgo
  */
-class NFormat
+class Format
 {
     private static $numberOfDecimals;
     private static $numberOfDecimalsPercent;

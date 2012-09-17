@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * String utility helper.
  *
  * @author Nesbert Hidalgo
  */
-class NString
+class String
 {
     /**
      * Retrieve a number from a string.

@@ -1,10 +1,12 @@
 <?php
+namespace NObjects;
+
 /**
  * Network utility helper.
  *
  * @author Nesbert Hidalgo
  */
-class NNetwork
+class Network
 {
     /**
      * Return the http: or https: depending on environment.
