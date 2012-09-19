@@ -130,4 +130,45 @@ class Network
         }
         return $iplong ? ip2long($ip) : $ip;
     }
+
+    /**
+     * Simple curl REST client.
+     *
+     * @param string $url
+     * @param string $method
+     * @param string $data
+     * @param bool $includeHeader
+     * @param int $maxRedirects
+     * @param string $method GET, POST, PUT, DELETE
+     * @param bool $includeHeader
+     * @return bool|\stdClass
+     */
+    public static function curlRequest($url, $method = 'GET', $data = '', $includeHeader = false, $maxRedirects = 10)
+    {
+        // validate methods
+        if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE'))) {
+            return false;
+        }
+
+        $out = new \stdClass();
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        if ($includeHeader) curl_setopt($ch, CURLOPT_HEADER, 1);
+        if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        if(!$result = curl_exec($ch)) {
+            trigger_error(curl_error($ch));
+            return false;
+        }
+        $out->statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $out->contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+        if ($maxRedirects) {
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, (int)$maxRedirects);
+        }
+        $out->body = $result;
+        curl_close($ch);
+        return $out;
+    }
 }
