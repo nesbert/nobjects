@@ -115,6 +115,9 @@ class Service extends \NObjects\Object
 
         $link = $this->connect()->link();
 
+        // set perform the searches on Windows 2003 Server Active Directory
+        $this->setOption(LDAP_OPT_REFERRALS, 0);
+
         // set ldap version 3 as default
         $this->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
 
