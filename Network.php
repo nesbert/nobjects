@@ -25,7 +25,7 @@ class Network
      **/
     public static function host()
     {
-        return @$_SERVER['HTTP_HOST'];
+        return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
     }
 
     /**
@@ -55,9 +55,13 @@ class Network
      **/
     public static function domain()
     {
-        $url = explode('.', self::host());
-        $tld = explode(':', $url[count($url) - 1]);
-        return $url[count($url) - 2] . '.' . $tld[0];
+        $host = explode('.', self::host());
+        $tld = explode(':', $host[count($host) - 1]);
+        if (count($host)>1) {
+            return $host[count($host) - 2] . '.' . $tld[0];
+        } else {
+            return $host[0];
+        }
     }
 
     /**
