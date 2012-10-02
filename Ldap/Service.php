@@ -112,16 +112,7 @@ class Service extends \NObjects\Object
     public function link()
     {
         if (is_resource($this->link)) return $this->link;
-
-        $link = $this->connect()->link();
-
-        // set perform the searches on Windows 2003 Server Active Directory
-        $this->setOption(LDAP_OPT_REFERRALS, 0);
-
-        // set ldap version 3 as default
-        $this->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
-
-        return $link;
+        return $this->connect()->link();
     }
 
     /**
@@ -141,6 +132,12 @@ class Service extends \NObjects\Object
         if (!is_resource($this->link))  {
             throw new ServiceException("Unable to connect to {$host}:{$this->getPort()}");
         }
+
+        // set to perform the root level searches on AD
+        $this->setOption(LDAP_OPT_REFERRALS, 0);
+
+        // set ldap version 3 as default
+        $this->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
 
         // if default user is set bind to connection
         if ($this->getDefaultUsername()) {
