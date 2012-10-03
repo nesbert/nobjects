@@ -6,7 +6,7 @@ namespace NObjects;
  *
  * @author Nesbert Hidalgo
  */
-abstract class Object
+class Object
 {
     // instance methods
 
@@ -49,6 +49,8 @@ abstract class Object
             // if set method exists for a key set value
             if (method_exists($this, $method)) {
                 $this->{$method}($v);
+            } else {
+                $this->{$k} = $v;
             }
         }
         return $this;
@@ -69,23 +71,48 @@ abstract class Object
             $props[$class] = $this->__getAllReflectionProperties(new \ReflectionClass($this));
         }
 
+        // adding support for public properties
+        if (empty($props[$class])) {
+            $props[$class] = array();
+            foreach ($this as $k => $v) {
+                $props[$class][] = (object)array(
+                    'name' => $k,
+                    'value' => $v,
+                );
+            }
+        }
+
         $array = array();
         foreach ($props[$class] as $rp) {
+
             $func = "get{$rp->name}";
 
             // skip properties that start with an _
             // skip functions that don't exist
             if ($rp->name{0} == '_'
-                || !method_exists($this, $func)) {
+                || (!method_exists($this, $func) && !isset($this->{$rp->name}))
+                ) {
                 continue;
             }
-            $val = $this->$func();
+
+            // if public use temp object and don't cache
+            if (isset($this->{$rp->name})) {
+                $val = $rp->value;
+                unset($props[$class]);
+            } else {
+                $val = $this->$func();
+            }
 
             $base = __CLASS__;
 
             if ($val instanceof $base) {
                 $array[$rp->name] = $val->toArray();
-            } else if (is_array($val)) {
+            } else if (is_array($val) || ($val instanceof \ArrayObject)) {
+
+                if ($val instanceof \ArrayObject) {
+                    $val = $val->getArrayCopy();
+                }
+
                 foreach ($val as $k => $v) {
                     if ($v instanceof $base) {
                         $val[$k] = $v->toArray();
