@@ -100,6 +100,16 @@ class User extends \NObjects\Object
 
         }
 
+        // sort by name TODO use $options to change comparison property
+        usort($users, function($a, $b) {
+            $al = strtolower($a->getName());
+            $bl = strtolower($b->getName());
+            if ($al == $bl) {
+                return 0;
+            }
+            return ($al > $bl) ? +1 : -1;
+        });
+
         return $users;
     }
 
@@ -122,7 +132,7 @@ class User extends \NObjects\Object
 
     public function getName()
     {
-        return $this->getFirstName() . ' ' . $this->getLastName();
+        return trim($this->getFirstName() . ' ' . $this->getLastName());
     }
 
     public function getEmail()
