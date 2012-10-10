@@ -84,6 +84,53 @@ class Date
     }
 
     /**
+     * Return an ISO 8601 datetime string. Uses current time if no time pasted.
+     *
+     * @static
+     * @param null $datetime
+     * @return string
+     * @return string
+     */
+    public static function datetimeISO8601($datetime = null)
+    {
+        $out = date('c', $datetime ? strtotime(self::datetime($datetime)) : time());
+        return str_replace('+00:00', 'Z', $out);
+    }
+
+    /**
+     * Returns ISO 8601 datetime string of the current time in GMT. Uses
+     * current time if no time pasted.
+     *
+     * @static
+     * @param null $datetime
+     * @return string
+     */
+    public static function gmdatetimeISO8601($datetime = null)
+    {
+        $out = gmdate('c', $datetime ? strtotime(self::datetime($datetime)) : time());
+        return str_replace('+00:00', 'Z', $out);
+    }
+
+    /**
+     * Reformat $datetime to ISO 8601 format to a specific timezone. Uses
+     * current time if no time pasted.
+     *
+     * @static
+     * @param null $datetime
+     * @param string $timezone
+     * @return string
+     */
+    public static function toISO8601($datetime = null, $timezone = 'GMT')
+    {
+        $default = date_default_timezone_get();
+        date_default_timezone_set($timezone);
+        $out = date('c', strtotime(self::datetime($datetime)));
+        $out = str_replace('+00:00', 'Z', $out);
+        date_default_timezone_set($default);
+        return $out;
+    }
+
+    /**
      * Returns time passed. Latest activity about "8 hours" ago. Anything
      * over 4 weeks returns false.
      *
