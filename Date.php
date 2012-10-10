@@ -15,7 +15,7 @@ class Date
     const WEEK   = 604800;
 
     /**
-     * Returns a string YYYY-MM-DD HH:MM:SS. Uses current time if no time pasted.
+     * Returns a string YYYY-MM-DD HH:MM:SS. Uses current time if no $datetime.
      *
      * @static
      * @param string/timestamp $time
@@ -73,7 +73,7 @@ class Date
      *
      * @param mixed $datetime Accepts either an array, unix timestamp or string.
      * @see datetime
-     * @return string datetime stamp
+     * @return string
      **/
     public static function gmdatetime($datetime = null)
     {
@@ -84,11 +84,11 @@ class Date
     }
 
     /**
-     * Return an ISO 8601 datetime string. Uses current time if no time pasted.
+     * Return an ISO 8601 datetime string (2012-02-01T15:55:23-07:00) of the
+     * current timezone. Uses current time if no $datetime.
      *
      * @static
      * @param null $datetime
-     * @return string
      * @return string
      */
     public static function datetimeISO8601($datetime = null)
@@ -98,8 +98,8 @@ class Date
     }
 
     /**
-     * Returns ISO 8601 datetime string of the current time in GMT. Uses
-     * current time if no time pasted.
+     * Returns ISO 8601 datetime string (2012-02-01T15:55:23Z) of the current
+     * time in GMT. Uses current time if no $datetime.
      *
      * @static
      * @param null $datetime
@@ -113,7 +113,7 @@ class Date
 
     /**
      * Reformat $datetime to ISO 8601 format to a specific timezone. Uses
-     * current time if no time pasted.
+     * current time if no $datetime.
      *
      * @static
      * @param null $datetime
@@ -124,10 +124,9 @@ class Date
     {
         $default = date_default_timezone_get();
         date_default_timezone_set($timezone);
-        $out = date('c', strtotime(self::datetime($datetime)));
-        $out = str_replace('+00:00', 'Z', $out);
+        $out = date('c', $datetime ? strtotime(self::datetime($datetime)) : time());
         date_default_timezone_set($default);
-        return $out;
+        return str_replace('+00:00', 'Z', $out);
     }
 
     /**
