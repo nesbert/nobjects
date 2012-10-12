@@ -1,5 +1,5 @@
 <?php
-namespace NObjects\Memcache;
+namespace NObjects\Cache\Memcache;
 
 /**
  * Data object class for a memcache server. Properties match
@@ -130,7 +130,7 @@ class Server
     public function isOnline()
     {
         try {
-            $memcache = new Memcache;
+            $memcache = new \Memcache;
             $online = $memcache->connect($this->host, $this->port);
             $memcache->close();
             return $online;

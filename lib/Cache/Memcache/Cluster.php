@@ -1,5 +1,6 @@
 <?php
-namespace NObjects\Memcache;
+namespace NObjects\Cache\Memcache;
+
 /**
  * Cluster object for clustering NObjects\Memcache\Server instances.
  *
@@ -52,7 +53,7 @@ class Cluster
     }
 
     /**
-     * Load memache servers. Acceptable $servers values are an array of
+     * Load memcache servers. Acceptable $servers values are an array of
      * Memcache_Server objects or a single Memcache_Server object or
      * comma separated string of URIs (save_path) with params.
      *
@@ -127,7 +128,7 @@ class Cluster
      * Get a memcache object of initialized with the current $server.
      *
      * @param boolean $poolConnections
-     * @return bool|Memcache
+     * @return bool|\Memcache
      **/
     public function getMemcacheObject($poolConnections = true)
     {
@@ -140,7 +141,7 @@ class Cluster
             }
         }
 
-        $memcache = new Memcache();
+        $memcache = new \Memcache();
         foreach ($this->getServers() as $server) {
             @$memcache->addServer(
                 (string) $server->host,

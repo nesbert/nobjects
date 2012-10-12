@@ -1,5 +1,5 @@
 <?php
-namespace NObjects\Memcache;
+namespace NObjects\Cache\Memcache;
 
 /**
  * Memcache session class used to set runtime configs to override

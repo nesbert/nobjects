@@ -1,5 +1,5 @@
 <?php
-namespace NObjects\Memcache;
+namespace NObjects\Cache\Memcache;
 
 /**
  * Data object class for a memcache cluster.
@@ -12,7 +12,7 @@ class Data extends Cluster
     /**
      * Memcache resource object.
      *
-     * @var Memcache
+     * @var \Memcache
      **/
     private $memcache = null;
 
