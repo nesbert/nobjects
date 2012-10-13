@@ -66,4 +66,20 @@ class CipherTest extends \PHPUnit_Framework_TestCase
         $this->all($s, 3, $k);
         $this->all($s, 4, $k);
     }
+
+    public function testMd5Data()
+    {
+        $str = 'Lego Star Wars!';
+        $this->assertEquals(md5($str), Cipher::md5Data($str));
+
+        $array = array(1,2,3);
+        $this->assertEquals(md5(json_encode($array)), Cipher::md5Data($array));
+
+        $array2 = array(3,2,1);
+        $this->assertEquals(md5(json_encode($array)), Cipher::md5Data($array2));
+
+
+        $object = (object)array('id' => 555, 'name' => 'Luke S.');
+        $this->assertEquals(md5(serialize($object)), Cipher::md5Data($object));
+    }
 }

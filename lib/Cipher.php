@@ -158,4 +158,23 @@ class Cipher
                     mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB),
                     MCRYPT_RAND);
     }
+
+    /**
+     * MD5 strings, objects and arrays.
+     *
+     * @param mixed $data
+     * @return string
+     * @link http://stackoverflow.com/a/7723730
+     */
+    public static function md5Data($data)
+    {
+        if (is_array($data)) {
+            array_multisort($data);
+            return md5(json_encode($data));
+        } elseif (is_object($data)) {
+            return md5(serialize($data));
+        } else {
+            return md5($data);
+        }
+    }
 }
