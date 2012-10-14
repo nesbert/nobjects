@@ -12,10 +12,18 @@ class Validate
      * Check if string is a valid email address.
      *
      * @param string $email
+     * @param bool $checkDNS
      * @return bool
-     **/
-    public static function isEmail($email)
+     */
+    public static function isEmail($email, $checkDNS = false)
     {
+        if ($checkDNS) {
+            $domain = explode('@', $email);
+            if (!checkdnsrr($domain[1] . '.', 'MX')) {
+                return false;
+            }
+        }
+
         return filter_var($email, FILTER_VALIDATE_EMAIL) === false ? false : true;
     }
 
