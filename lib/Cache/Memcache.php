@@ -1,8 +1,27 @@
 <?php
 namespace NObjects\Cache;
 
+use NObjects\Cache\Memcache\Data;
+
 class Memcache extends Base implements Adapter
 {
+    /**
+     * NObjects\Cache\Memcache\Data resource object.
+     *
+     * @var Data
+     **/
+    private $data;
+
+    /**
+     * @param mixed $servers
+     * @param bool $compress
+     * @see Cluster::__construct
+     */
+    public function __construct($servers = 'tcp://localhost', $compress = false)
+    {
+        $this->setData(new Data($servers, $compress));
+    }
+
     /**
      * Check if key exists. $key a string, or an array of strings,
      * that contain keys. If an array was passed to $key, then an array
@@ -14,7 +33,8 @@ class Memcache extends Base implements Adapter
      */
     public function exists($key)
     {
-        // TODO: Implement exists() method.
+        if (!$this->open()) return false;
+        return $this->getData()->exists($key);
     }
 
     /**
@@ -25,7 +45,8 @@ class Memcache extends Base implements Adapter
      */
     public function get($key)
     {
-        // TODO: Implement get() method.
+        if (!$this->open()) return false;
+        return $this->getData()->get($key);
     }
 
     /**
@@ -38,7 +59,8 @@ class Memcache extends Base implements Adapter
      */
     public function set($key, $value, $ttl = 0)
     {
-        // TODO: Implement set() method.
+        if (!$this->open()) return false;
+        return $this->getData()->set($key, $value, $this->stringToTime($ttl));
     }
 
     /**
@@ -50,7 +72,8 @@ class Memcache extends Base implements Adapter
      */
     public function delete($key, $delay = 0)
     {
-        // TODO: Implement delete() method.
+        if (!$this->open()) return false;
+        return $this->getData()->delete($key, $delay);
     }
 
     /**
@@ -60,6 +83,37 @@ class Memcache extends Base implements Adapter
      */
     public function clear()
     {
-        // TODO: Implement clear() method.
+        if (!$this->open()) return false;
+        return $this->getData()->flush();
+    }
+
+    /**
+     * Open a connection to cache.
+     *
+     * @return bool
+     */
+    public function open()
+    {
+        return $this->getData()->open();
+    }
+
+    // setters & getters
+
+    /**
+     * @param Data $data
+     * @return Data
+     */
+    public function setData(Data $data)
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
+     * @return Data
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 }

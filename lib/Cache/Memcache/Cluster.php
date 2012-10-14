@@ -4,12 +4,6 @@ namespace NObjects\Cache\Memcache;
 /**
  * Cluster object for clustering NObjects\Memcache\Server instances.
  *
- * <code>
- * $servers = 'tcp://domain1,tcp://domain2,tcp://domain3';
- * //$servers = array(Server,Server,Server,...)';
- * $cluster = new Cluster($servers);
- * </code>
- *
  * @author Nesbert Hidalgo
  **/
 class Cluster
@@ -18,8 +12,8 @@ class Cluster
      * Memcache key to prepend all constants.
      *
      * <code>
-     * define('MEMCACHE_FRONT_CLUSTER', 'tcp:domain1,tcp:domain2,...');
-     * define('MEMCACHE_FILES_CLUSTER', 'tcp:domain5,tcp:domain6,...');
+     * define('MEMCACHE_CLUSTER_FRONTEND', 'tcp:domain1,tcp:domain2,...');
+     * define('MEMCACHE_CLUSTER_BACKEND', 'tcp:domain5,tcp:domain6,...');
      * </code>
      *
      * @var string
@@ -45,11 +39,19 @@ class Cluster
      * Initialize memcache servers if passed. Settings are set at the
      * application level for portability.
      *
+     * <code>
+     * $servers = 'tcp://domain1,tcp://domain2,tcp://domain3';
+     * //$servers = array(Server,Server,Server,...)';
+     * $cluster = new Cluster($servers);
+     * </code>
+     *
      * @param mixed $servers Server[] objects or save_path optional
      */
     public function __construct($servers = null)
     {
-        $this->load($servers);
+        if ($servers) {
+            $this->load($servers);
+        }
     }
 
     /**
@@ -73,14 +75,14 @@ class Cluster
                     parse_str($server['query'], $args);
                     $server += (array) $args;
                 }
-                $this->setServers(new Server($server));
+                $this->addServer(new Server($server));
             }
         // if array of Memcache_Server objects
         } else if (is_array($servers)) {
             foreach ($servers as $server)
-                $this->setServers($server);
+                $this->addServer($server);
         } else if ($servers instanceof Server) {
-            $this->setServers($servers);
+            $this->addServer($servers);
         }
         return $this;
     }
@@ -91,7 +93,7 @@ class Cluster
      * @param Server $server
      * @return Cluster
      */
-    public function setServers(Server $server)
+    public function addServer(Server $server)
     {
         $this->servers[] = $server;
         return $this;
@@ -210,7 +212,7 @@ class Cluster
             if ($echo) {
                 echo "Memcache on {$server->host}:{$server->port} " .
                 '<span style="' . ($return["{$server->host}:{$server->port}"] ? 'color:green;' : 'color:red;font-weight:bold;') . '">' .
-                ($return["{$server->host}:{$server->port}"] ? '[Ok]' : '[FAIL]') ."</span><br/>\n";
+                ($return["{$server->host}:{$server->port}"] ? '[Ok]' : '[FAIL]') ."</span>";
             }
         }
         return $return;

@@ -118,6 +118,19 @@ class Cache extends Cache\Base implements Cache\Adapter
         return false;
     }
 
+    /**
+     * Open connection resources/check if valid cache resource.
+     *
+     * @return bool
+     */
+    public function open()
+    {
+        if ($this->getAdapter()) {
+            return $this->getAdapter()->open();
+        }
+        return false;
+    }
+
     // $key instance methods
 
     /**

@@ -7,113 +7,238 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Cache
      */
-    private $o;
+    private $apc;
+
+    /**
+     * @var Cache
+     */
+    private $mc;
 
     public function setUp()
     {
-        $this->o = new Cache(new Cache\Apc());
+        $this->apc = new Cache(new Cache\Apc());
 
-        if (!$this->o->open() || !ini_get('apc.enable_cli')) {
-            $this->markTestSkipped('APC extension is not available.');
+        if ($this->apc->open() || !ini_get('apc.enable_cli')) {
+            $this->apc->clear();
+        } else {
+            $this->apc = false;
         }
+
+        $this->mc = new Cache(new Cache\Memcache());
+
+        if ($this->apc->open()) {
+            $this->mc->clear();
+        } else {
+            $this->mc = false;
+        }
+    }
+
+    public function tearDown()
+    {
+        if ($this->apc) $this->apc->clear();
+        if ($this->mc) $this->mc->clear();
     }
 
     public function testBuildKey()
     {
-        $this->assertEquals('a.b.c', $this->o->buildKey('a','b','c'));
-        $this->assertEquals('My_Class.method.id.123', $this->o->buildKey('My Class','method','id', 123));
-        $this->o->setKeyGlue('::');
-        $this->assertEquals('a::b::c', $this->o->buildKey('a','b','c'));
-        $this->assertEquals('My_Class::method::id::123', $this->o->buildKey('My Class','method','id', 123));
-        $this->o->setKeySpecialGlue('.');
-        $this->assertEquals('a::b::c', $this->o->buildKey('a','b','c'));
-        $this->assertEquals('My.Class::method::id::123', $this->o->buildKey('My Class','method','id', 123));
+        if ($this->apc) {
+            $this->assertEquals('a.b.c', $this->apc->buildKey('a','b','c'));
+            $this->assertEquals('My_Class.method.id.123', $this->apc->buildKey('My Class','method','id', 123));
+            $this->apc->setKeyGlue('::');
+            $this->assertEquals('a::b::c', $this->apc->buildKey('a','b','c'));
+            $this->assertEquals('My_Class::method::id::123', $this->apc->buildKey('My Class','method','id', 123));
+            $this->apc->setKeySpecialGlue('.');
+            $this->assertEquals('a::b::c', $this->apc->buildKey('a','b','c'));
+            $this->assertEquals('My.Class::method::id::123', $this->apc->buildKey('My Class','method','id', 123));
+        }
+
+        if ($this->mc) {
+            $this->assertEquals('a.b.c', $this->mc->buildKey('a','b','c'));
+            $this->assertEquals('My_Class.method.id.123', $this->mc->buildKey('My Class','method','id', 123));
+            $this->mc->setKeyGlue('::');
+            $this->assertEquals('a::b::c', $this->mc->buildKey('a','b','c'));
+            $this->assertEquals('My_Class::method::id::123', $this->mc->buildKey('My Class','method','id', 123));
+            $this->mc->setKeySpecialGlue('.');
+            $this->assertEquals('a::b::c', $this->mc->buildKey('a','b','c'));
+            $this->assertEquals('My.Class::method::id::123', $this->mc->buildKey('My Class','method','id', 123));
+        }
     }
 
-    public function testStringToTime()
+    public function testStrToTime()
     {
-        $this->assertEquals(time(), $this->o->stringToTime('now'));
-        $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->o->stringToTime('1min'));
-        $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->o->stringToTime('1 min'));
-        $this->assertEquals(time()+\NObjects\Date::HOUR, $this->o->stringToTime('1hr'));
-        $this->assertEquals(time()+\NObjects\Date::HOUR, $this->o->stringToTime('1hour'));
-        $this->assertEquals(time()+\NObjects\Date::DAY, $this->o->stringToTime('1dy'));
-        $this->assertEquals(time()+\NObjects\Date::DAY, $this->o->stringToTime('1day'));
-        $this->assertEquals(time()+\NObjects\Date::DAY*7, $this->o->stringToTime('1week'));
-        $this->assertEquals(time()+\NObjects\Date::DAY*7, $this->o->stringToTime('1week'));
+        if ($this->apc) {
+            $this->assertEquals(time(), $this->apc->stringToTime('now'));
+            $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->apc->stringToTime('1min'));
+            $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->apc->stringToTime('1 min'));
+            $this->assertEquals(time()+\NObjects\Date::HOUR, $this->apc->stringToTime('1hr'));
+            $this->assertEquals(time()+\NObjects\Date::HOUR, $this->apc->stringToTime('1hour'));
+            $this->assertEquals(time()+\NObjects\Date::DAY, $this->apc->stringToTime('1dy'));
+            $this->assertEquals(time()+\NObjects\Date::DAY, $this->apc->stringToTime('1day'));
+            $this->assertEquals(time()+\NObjects\Date::DAY*7, $this->apc->stringToTime('1week'));
+            $this->assertEquals(time()+\NObjects\Date::DAY*7, $this->apc->stringToTime('1week'));
+        }
+        if ($this->mc) {
+            $this->assertEquals(time(), $this->mc->stringToTime('now'));
+            $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->mc->stringToTime('1min'));
+            $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->mc->stringToTime('1 min'));
+            $this->assertEquals(time()+\NObjects\Date::HOUR, $this->mc->stringToTime('1hr'));
+            $this->assertEquals(time()+\NObjects\Date::HOUR, $this->mc->stringToTime('1hour'));
+            $this->assertEquals(time()+\NObjects\Date::DAY, $this->mc->stringToTime('1dy'));
+            $this->assertEquals(time()+\NObjects\Date::DAY, $this->mc->stringToTime('1day'));
+            $this->assertEquals(time()+\NObjects\Date::DAY*7, $this->mc->stringToTime('1week'));
+            $this->assertEquals(time()+\NObjects\Date::DAY*7, $this->mc->stringToTime('1week'));
+        }
     }
 
     public function testExists()
     {
-        $this->assertFalse($this->o->exists('exists'));
-        $this->assertTrue($this->o->set('exists', 123));
-        $this->assertTrue($this->o->exists('exists'));
+        if ($this->apc) {
+            $this->assertFalse($this->apc->exists('exists'));
+            $this->assertTrue($this->apc->set('exists', 123));
+            $this->assertTrue($this->apc->exists('exists'));
 
-        $keys = array('exists', 'nope1', 'nope2');
-        $this->assertEquals(array('exists' => true), $this->o->exists($keys));
+            $keys = array('exists', 'nope1', 'nope2');
+            $this->assertEquals(array('exists' => true), $this->apc->exists($keys));
+        }
+        if ($this->mc) {
+            $this->assertFalse($this->mc->exists('exists'));
+            $this->assertTrue($this->mc->set('exists', 123));
+            $this->assertTrue($this->mc->exists('exists'));
+
+            $keys = array('exists', 'nope1', 'nope2');
+            $this->assertEquals(array('exists' => true), $this->mc->exists($keys));
+        }
     }
 
     public function testGet()
     {
-        $this->assertFalse($this->o->get('test'));
-        $this->assertTrue($this->o->set('test', 123));
-        $this->assertEquals(123, $this->o->get('test'));
+        if ($this->apc) {
+            $this->assertFalse($this->apc->get('test'));
+            $this->assertTrue($this->apc->set('test', 123));
+            $this->assertEquals(123, $this->apc->get('test'));
+        }
+        if ($this->mc) {
+            $this->assertFalse($this->mc->get('test'));
+            $this->assertTrue($this->mc->set('test', 123));
+            $this->assertEquals(123, $this->mc->get('test'));
+        }
     }
 
     public function testSet()
     {
-        $this->assertTrue($this->o->set('test', 456));
-        $this->assertEquals(456, $this->o->get('test'));
+        if ($this->apc) {
+            $this->assertTrue($this->apc->set('test', 456));
+            $this->assertEquals(456, $this->apc->get('test'));
+        }
+        if ($this->mc) {
+            $this->assertTrue($this->mc->set('test', 456));
+            $this->assertEquals(456, $this->mc->get('test'));
+        }
     }
 
     public function testDelete()
     {
-        $this->assertEquals(456, $this->o->get('test'));
-        $this->assertTrue($this->o->delete('test'));
-        $this->assertFalse($this->o->get('test'));
+        if ($this->apc) {
+            $this->assertTrue($this->apc->set('test', 456));
+            $this->assertEquals(456, $this->apc->get('test'));
+            $this->assertTrue($this->apc->delete('test'));
+            $this->assertFalse($this->apc->get('test'));
+        }
+        if ($this->mc) {
+            $this->assertTrue($this->mc->set('test', 456));
+            $this->assertEquals(456, $this->mc->get('test'));
+            $this->assertTrue($this->mc->delete('test'));
+            $this->assertFalse($this->mc->get('test'));
+        }
     }
 
     public function testClear()
     {
-        $this->assertTrue($this->o->set('test', 456));
-        $this->assertTrue($this->o->clear());
-        $this->assertFalse($this->o->get('test'));
+        if ($this->apc) {
+            $this->assertTrue($this->apc->set('test', 456));
+            $this->assertEquals(456, $this->apc->get('test'));
+            $this->assertTrue($this->apc->clear());
+            $this->assertFalse($this->apc->get('test'));
+        }
+        if ($this->mc) {
+            $this->assertTrue($this->mc->set('test', 456));
+            $this->assertEquals(456, $this->mc->get('test'));
+            $this->assertTrue($this->mc->clear());
+            $this->assertFalse($this->mc->get('test'));
+        }
     }
 
     public function testGettersSetters()
     {
-        $this->assertEquals($this->o, $this->o->setKey('a','b','c'));
-        $this->assertEquals('a.b.c', $this->o->getKey());
+        if ($this->apc) {
+            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertEquals('a.b.c', $this->apc->getKey());
+        }
+        if ($this->mc) {
+            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertEquals('a.b.c', $this->mc->getKey());
+        }
     }
 
     public function testKeyExists()
     {
-        $this->assertFalse($this->o->keyExists());
-        $this->assertEquals($this->o, $this->o->setKey('a','b','c'));
-        $this->assertTrue($this->o->setValue(123));
-        $this->assertTrue($this->o->keyExists());
+        if ($this->apc) {
+            $this->assertFalse($this->apc->keyExists());
+            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertTrue($this->apc->setValue(123));
+            $this->assertTrue($this->apc->keyExists());
+        }
+        if ($this->mc) {
+            $this->assertFalse($this->mc->keyExists());
+            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertTrue($this->mc->setValue(123));
+            $this->assertTrue($this->mc->keyExists());
+        }
     }
 
     public function testGetValue()
     {
-        $this->assertEquals($this->o, $this->o->setKey('a','b','c'));
-        $this->assertTrue($this->o->setValue(123));
-        $this->assertEquals(123, $this->o->getValue());
+        if ($this->apc) {
+            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertTrue($this->apc->setValue(123));
+            $this->assertEquals(123, $this->apc->getValue());
+        }
+        if ($this->mc) {
+            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertTrue($this->mc->setValue(123));
+            $this->assertEquals(123, $this->mc->getValue());
+        }
     }
 
     public function testSetValue()
     {
-        $this->assertEquals($this->o, $this->o->setKey('a','b','c'));
-        $this->assertTrue($this->o->setValue(123));
+        if ($this->apc) {
+            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertTrue($this->apc->setValue(123));
+        }
+        if ($this->mc) {
+            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertTrue($this->mc->setValue(123));
+        }
     }
 
     public function testDeleteKey()
     {
-        $this->assertFalse($this->o->keyExists());
-        $this->assertEquals($this->o, $this->o->setKey('a','b','c'));
-        $this->assertTrue($this->o->setValue(123));
-        $this->assertTrue($this->o->deleteKey());
-        $this->assertFalse($this->o->keyExists());
-        $this->assertFalse($this->o->getValue());
+        if ($this->apc) {
+            $this->assertFalse($this->apc->keyExists());
+            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertTrue($this->apc->setValue(123));
+            $this->assertTrue($this->apc->deleteKey());
+            $this->assertFalse($this->apc->keyExists());
+            $this->assertFalse($this->apc->getValue());
+        }
+        if ($this->mc) {
+            $this->assertFalse($this->mc->keyExists());
+            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertTrue($this->mc->setValue(123));
+            $this->assertTrue($this->mc->deleteKey());
+            $this->assertFalse($this->mc->keyExists());
+            $this->assertFalse($this->mc->getValue());
+        }
     }
 }

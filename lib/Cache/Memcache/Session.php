@@ -54,7 +54,7 @@ class Session extends Cluster
      *
      * @var string
      **/
-    private $hashStrategy = "standard"; // {consistent,standard}
+    private $hashStrategy = "consistent"; // {consistent,standard}
 
     /**
      * Controls which hash function to apply when mapping keys to servers, crc32 uses the

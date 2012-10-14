@@ -65,7 +65,7 @@ class Server
     private $retry_interval = 15;
 
     /**
-     * Populate memache servers properties if passed.
+     * Populate memcache servers properties if passed.
      *
      * @param array $properties
      * @return Server
@@ -94,7 +94,7 @@ class Server
      * Load server properties and check if valid property.
      *
      * @param array $properties
-     * @return void
+     * @return Server
      **/
     public function load(Array $properties)
     {
@@ -103,6 +103,7 @@ class Server
                 $this->{$k} = $v;
             }
         }
+        return $this;
     }
 
     /**
@@ -118,6 +119,12 @@ class Server
                 $args[$k] = $v;
             }
         }
+
+        if (empty($this->scheme)) {
+            var_dump($this);
+            die;
+        }
+
         $args = count($args) ? '?' . http_build_query($args) : '';
         return "{$this->scheme}://{$this->host}:{$this->port}{$args}";
     }
@@ -130,6 +137,8 @@ class Server
     public function isOnline()
     {
         try {
+            if (!extension_loaded('memcache')) return false;
+
             $memcache = new \Memcache;
             $online = $memcache->connect($this->host, $this->port);
             $memcache->close();

@@ -42,6 +42,8 @@ abstract class Base
      */
     public function stringToTime($string, $seconds = false)
     {
+        if (is_int($string)) return $string;
+
         // get first integer from string
         $n = (int) preg_replace('/[^0-9.-]/', '', $string);
 

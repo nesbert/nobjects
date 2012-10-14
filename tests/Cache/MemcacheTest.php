@@ -1,21 +1,21 @@
 <?php
 namespace NObjects\Tests\Cache;
 
-use NObjects\Cache;
+use NObjects\Cache\Memcache;
 
-class ApcTest extends \PHPUnit_Framework_TestCase
+class MemcacheTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Cache\Apc
+     * @var Memcache
      */
     private $o;
 
     public function setUp()
     {
-        $this->o = new Cache\Apc();
+        $this->o = new Memcache('tcp://localhost');
 
-        if (!$this->o->open() || !ini_get('apc.enable_cli')) {
-            $this->markTestSkipped('APC extension is not available.');
+        if (!$this->o->open()) {
+            $this->markTestSkipped('Memcache extension is not available.');
         }
     }
 
@@ -54,5 +54,12 @@ class ApcTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->o->set('test', 456));
         $this->assertTrue($this->o->clear());
         $this->assertFalse($this->o->get('test'));
+    }
+
+    public function testOpen()
+    {
+        $this->assertTrue($this->o->open());
+        $z = new Memcache('tcp://localhost:55415');
+        $this->assertFalse($z->open());
     }
 }

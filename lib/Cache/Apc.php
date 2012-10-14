@@ -38,7 +38,7 @@ class Apc extends Base implements Adapter
     public function set($key, $value, $ttl = 0)
     {
         if (!$this->open()) return false;
-        return apc_store($key, $value, $ttl);
+        return apc_store($key, $value, $this->stringToTime($ttl, true));
     }
 
     /**

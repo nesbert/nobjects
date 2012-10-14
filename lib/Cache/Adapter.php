@@ -52,4 +52,12 @@ interface Adapter
      * @return bool
      */
     public function clear();
+
+    /**
+     * Open connection resources/check if valid cache resource.
+     *
+     * @abstract
+     * @return bool
+     */
+    public function open();
 }
