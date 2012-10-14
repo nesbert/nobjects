@@ -195,15 +195,17 @@ class Cache extends Cache\Base implements Cache\Adapter
     // setters & getters
 
     /**
-     * @param \NObjects\Cache\Adapter $adapter
+     * @param Cache\Adapter $adapter
+     * @return Cache
      */
     public function setAdapter(Cache\Adapter $adapter)
     {
         $this->adapter = $adapter;
+        return $this;
     }
 
     /**
-     * @return \NObjects\Cache\Adapter
+     * @return Cache\Adapter
      */
     public function getAdapter()
     {

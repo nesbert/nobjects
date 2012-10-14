@@ -241,4 +241,28 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $this->assertFalse($this->mc->getValue());
         }
     }
+
+    public function testSetAdapter()
+    {
+        if ($this->apc) {
+            $o = new Cache();
+            $this->assertEquals($o, $o->setAdapter(new Cache\Apc()));
+        }
+        if ($this->mc) {
+            $o = new Cache();
+            $this->assertEquals($o, $o->setAdapter(new Cache\Memcache()));
+        }
+    }
+
+    public function testGetAdapter()
+    {
+        if ($this->apc) {
+            $this->assertEquals(new Cache\Apc(), $this->apc->getAdapter());
+        }
+        if ($this->mc) {
+            $adapter = new Cache\Memcache();
+            $adapter->open();
+            $this->assertEquals($adapter, $this->mc->getAdapter());
+        }
+    }
 }
