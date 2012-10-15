@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests\Ldap;
+
 use NObjects\Ldap\Service,
     NObjects\Ldap\ServiceException;
 

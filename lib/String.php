@@ -50,7 +50,7 @@ class String
      * @param string $haystack
      * @return bool
      **/
-    public function startsWith($needle, $haystack)
+    public static function startsWith($needle, $haystack)
     {
         return substr($haystack, 0, strlen($needle)) == $needle;
     }
@@ -124,7 +124,7 @@ class String
     public static function sub($string, $pattern, $replace, $times = 1, &$count = null)
     {
         return preg_replace(
-                        (NValidate::isRegex($pattern)
+                        (Validate::isRegex($pattern)
                             ? $pattern
                             : "~{$pattern}~"),
                         $replace,
