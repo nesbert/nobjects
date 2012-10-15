@@ -33,7 +33,7 @@ class Network
      *
      * @return string
      **/
-    public static function http_host()
+    public static function httpHost()
     {
         return self::http() . self::host();
     }
@@ -45,7 +45,7 @@ class Network
      **/
     public static function url()
     {
-        return self::http_host() . @$_SERVER['REQUEST_URI'];
+        return self::httpHost() . @$_SERVER['REQUEST_URI'];
     }
 
     /**
@@ -111,7 +111,7 @@ class Network
      */
     public static function isIp($ip)
     {
-        return filter_var($ip, FILTER_VALIDATE_IP);
+        return (bool)filter_var($ip, FILTER_VALIDATE_IP);
     }
 
     /**
@@ -147,7 +147,7 @@ class Network
      * @param bool $includeHeader
      * @return bool|\stdClass
      */
-    public static function curlRequest($url, $method = 'GET', $data = '', $includeHeader = false, $maxRedirects = 10)
+    public static function curlRequest($url, $method = 'GET', $data = '', $includeHeader = false, $maxRedirects = 10, &$error = '')
     {
         // validate methods
         if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE'))) {
@@ -162,7 +162,7 @@ class Network
         if ($includeHeader) curl_setopt($ch, CURLOPT_HEADER, 1);
         if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         if(!$result = curl_exec($ch)) {
-            trigger_error(curl_error($ch));
+            $error = curl_error($ch);
             return false;
         }
         $out->statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
