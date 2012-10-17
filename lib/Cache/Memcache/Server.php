@@ -120,11 +120,6 @@ class Server
             }
         }
 
-        if (empty($this->scheme)) {
-            var_dump($this);
-            die;
-        }
-
         $args = count($args) ? '?' . http_build_query($args) : '';
         return "{$this->scheme}://{$this->host}:{$this->port}{$args}";
     }

@@ -12,7 +12,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->o = new Data('tcp://localhost');
+        $this->o = new Data('tcp://localhost', true);
 
         if (!$this->o->open()) {
             $this->markTestSkipped('Memcache extension is not available.');
@@ -37,6 +37,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->o->exists('test123'));
         $this->assertTrue($this->o->exists('test456'));
         $this->assertFalse($this->o->exists('test789'));
+        $this->assertFalse($this->o->exists(null));
 
         $this->assertEquals(array('test123' => true,'test456' => true), $this->o->exists(array('test123','test456','test789')));
     }
@@ -73,6 +74,20 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($stats));
         $this->assertTrue(is_array($stats['localhost:11211']));
         $this->assertEquals(48, count($stats['localhost:11211']));
+
+        $stats = $this->o->stats(false);
+        $this->assertTrue(is_array($stats));
+        $this->assertEquals(48, count($stats));
+    }
+
+    public function testClosed()
+    {
+        $o = new Data('tcp://localhost:55415');
+        $this->assertFalse($o->set('test123', 123));
+        $this->assertFalse($o->get('test123'));
+        $this->assertFalse($o->delete('test123'));
+        $this->assertFalse($o->clear());
+//        $this->assertFalse($o->stats());
     }
 
 }

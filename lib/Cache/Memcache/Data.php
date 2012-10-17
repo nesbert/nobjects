@@ -29,7 +29,7 @@ class Data extends Cluster implements \NObjects\Cache\Adapter
     public function __construct($servers = 'tcp://localhost', $compress = false)
     {
         parent::__construct($servers);
-        if ($this->compress) {
+        if ($compress) {
             $this->compress = \MEMCACHE_COMPRESSED;
         }
     }
@@ -76,7 +76,8 @@ class Data extends Cluster implements \NObjects\Cache\Adapter
     public function set($key, $value, $expire = 0)
     {
         if ($this->open()) {
-            return $this->memcache->set($key, $value, $this->compress, $expire);
+            $compress = is_scalar($value) ? null : $this->compress;
+            return $this->memcache->set($key, $value, $compress, $expire);
         }
         return false;
     }
@@ -146,6 +147,7 @@ class Data extends Cluster implements \NObjects\Cache\Adapter
                 try {
                     return is_string($this->memcache->getVersion());
                 } catch (\Exception $e) {
+
                     return false;
                 }
             }

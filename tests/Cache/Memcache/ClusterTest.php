@@ -13,7 +13,7 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->o = new Cluster('tcp://127.0.0.1');
+        $this->o = new Cluster('tcp://127.0.0.1?port=11211');
     }
 
     public function testLoad()

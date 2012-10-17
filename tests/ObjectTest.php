@@ -57,6 +57,11 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
         // NObject get translated to an array
         $this->assertNotEquals(array_values($data3), $obj3->getPropertyValues());
+
+        $foo = new FooOne();
+        $this->assertEquals($foo, $foo->fromArray(array('bars' => new \ArrayObject(array(1,2,3)))));
+        $this->assertEquals(new \ArrayObject(array(1,2,3)), $foo->getBars());
+        $this->assertEquals($foo->toJSON(), (string)$foo);
     }
 
     public function testAncestors()
@@ -69,5 +74,20 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($ancestors));
         $this->assertTrue(count($ancestors)==1);
         $this->assertEquals('DateTime', $ancestors[0]);
+    }
+}
+
+class FooOne extends Object
+{
+    private $bars;
+
+    public function setBars(\ArrayObject $bar)
+    {
+        $this->bars = $bar;
+    }
+
+    public function getBars()
+    {
+        return $this->bars;
     }
 }

@@ -226,9 +226,12 @@ class Cluster
      **/
     public function stats()
     {
-        $memcache = $this->getMemcacheObject();
-        $return = @$memcache->getExtendedStats();
-        $memcache->close();
+        static $return;
+        if (empty($return)) {
+            $memcache = $this->getMemcacheObject();
+            $return = @$memcache->getExtendedStats();
+            $memcache->close();
+        }
         return $return;
     }
 

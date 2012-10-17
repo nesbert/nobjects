@@ -38,6 +38,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $this->o->weight);
         $this->assertEquals(1, $this->o->timeout);
         $this->assertEquals(15, $this->o->retry_interval);
+        $this->assertNull($this->o->invalid);
 
         $this->o = new Server($this->x);
 

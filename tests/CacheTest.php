@@ -50,6 +50,8 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $this->apc->setKeySpecialGlue('.');
             $this->assertEquals('a::b::c', $this->apc->buildKey('a','b','c'));
             $this->assertEquals('My.Class::method::id::123', $this->apc->buildKey('My Class','method','id', 123));
+            $this->assertEquals($this->apc, $this->apc->setKeySpecial(array('/')));
+            $this->assertEquals('My Class::method::id::123', $this->apc->buildKey('My Class','method','id', 123));
         }
 
         if ($this->mc) {
@@ -61,6 +63,8 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $this->mc->setKeySpecialGlue('.');
             $this->assertEquals('a::b::c', $this->mc->buildKey('a','b','c'));
             $this->assertEquals('My.Class::method::id::123', $this->mc->buildKey('My Class','method','id', 123));
+            $this->assertEquals($this->mc, $this->mc->setKeySpecial(array('/')));
+            $this->assertEquals('My Class::method::id::123', $this->mc->buildKey('My Class','method','id', 123));
         }
     }
 
@@ -68,6 +72,8 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     {
         if ($this->apc) {
             $this->assertEquals(time(), $this->apc->stringToTime('now'));
+            $this->assertEquals(strtotime(date('Y-m-d 23:59:59')), $this->apc->stringToTime('midnite'));
+            $this->assertEquals(strtotime(date('Y-m-d 00:00:00', strtotime('+1 day'))), $this->apc->stringToTime('tomorrow'));
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->apc->stringToTime('1min'));
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->apc->stringToTime('1 min'));
             $this->assertEquals(time()+\NObjects\Date::HOUR, $this->apc->stringToTime('1hr'));
@@ -79,6 +85,8 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         }
         if ($this->mc) {
             $this->assertEquals(time(), $this->mc->stringToTime('now'));
+            $this->assertEquals(strtotime(date('Y-m-d 23:59:59')), $this->mc->stringToTime('midnite'));
+            $this->assertEquals(strtotime(date('Y-m-d 00:00:00', strtotime('+1 day'))), $this->mc->stringToTime('tomorrow'));
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->mc->stringToTime('1min'));
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->mc->stringToTime('1 min'));
             $this->assertEquals(time()+\NObjects\Date::HOUR, $this->mc->stringToTime('1hr'));
@@ -263,6 +271,36 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             $adapter = new Cache\Memcache();
             $adapter->open();
             $this->assertEquals($adapter, $this->mc->getAdapter());
+        }
+    }
+
+    public function testEmptyAdapter()
+    {
+        $cache = new Cache();
+        $this->assertFalse($cache->exists('test'));
+        $this->assertFalse($cache->get('test'));
+        $this->assertFalse($cache->set('test', 123));
+        $this->assertFalse($cache->delete('test'));
+        $this->assertFalse($cache->clear());
+        $this->assertFalse($cache->open());
+
+        $this->assertEquals($cache, $cache->setKey('test'));
+        $this->assertFalse($cache->keyExists());
+        $this->assertFalse($cache->getValue());
+        $this->assertFalse($cache->setValue(123));
+        $this->assertFalse($cache->deleteKey());
+    }
+
+    public function testMagicCall()
+    {
+        if ($this->mc) {
+            $this->assertTrue($this->mc->getData() instanceof \NObjects\Cache\Memcache\Data);
+            try {
+                $this->assertTrue($this->mc->getBlah());
+                $this->fail('Exception expected!');
+            } catch (\Exception $e) {
+                $this->assertEquals('Call to undefined method NObjects\Cache::getBlah()', $e->getMessage());
+            }
         }
     }
 }

@@ -18,9 +18,6 @@ class Object
     {
         $args = func_get_args();
 
-        // initialize parents
-        call_user_func_array(array($this, '__initializeParents'), $args);
-
         // if an array or object load using fromArray
         if (!empty($args[0]) && (Validate::isAssociativeArray($args[0]) || is_object($args[0]))) {
             $this->fromArray((array)$args[0]);
@@ -75,10 +72,7 @@ class Object
         if (empty($props[$class])) {
             $props[$class] = array();
             foreach ($this as $k => $v) {
-                $props[$class][] = (object)array(
-                    'name' => $k,
-                    'value' => $v,
-                );
+                $props[$class][] = (object)array('name' => $k, 'value' => $v);
             }
         }
 
@@ -142,26 +136,6 @@ class Object
         }
 
         return $props;
-    }
-
-    /**
-     * Waterfall initialize function routine. Passes construct args down
-     * the chain.
-     *
-     * @return void
-     **/
-    private function __initializeParents()
-    {
-        $baseClass = get_class($this);
-        $classes = (array)self::ancestors($baseClass, true);
-        $classes[] = $baseClass;
-
-        foreach ($classes as $class) {
-            $method = 'init' . $class;
-            if (method_exists($class, $method)) {
-                call_user_func_array(array($this, $method), func_get_args());
-            }
-        }
     }
 
     /**

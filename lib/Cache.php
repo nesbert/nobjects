@@ -34,6 +34,7 @@ class Cache extends Cache\Base implements Cache\Adapter
      *
      * @param $method
      * @param $arguments
+     * @throws \Exception
      * @return mixed
      */
     public function __call($method, $arguments)
@@ -41,6 +42,7 @@ class Cache extends Cache\Base implements Cache\Adapter
         if (method_exists($this->getAdapter(), $method)) {
             return call_user_func_array(array($this->getAdapter(), $method), $arguments);
         }
+        throw new \Exception("Call to undefined method " . __CLASS__ . "::{$method}()");
     }
 
     /**

@@ -118,6 +118,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(Validate::isUrl('http://example.org/'));
         $this->assertTrue(Validate::isUrl('http://example.org/some/stuff'));
         $this->assertTrue(Validate::isUrl('http://localhost/some/stuff'));
+        $this->assertTrue(Validate::isUrl('http://localhost/some/stuff', true));
 
         $this->assertFalse(Validate::isUrl('localhost'));
         $this->assertFalse(Validate::isUrl('example.org'));
@@ -127,6 +128,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Validate::isUrl('https:///example.org'));
         $this->assertFalse(Validate::isUrl('ftp:example.org'));
         $this->assertFalse(Validate::isUrl('ftp:example.org'));
+        $this->assertFalse(Validate::isUrl('http://example.org', true));
     }
 
     public function testIsAlpha()
@@ -219,6 +221,25 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Validate::isBetween(101, 1, 100));
     }
 
+    public function testIsDateString()
+    {
+        $this->assertTrue(Validate::isDateString(\NObjects\Date::toISO8601()));
+        $this->assertTrue(Validate::isDateString(time()));
+
+        $this->assertFalse(Validate::isDateString('Some date 10/10/2012'));
+        $this->assertFalse(Validate::isDateString(101));
+    }
+
+    public function testIsDatetimeString()
+    {
+        $this->assertTrue(Validate::isDatetimeString(\NObjects\Date::datetime()));
+
+        $this->assertFalse(Validate::isDatetimeString(\NObjects\Date::toISO8601()));
+        $this->assertFalse(Validate::isDatetimeString(time()));
+        $this->assertFalse(Validate::isDatetimeString('Some date 10/10/2012'));
+        $this->assertFalse(Validate::isDatetimeString(101));
+    }
+
     public function testIsLength()
     {
         $array = array(1,2,3,4);
@@ -231,6 +252,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Validate::isLength('test', 1));
         $this->assertFalse(Validate::isLength($array, '5'));
         $this->assertFalse(Validate::isLength($array, 5));
+        $this->assertFalse(Validate::isLength(null, '1'));
     }
 
     public function testIsLengthBetween()
@@ -245,6 +267,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Validate::isLengthBetween('test', 1, '3'));
         $this->assertFalse(Validate::isLengthBetween($array, '5', '10'));
         $this->assertFalse(Validate::isLengthBetween($array, 5, 10));
+        $this->assertFalse(Validate::isLengthBetween(null, '1', '3'));
     }
 
     public function testIsRegex()
@@ -327,6 +350,12 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Validate::isAjaxRequest());
         $_REQUEST['_AJAX_'] = 1;
         $this->assertTrue(Validate::isAjaxRequest());
+        unset($_REQUEST['_AJAX_']);
+
+        $this->assertFalse(Validate::isAjaxRequest());
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
+        $this->assertTrue(Validate::isAjaxRequest());
+        unset($_SERVER['HTTP_X_REQUESTED_WITH']);
     }
 
     public function testIsHash()
