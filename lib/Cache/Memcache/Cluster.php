@@ -174,26 +174,31 @@ class Cluster
     }
 
     /**
-     * Get an array of all constants that use 'MEMCACHE_SERVERS_'.
+     * Check if servers are online.
      *
-     * @return array
-     **/
-    public static function getClusterConstants()
+     * @param bool $checkAll
+     * @return bool
+     */
+    public function isOnline($checkAll = false)
     {
-        $constants = get_defined_constants(true);
-        $key = self::CLUSTER_KEY_PREFIX;
-        $clusters = array();
-
-        foreach ($constants['user'] as $k => $v) {
-            if (preg_match('/^'.$key.'/', $k)) {
-                $clusters[$k] = array(
-                    'name' => str_replace($key, '', $k),
-                    'value' => $v
-                );
+        $online = false;
+        foreach ($this->getServers() as $server) {
+            // if one server is offline return false
+            if ($checkAll) {
+                if ($server->isOnline()) {
+                    $online = true;
+                } else {
+                    $online = false;
+                    break;
+                }
+            } else {
+                if ($server->isOnline()) {
+                    return true;
+                    break;
+                }
             }
         }
-
-        return $clusters;
+        return $online;
     }
 
     /**
@@ -282,5 +287,28 @@ class Cluster
         }
 
         return (object) $return;
+    }
+
+    /**
+     * Get an array of all constants that use 'MEMCACHE_SERVERS_'.
+     *
+     * @return array
+     **/
+    public static function getClusterConstants()
+    {
+        $constants = get_defined_constants(true);
+        $key = self::CLUSTER_KEY_PREFIX;
+        $clusters = array();
+
+        foreach ($constants['user'] as $k => $v) {
+            if (preg_match('/^'.$key.'/', $k)) {
+                $clusters[$k] = array(
+                    'name' => str_replace($key, '', $k),
+                    'value' => $v
+                );
+            }
+        }
+
+        return $clusters;
     }
 }

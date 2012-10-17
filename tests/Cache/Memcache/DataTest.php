@@ -82,12 +82,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function testClosed()
     {
-        $o = new Data('tcp://localhost:55415');
+        $o = new Data('tcp://invalid');
+        $this->assertFalse($o->exists('test123'));
         $this->assertFalse($o->set('test123', 123));
         $this->assertFalse($o->get('test123'));
         $this->assertFalse($o->delete('test123'));
         $this->assertFalse($o->clear());
-//        $this->assertFalse($o->stats());
+        $this->assertFalse($o->stats());
     }
 
 }

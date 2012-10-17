@@ -22,6 +22,11 @@ class Data extends Cluster implements \NObjects\Cache\Adapter
     private $compress = false;
 
     /**
+     * @var bool
+     */
+    private $clusterOnline;
+
+    /**
      * @param mixed $servers
      * @param bool $compress
      * @see Cluster::__construct
@@ -139,20 +144,25 @@ class Data extends Cluster implements \NObjects\Cache\Adapter
     {
         if (!extension_loaded('memcache')) return false;
 
+        // only check cluster once
+        if (!is_null($this->clusterOnline)) {
+            return $this->clusterOnline;
+        }
+
         // if this is not a memcache object or the status of the server is failed
         if (empty($this->memcache)) {
             //create a new memcache object
             if ($this->memcache = $this->getMemcacheObject()) {
                 // try to set a key to determine if we can connect
                 try {
-                    return is_string($this->memcache->getVersion());
+                    // make sure one node is the cluster is online
+                    $this->clusterOnline = $this->isOnline();
                 } catch (\Exception $e) {
-
-                    return false;
                 }
             }
         }
-        return true;
+
+        return $this->clusterOnline;
     }
 
     /**

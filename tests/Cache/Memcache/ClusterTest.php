@@ -92,16 +92,16 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->o->flush());
     }
 
-    public function testGetClusterConstants()
+    public function testIsOnline()
     {
-        $this->assertEquals(array(), $this->o->getClusterConstants());
+        if (!extension_loaded('memcache')) return;
 
-        define('MEMCACHE_CLUSTER_LIGHTSIDE', 'tcp://yoda,tcp://obi-wan');
-        define('MEMCACHE_CLUSTER_DARKSIDE', 'tcp://sidious,tcp://vader');
-        $this->assertEquals(array(
-            'MEMCACHE_CLUSTER_LIGHTSIDE' => array('name' => 'LIGHTSIDE', 'value' => 'tcp://yoda,tcp://obi-wan'),
-            'MEMCACHE_CLUSTER_DARKSIDE'  => array('name' => 'DARKSIDE', 'value' => 'tcp://sidious,tcp://vader')
-            ), $this->o->getClusterConstants());
+        $this->assertTrue($this->o->isOnline());
+        $this->assertTrue($this->o->isOnline(true));
+
+        $o = new Cluster('tcp://localhost,tcp://invalid');
+        $this->assertTrue($o->isOnline());
+        $this->assertFalse($o->isOnline(true));
     }
 
     public function testStatus()
@@ -132,5 +132,17 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($stats->servers));
         $this->assertTrue(isset($stats->stats));
         $this->assertTrue(isset($stats->totals));
+    }
+
+    public function testGetClusterConstants()
+    {
+        $this->assertEquals(array(), $this->o->getClusterConstants());
+
+        define('MEMCACHE_CLUSTER_LIGHTSIDE', 'tcp://yoda,tcp://obi-wan');
+        define('MEMCACHE_CLUSTER_DARKSIDE', 'tcp://sidious,tcp://vader');
+        $this->assertEquals(array(
+            'MEMCACHE_CLUSTER_LIGHTSIDE' => array('name' => 'LIGHTSIDE', 'value' => 'tcp://yoda,tcp://obi-wan'),
+            'MEMCACHE_CLUSTER_DARKSIDE'  => array('name' => 'DARKSIDE', 'value' => 'tcp://sidious,tcp://vader')
+        ), $this->o->getClusterConstants());
     }
 }
