@@ -23,37 +23,32 @@ class Date
      */
     public static function datetime($time = 'now')
     {
-        switch (true) {
-            case empty($time):
-            case is_int($time) && $time <= 0:
-            default:
-                return date('Y-m-d H:i:s');
-
-            case is_array($time):
-                $time['hour'] = isset($time['hour']) ? $time['hour'] : 0;
-                $time['minute'] = isset($time['minute']) ? $time['minute'] : 0;
-                $time['second'] = isset($time['second']) ? $time['second'] : 0;
-                if (!empty($time['ampm'])
-                    && strtoupper($time['ampm']) == 'PM'
-                    && $time['hour'] < 12) {
-                    $time['hour'] += 12;
-                }
-                return date('Y-m-d H:i:s', mktime(
-                    $time['hour'],
-                    $time['minute'],
-                    $time['second'],
-                    $time['month'],
-                    $time['day'],
-                    $time['year']
-                ));
-                break;
-
-            case Validate::isNumber($time):
-                return date('Y-m-d H:i:s', $time);
-
-            case is_string($time) && $time != '0000-00-00 00:00:00':
-                return date('Y-m-d H:i:s', strtotime($time));
+        if (is_string($time) && $time != '0000-00-00 00:00:00') {
+            $time = strtotime($time);
+        } elseif (Validate::isNumber($time)) {
+            // do nothing
+        } elseif (is_array($time)) {
+            $time['hour'] = isset($time['hour']) ? $time['hour'] : 0;
+            $time['minute'] = isset($time['minute']) ? $time['minute'] : 0;
+            $time['second'] = isset($time['second']) ? $time['second'] : 0;
+            if (!empty($time['ampm'])
+                && strtoupper($time['ampm']) == 'PM'
+                && $time['hour'] < 12) {
+                $time['hour'] += 12;
+            }
+            $time = mktime(
+                $time['hour'],
+                $time['minute'],
+                $time['second'],
+                $time['month'],
+                $time['day'],
+                $time['year']
+            );
+        } else {
+            $time = time();
         }
+
+        return date('Y-m-d H:i:s', $time);
     }
 
     /**

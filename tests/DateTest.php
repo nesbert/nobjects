@@ -23,11 +23,19 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $datetime['year'] = 2010;
         
         $this->assertEquals($now, Date::datetime());
+        $this->assertEquals($now, Date::datetime(null));
+        $this->assertEquals($now, Date::datetime(time()));
         $this->assertEquals($tomorrow, Date::datetime(time() + Date::DAY));
         $this->assertEquals($yesterday, Date::datetime(time() - Date::DAY));
         $this->assertEquals($tomorrow, Date::datetime(strtotime('+1day')));
         $this->assertEquals($yesterday, Date::datetime(strtotime('-1day')));
         $this->assertEquals('2010-03-06 12:55:23', Date::datetime($datetime));
+        $datetime['hour'] = 10;
+        $datetime['ampm'] = 'pm';
+        $this->assertEquals('2010-03-06 22:55:23', Date::datetime($datetime));
+        $datetime['hour'] = 1;
+        $datetime['ampm'] = 'am';
+        $this->assertEquals('2010-03-06 01:55:23', Date::datetime($datetime));
     }
 
     public function testGmtimestamp()
@@ -96,12 +104,22 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('2012-08-16T21:43:00-04:00', Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/New_York'));
     }
 
-    public function testTimeAgo()
+    public function testTimeSince()
     {
+        $this->assertEquals('30 seconds', Date::timeSince(strtotime('-30 seconds')));
+        $this->assertEquals('30 seconds', Date::timeSince('-30 seconds'));
+        $this->assertEquals('30 minutes', Date::timeSince(strtotime('-30 minutes')));
+        $this->assertEquals('30 minutes', Date::timeSince('-30 minutes'));
+        $this->assertEquals('12 hours', Date::timeSince(strtotime('-12 hours')));
+        $this->assertEquals('12 hours', Date::timeSince('-12 hours'));
         $this->assertEquals('1 day', Date::timeSince(strtotime('-1day')));
+        $this->assertEquals('1 day', Date::timeSince('-1day'));
         $this->assertEquals('5 days', Date::timeSince(strtotime('-5day')));
+        $this->assertEquals('5 days', Date::timeSince('-5day'));
         $this->assertEquals('1 week', Date::timeSince(strtotime('-8day')));
+        $this->assertEquals('1 week', Date::timeSince('-8day'));
         $this->assertFalse(Date::timeSince(strtotime('-4weeks')));
+        $this->assertFalse(Date::timeSince('-4weeks'));
         $this->assertFalse(@Date::timeSince());
         $this->assertFalse(Date::timeSince(time() + Date::MINUTE));
     }

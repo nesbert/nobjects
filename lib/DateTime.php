@@ -108,7 +108,7 @@ class DateTime extends \DateTime
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */
     public function diff($now = 'now', $absolute = false) {
-        if(!($now instanceOf DateTime)
+        if(!($now instanceOf \DateTime)
             || !($now instanceOf DateTime)) {
             $now = new DateTime($now);
         }
@@ -118,7 +118,7 @@ class DateTime extends \DateTime
     /**
      * Return Age in Years.
      *
-     * @param \Datetime|String $now
+     * @param \Datetime|Datetime|String $now
      * @return Integer
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */
@@ -127,7 +127,7 @@ class DateTime extends \DateTime
     }
     
     /**
-     * Get a formatted strong of time since passed $time.
+     * Get a formatted string of time since passed $time.
      * 
      * @param string $time
      * @param bool $showSeconds
@@ -135,8 +135,9 @@ class DateTime extends \DateTime
      */
     public function timeSince($time = 'now', $showSeconds = false)
     {
-        $format = '%y year, %m month, %d day, %h hour, %i minute, %s second';
-        $formats = array(
+        $interval = $this->diff($time);
+
+        $map = array(
             'y' => 'year',
             'm' => 'month',
             'd' => 'day',
@@ -144,24 +145,20 @@ class DateTime extends \DateTime
             'i' => 'minute',
             's' => 'second',
         );
-        
-        $diff = $this->diff($time);
-        
-        if (!$showSeconds) {
-            $format = str_replace(', %s second', '', $format);
-        }
-        
-        foreach ($formats as $k => $v) {
-            if ($diff->{$k} != 1) {
-                if ($diff->{$k} == 0) {
-                    $format = str_replace(array("%{$k} {$v},", "%{$k} {$v}") , '', $format);
-                } else {
-                    $format = str_replace($v, "{$v}s", $format);
-                }
+        $timeSince = array();
+
+        foreach ($map as $k => $v) {
+            if ($interval->$k) {
+                $timeSince[$k] = $interval->$k . ' ' . $v;
+                $timeSince[$k] .= $interval->$k == 1 ? '' : 's';
             }
         }
+
+        if (!$showSeconds) {
+            unset($timeSince['s']);
+        }
         
-        return trim($diff->format($format));        
+        return trim(implode(', ', $timeSince));
     }
     
     /**
