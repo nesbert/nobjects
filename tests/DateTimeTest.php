@@ -113,8 +113,6 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(implode(', ', $timeSince), $datetimeObj->timeSince('now', true));
             unset($timeSince['s']);
             $this->assertEquals(implode(', ', $timeSince), $datetimeObj->timeSince());
-
-            var_dump($datetimeObj->timeSince());
         }
 
     }

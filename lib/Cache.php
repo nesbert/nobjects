@@ -215,7 +215,7 @@ class Cache extends Cache\Base implements Cache\Adapter
     }
 
     /**
-     * Will build key based all arguments passed.
+     * Will build key based all arguments passed and return cloned copy.
      *
      * @see buildKey()
      * @return Cache
@@ -224,7 +224,7 @@ class Cache extends Cache\Base implements Cache\Adapter
     {
         $key = call_user_func_array(array($this, 'buildKey'), func_get_args());
         $this->key = $key;
-        return $this;
+        return clone $this;
     }
 
     /**
