@@ -50,6 +50,22 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(is_resource($ldap->link()));
         $this->assertEquals('ldap link', get_resource_type($ldap->link()));
+
+        try {
+            $ldap = new Service(array());
+            $this->fail('Exception expected!');
+        } catch (\Exception $e) {
+            $this->assertEquals('LDAP host required.', $e->getMessage());
+        }
+
+        // TODO need an Active Directory test server
+//        try {
+//            $ldap = new Service(array('host' => 'ad.example.com:636'));
+//            $ldap->connect();
+//            $this->fail('Exception expected!');
+//        } catch (\Exception $e) {
+//            $this->assertEquals('Unable to connect to ad.example.com:636', $e->getMessage());
+//        }
     }
 
     public function testDisconnect()
@@ -186,5 +202,13 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, $this->ldap1->getSearchSizeLimit());
         $this->assertEquals(600, $this->ldap1->getSearchTimeout());
         $this->assertEquals(true, $this->ldap1->isSsl());
+
+        try {
+            $this->ldap1->setAccountCanonicalForm('invalid');
+            $this->fail('Exception expected!');
+        } catch (\Exception $e) {
+            $this->assertEquals('Invalid accountCanonicalForm value.', $e->getMessage());
+        }
+
     }
 }

@@ -71,6 +71,7 @@ class FlashMessage
      **/
     public static function notice($message, $type = self::TYPE_NOTICE)
     {
+        // use array type for storing data
         self::$messages[] = array($message, $type);
 
         $_SESSION[self::SESSION_NAME] = &self::$messages;
@@ -130,11 +131,26 @@ class FlashMessage
         return $messages;
     }
 
+    /**
+     * Reset session message storage.
+     *
+     * @static
+     * @return void
+     */
+    public static function reset()
+    {
+        self::$messages = array();
+        if (isset($_SESSION[self::SESSION_NAME])) {
+            unset($_SESSION[self::SESSION_NAME]);
+        }
+    }
+
     // getters & setters
 
     public function setText($text)
     {
         $this->text = $text;
+        return $this;
     }
 
     public function getText()
@@ -145,6 +161,7 @@ class FlashMessage
     public function setType($type)
     {
         $this->type = $type;
+        return $this;
     }
 
     public function getType()

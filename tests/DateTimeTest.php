@@ -83,7 +83,6 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     {
         $datetime2 = date('Y-m-d H:i:s', strtotime('-1day'));
         $datetime3 = date('Y-m-d H:i:s', strtotime('-2 month 2 days'));
-        var_dump($datetime3);
         $datetimes = array(
             $this->datetime => $this->o,
             $datetime2 => new DateTime($datetime2),

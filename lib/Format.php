@@ -20,13 +20,11 @@ class Format
      * @param int $decimals
      * @return string
      */
-    public static function toPercent($number, $total, $decimals = 1)
+    public static function toPercent($number, $total, $decimals = null)
     {
-        $number = (int) $number;
-        $total = (int) $total;
         $percent = $total > 0 ? $number/$total*100 : 0;
-        if (!is_null(self::getNumberOfDecimals())) {
-            $decimals = self::getNumberOfDecimals();
+        if (is_null($decimals) && !is_null(self::getNumberOfDecimalsPercent())) {
+            $decimals = self::getNumberOfDecimalsPercent();
         }
 
         return number_format($percent, (int)$decimals, '.', ',') . '%';
@@ -40,13 +38,12 @@ class Format
      * @param int $decimals
      * @return string
      */
-    public static function toNumber($number, $decimals = 0)
+    public static function toNumber($number, $decimals = null)
     {
-        $number = (int) $number;
         $decimalPoint = '.';
         $decimalSeparator = ',';
 
-        if (!is_null(self::getNumberOfDecimals())) {
+        if (is_null($decimals) && !is_null(self::getNumberOfDecimals())) {
             $decimals = self::getNumberOfDecimals();
         }
 

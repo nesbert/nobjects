@@ -78,9 +78,11 @@ class Service extends \NObjects\Object
         // if host is domain name parse defaults from name
         if (!$isIp) {
             $domain = explode('.', $host[0]);
-            $this->setBaseDn('DC=' . implode(',DC=', $domain));
-            $this->setAccountDomainName($domain[count($domain)-2] . '.' . $domain[count($domain)-1]);
-            $this->setAccountDomainNameShort($domain[count($domain)-2]);
+            if (count($domain)>1) {
+                $this->setBaseDn('DC=' . implode(',DC=', $domain));
+                $this->setAccountDomainName($domain[count($domain)-2] . '.' . $domain[count($domain)-1]);
+                $this->setAccountDomainNameShort($domain[count($domain)-2]);
+            }
         }
 
         // set options/override defaults

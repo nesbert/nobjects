@@ -224,10 +224,11 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testIsDateString()
     {
         $this->assertTrue(Validate::isDateString(\NObjects\Date::toISO8601()));
-        $this->assertTrue(Validate::isDateString(time()));
+        $this->assertTrue(Validate::isDateString(\NObjects\Date::datetime()));
 
         $this->assertFalse(Validate::isDateString('Some date 10/10/2012'));
         $this->assertFalse(Validate::isDateString(101));
+        $this->assertFalse(Validate::isDateString(time()));
     }
 
     public function testIsDatetimeString()

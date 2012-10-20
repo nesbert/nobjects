@@ -82,24 +82,22 @@ class Directory
     }
 
     /**
-     * Gets a directories files in a directory by file type. Returns an
-     * associative array with the file_name as key and file_path as value.
+     * Gets files in a directory by file type. Returns an associative
+     * array with the file name as key and path as value.
      *
      * @param string $path
-     * @param string $file_type Optional default set to 'php'
+     * @param string $fileType Optional default set to 'php'
      * @param bool $showInvisible
      * @return array
      */
-    public static function lsWithFilename($path, $file_type = 'php', $showInvisible = false)
+    public static function lsWithFilename($path, $fileType = 'php', $showInvisible = false)
     {
         $files = self::ls($path, array(
-            'filter' => '/.'.$file_type.'$/',
+            'filter' => '/.'.$fileType.'$/',
             'showInvisible' => $showInvisible
             ));
         foreach ($files as $k => $file) {
-            if ( String::endsWith('.'.$file_type, $file) ) {
-                $files[basename($file, '.'.$file_type)] = $path.DIRECTORY_SEPARATOR.$file;
-            }
+            $files[basename($file, '.'.$fileType)] = $file;
             unset($files[$k]);
         }
         asort($files);
