@@ -140,4 +140,9 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array_flip($array), Date::range('2010-05-28', '2010-06-04', 'D', 'Y-m-d'));
         $this->assertTrue(is_array(Date::range(strtotime('-1week'))));
     }
+
+    public function testMilliseconds()
+    {
+        $this->assertEquals(round(microtime(true)*1000), Date::milliseconds());
+    }
 }

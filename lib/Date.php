@@ -203,4 +203,16 @@ class Date
 
         return $range;
     }
+
+    /**
+     * Get current time in milliseconds.
+     *
+     * @static
+     * @return float
+     */
+    public static function milliseconds()
+    {
+        // TODO string to milliseconds
+        return round(microtime(true) * 1000);
+    }
 }
