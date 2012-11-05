@@ -69,4 +69,28 @@ class StringTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(array('a','b','c'), String::toArray('abc'));
     }
+
+    public function testMailTo()
+    {
+        $to = 'luke@example.com';
+        $cc = 'yoda@example.com';
+        $bcc = 'han@example.com';
+        $subject = 'Use the force...';
+        $body = 'Feel the force!';
+
+        $mailto = 'mailto:'.$to;
+        $this->assertEquals($mailto, String::mailTo($to));
+
+        $mailto .= '?subject=' . rawurlencode($subject);
+        $this->assertEquals($mailto, String::mailTo($to, $subject));
+
+        $mailto .= '&body=' . rawurlencode($body);
+        $this->assertEquals($mailto, String::mailTo($to, $subject, $body));
+
+        $mailto = str_replace('?', '?cc=' . $cc . '&', $mailto);
+        $this->assertEquals($mailto, String::mailTo($to, $subject, $body, $cc));
+
+        $mailto = str_replace('&subject=', '&bcc=' . $bcc . '&subject=', $mailto);
+        $this->assertEquals($mailto, String::mailTo($to, $subject, $body, $cc, $bcc));
+    }
 }

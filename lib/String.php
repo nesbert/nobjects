@@ -132,4 +132,37 @@ class String
                         $times,
                         $count);
     }
+
+    /**
+     * Build a link href mailto string.
+     *
+     * @param $to
+     * @param string $subject
+     * @param string $body
+     * @param string $cc
+     * @param string $bcc
+     * @return string
+     */
+    public static function mailTo($to, $subject  = '', $body = '', $cc = '', $bcc = '')
+    {
+        $params = array(
+            'to' => $to,
+            'cc' => $cc,
+            'bcc' => $bcc,
+            'subject' => rawurlencode($subject),
+            'body'=> rawurlencode($body),
+        );
+        $extra = array();
+
+        $href = 'mailto:' . $params['to'];
+        unset($params['to']);
+
+        foreach ($params as $k => $v) {
+            if (!empty($v)) {
+                $extra[] = $k . '=' . $v;
+            }
+        }
+
+        return $href . ($extra ? '?' . implode('&', $extra) : '');
+    }
 }
