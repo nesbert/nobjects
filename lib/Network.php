@@ -139,12 +139,11 @@ class Network
      * Simple curl REST client.
      *
      * @param string $url
-     * @param string $method
+     * @param string $method GET, POST, PUT, DELETE
      * @param string $data
      * @param bool $includeHeader
      * @param int $maxRedirects
-     * @param string $method GET, POST, PUT, DELETE
-     * @param bool $includeHeader
+     * @param string $error
      * @return bool|\stdClass
      */
     public static function curlRequest($url, $method = 'GET', $data = '', $includeHeader = false, $maxRedirects = 10, &$error = '')
@@ -174,5 +173,14 @@ class Network
         $out->body = $result;
         curl_close($ch);
         return $out;
+    }
+
+    /**
+     * @static
+     * @return bool
+     */
+    public static function isRemoteIpLocal()
+    {
+        return in_array(self::remoteIp(), array('127.0.0.1', '::1'));
     }
 }

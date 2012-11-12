@@ -106,4 +106,21 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('http://www.example.org/index.php', Network::url());
     }
+
+    public function testIsRemoteIpLocal()
+    {
+        $this->assertFalse(Network::isRemoteIpLocal());
+
+        $_SERVER['REMOTE_ADDR'] = '192.168.0.1';
+        $this->assertFalse(Network::isRemoteIpLocal());
+
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $this->assertTrue(Network::isRemoteIpLocal());
+
+        $_SERVER['REMOTE_ADDR'] = '::1';
+        $this->assertTrue(Network::isRemoteIpLocal());
+
+        $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+        $this->assertFalse(Network::isRemoteIpLocal());
+    }
 }
