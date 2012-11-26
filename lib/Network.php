@@ -158,6 +158,7 @@ class Network
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // do not verify peer cert
         if ($includeHeader) curl_setopt($ch, CURLOPT_HEADER, 1);
         if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         if(!$result = curl_exec($ch)) {
