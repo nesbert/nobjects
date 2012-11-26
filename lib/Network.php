@@ -184,4 +184,15 @@ class Network
     {
         return in_array(self::remoteIp(), array('127.0.0.1', '::1'));
     }
+
+    /**
+     * Force and redirect to https of current URL.
+     */
+    public static function forceHTTPS()
+    {
+        if ($_SERVER['HTTPS'] != 'on') {
+            header('location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            exit();
+        }
+    }
 }
