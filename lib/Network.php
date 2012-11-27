@@ -141,36 +141,52 @@ class Network
      * @param string $url
      * @param string $method GET, POST, PUT, DELETE
      * @param string $data
-     * @param bool $includeHeader
-     * @param int $maxRedirects
+     * @param array $options
      * @param string $error
      * @return bool|\stdClass
      */
-    public static function curlRequest($url, $method = 'GET', $data = '', $includeHeader = false, $maxRedirects = 10, &$error = '')
+    public static function curlRequest($url, $method = 'GET', $data = '', Array $options = array(), &$error = '')
     {
         // validate methods
         if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE'))) {
             return false;
         }
 
+        $includeHeader = false;
+        if (isset($options['includeHeader'])) {
+            $includeHeader = (bool)$options['includeHeader'];
+            unset($options['includeHeader']);
+        }
+
+        $maxRedirects = 10;
+        if (isset($options['maxRedirects'])) {
+            $maxRedirects = (int)$options['maxRedirects'];
+            unset($options['maxRedirects']);
+        }
+
         $out = new \stdClass();
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // do not verify peer cert
+
         if ($includeHeader) curl_setopt($ch, CURLOPT_HEADER, 1);
+        if ($maxRedirects) {
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, (int)$maxRedirects);
+        }
         if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        if(!$result = curl_exec($ch)) {
+
+        if (!empty($options)) {
+            curl_setopt_array($ch, $options);
+        }
+
+        if (!$result = curl_exec($ch)) {
             $error = curl_error($ch);
             return false;
         }
         $out->statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $out->contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-        if ($maxRedirects) {
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_MAXREDIRS, (int)$maxRedirects);
-        }
         $out->body = $result;
         curl_close($ch);
         return $out;
