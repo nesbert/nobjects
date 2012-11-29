@@ -123,6 +123,13 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(date($format, strtotime($this->datetime)), $this->o->toDate($format));
     }
 
+    public function testToISO8601()
+    {
+        $this->assertEquals(date('c', strtotime($this->datetime)), $this->o->toISO8601());
+        $o = new DateTime('2012-05-02T00:00:00+00:00');
+        $this->assertEquals('2012-05-02T00:00:00Z', $o->toISO8601());
+    }
+
     public function testGetGlobalFormat()
     {
         $this->assertEquals('F j, Y g:i A', DateTime::getGlobalFormat());

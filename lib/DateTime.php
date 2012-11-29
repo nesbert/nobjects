@@ -162,7 +162,7 @@ class DateTime extends \DateTime
     }
     
     /**
-     * Return a date sting in the date format of YYYY-MM-DD.
+     * Return a date string in the date format of YYYY-MM-DD.
      * 
      * @param string $format
      * @return string
@@ -171,7 +171,17 @@ class DateTime extends \DateTime
     {
         return $this->format($format);
     }
-    
+
+    /**
+     * Return a date string in ISO8601 format.
+     *
+     * @return string
+     */
+    public function toISO8601()
+    {
+        return str_replace('+00:00', 'Z', $this->format('c'));
+    }
+
     // getters & setters
 
     public static function getGlobalFormat()
