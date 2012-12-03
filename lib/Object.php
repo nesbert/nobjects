@@ -70,11 +70,8 @@ class Object
         }
 
         // adding support for public properties
-        if (empty($props[$class])) {
-            $props[$class] = array();
-            foreach ($this as $k => $v) {
-                $props[$class][] = (object)array('name' => $k, 'value' => $v);
-            }
+        foreach ($this as $k => $v) {
+            $props[$class][] = (object)array('name' => $k, 'value' => $v);
         }
 
         $array = array();
