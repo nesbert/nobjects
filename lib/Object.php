@@ -56,9 +56,10 @@ class Object
     /**
      * Return object as an associative array (property & value pair).
      *
+     * @param callable $valueClosure
      * @return array
      */
-    public function toArray()
+    public function toArray($valueClosure = null)
     {
         $class = get_class($this);
 
@@ -100,7 +101,7 @@ class Object
             $base = __CLASS__;
 
             if ($val instanceof $base) {
-                $array[$rp->name] = $val->toArray();
+                $array[$rp->name] = $val->toArray($valueClosure);
             } else if (is_array($val) || ($val instanceof \ArrayObject)) {
 
                 if ($val instanceof \ArrayObject) {
@@ -109,14 +110,17 @@ class Object
 
                 foreach ($val as $k => $v) {
                     if ($v instanceof $base) {
-                        $val[$k] = $v->toArray();
+                        $val[$k] = $v->toArray($valueClosure);
+                    } else if (\NObjects\Validate::isAssociativeArray($v)) {
+                        $newObj = new \NObjects\Object($v);
+                        $val[$k] = $newObj->toArray($valueClosure);
                     } else {
-                        $val[$k] = $v;
+                        $val[$k] = self::valueClosure($valueClosure, $v);
                     }
                 }
                 $array[$rp->name] = $val;
             } else {
-                $array[$rp->name] = $val;
+                $array[$rp->name] = self::valueClosure($valueClosure, $val);
             }
         }
 
@@ -151,21 +155,23 @@ class Object
     /**
      * Get an array of class property values.
      *
+     * @param callable $valueClosure
      * @return array
      */
-    public function getPropertyValues()
+    public function getPropertyValues($valueClosure = null)
     {
-        return array_values($this->toArray());
+        return array_values($this->toArray($valueClosure));
     }
 
     /**
      * Return object as a JSON string.
      *
+     * @param callable $valueClosure
      * @return string
      */
-    public function toJSON()
+    public function toJSON($valueClosure = null)
     {
-        return json_encode($this->toArray());
+        return json_encode($this->toArray($valueClosure));
     }
 
     // static methods
@@ -184,5 +190,23 @@ class Object
         while ($class = get_parent_class($class)) { $classes[] = $class; }
         array_shift($classes);
         return $reverseOrder ? array_reverse($classes) : $classes;
+    }
+
+    /**
+     * @static
+     * @param null $valueClosure
+     * @return mixed
+     */
+    public static function valueClosure($valueClosure = null)
+    {
+        $args = func_get_args();
+        $value = $args[1];
+
+        if (is_callable($valueClosure)) {
+            unset($args[0]);
+            $value = call_user_func_array($valueClosure, $args);
+        }
+
+        return $value;
     }
 }

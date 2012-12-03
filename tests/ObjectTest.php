@@ -42,7 +42,6 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
         $obj3 = new \NObjects\Object($data3);
 
-
         $this->assertTrue($obj3 instanceof Object);
 
         foreach ($data3 as $k => $v) {
@@ -74,6 +73,52 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($ancestors));
         $this->assertTrue(count($ancestors)==1);
         $this->assertEquals('DateTime', $ancestors[0]);
+    }
+
+    public function testValueClosure()
+    {
+        $date = '2012-05-02T12:00:00Z';
+        $date2 = '2012-08-09T12:00:00+00:00';
+        $data = array(
+            'name' => 'testing',
+            'date' => new \NObjects\DateTime($date),
+            'date2' => new \DateTime($date2),
+        );
+        $obj = new \NObjects\Object($data);
+
+        // test value
+        $this->assertEquals(new \NObjects\DateTime($date), $obj->date);
+
+        $closure = function ($value) {
+            // flatten date objects
+            if ($value instanceof \NObjects\DateTime) {
+                $value = $value->toISO8601();
+            } else if ($value instanceof \DateTime) {
+                $value = $value->format('c');
+            }
+
+            return $value;
+        };
+
+        $closureData = $obj->toArray($closure);
+
+        $this->assertEquals($date, $closureData['date']);
+        $this->assertEquals($data['date2']->format('c'), $closureData['date2']);
+
+        // test nested arrays
+        $data = array(
+            'fooBars' => new \ArrayObject(array($data, $data, $data))
+        );
+
+        $obj = new \NObjects\Object($data);
+
+        // test closures
+        $closureData = $obj->toArray($closure);
+
+        foreach ($closureData['fooBars'] as $bar) {
+            $this->assertEquals($date, $bar['date']);
+            $this->assertEquals($date2, $bar['date2']);
+        }
     }
 }
 

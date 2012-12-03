@@ -74,6 +74,8 @@ class Validate
     public static function isDateString($string)
     {
         try {
+            if (!is_string($string)) return false;
+
             $date = new \DateTime($string);
             return true;
         } catch (\Exception $e) {
