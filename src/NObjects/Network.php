@@ -209,7 +209,11 @@ class Network
      */
     public static function forceHTTPS()
     {
-        if (!self::isSsl()) header('location: https://' . self::host() . @$_SERVER['REQUEST_URI']);
-        return false;
+        if (!self::isSsl()) {
+            header('location: https://' . self::host() . @$_SERVER['REQUEST_URI']);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

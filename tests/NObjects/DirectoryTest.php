@@ -43,7 +43,8 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(13, count($ls[$current]));
 
         $ls = Directory::ls($root, array('showDirs' => true, 'showInvisible' => true));
-        $this->assertEquals(5, count($ls));
+
+        $this->assertEquals(6, count($ls));
         $this->assertTrue(array_search($root . DIRECTORY_SEPARATOR . '.git', $ls) !== false);
     }
 

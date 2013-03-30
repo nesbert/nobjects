@@ -21,6 +21,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         putenv('HTTPS=off');
+        ob_clean();
     }
 
     public function testCurlRequest()
@@ -135,12 +136,14 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Network::isRemoteIpLocal());
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testForceHTTPS()
     {
         putenv('HTTPS=on');
         $this->assertFalse(Network::forceHTTPS());
         putenv('HTTPS=off');
-        $this->assertNull(Network::forceHTTPS());
-        header_remove();
+        $this->assertTrue(Network::forceHTTPS());
     }
 }
