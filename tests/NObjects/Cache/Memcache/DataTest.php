@@ -12,6 +12,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if (!extension_loaded('memcache')) {
+            $this->markTestSkipped('Memcache extension is not available.');
+        }
+
         $this->o = new Data('tcp://localhost', true);
 
         if (!$this->o->open()) {

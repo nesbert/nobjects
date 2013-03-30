@@ -13,7 +13,15 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if (!extension_loaded('memcache')) {
+            $this->markTestSkipped('Memcache extension is not available.');
+        }
+
         $this->o = new Cluster('tcp://127.0.0.1?port=11211');
+
+        if (!$this->o->isOnline()) {
+            $this->markTestSkipped('Memcache extension is not available.');
+        }
     }
 
     public function testLoad()

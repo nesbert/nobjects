@@ -118,8 +118,9 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('5 days', Date::timeSince('-5day'));
         $this->assertEquals('1 week', Date::timeSince(strtotime('-8day')));
         $this->assertEquals('1 week', Date::timeSince('-8day'));
-        $this->assertFalse(Date::timeSince(strtotime('-4weeks')));
-        $this->assertFalse(Date::timeSince('-4weeks'));
+        $this->assertEquals('4 weeks', Date::timeSince(strtotime('-4weeks')));
+        $this->assertEquals('4 weeks', Date::timeSince('-4weeks'));
+        $this->assertFalse(Date::timeSince(Date::datetime()));
         $this->assertFalse(@Date::timeSince());
         $this->assertFalse(Date::timeSince(time() + Date::MINUTE));
     }

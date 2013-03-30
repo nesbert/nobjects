@@ -137,10 +137,11 @@ class Date
 
         $time = time() - (is_string($time) ? strtotime($time) : $time);
 
-        switch (true) {
-            case $time <= 0:
-                return false;
+        if ($time <= 0) return false;
 
+        $return = '';
+
+        switch (true) {
             case ($time < self::MINUTE):
                 $time = round(((($time % self::WEEK) % self::DAY) % self::HOUR) % self::MINUTE);
                 $return = "{$time} second";
@@ -161,13 +162,9 @@ class Date
                 $return = "{$time} day";
                 break;
 
-            case ($time < self::WEEK * 4):
+            default:
                 $time = round($time / self::WEEK);
                 $return = "{$time} week";
-                break;
-
-            default:
-                return false;
                 break;
         }
 

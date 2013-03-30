@@ -16,6 +16,10 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if (!extension_loaded('apc') || !extension_loaded('memcache')) {
+            $this->markTestSkipped('APC & Memcache extension is not available.');
+        }
+
         $this->apc = new Cache(new Cache\Apc());
 
         if ($this->apc->open() || !ini_get('apc.enable_cli')) {

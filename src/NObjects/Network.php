@@ -148,7 +148,7 @@ class Network
     public static function curlRequest($url, $method = 'GET', $data = '', Array $options = array(), &$error = '')
     {
         // validate methods
-        if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE'))) {
+        if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
             return false;
         }
 
@@ -202,13 +202,14 @@ class Network
     }
 
     /**
-     * Force and redirect to https of current URL.
+     * Force and redirect to https of current URL. Sets header location
+     * from http://... to https://... for current url.
+     *
+     * @return bool
      */
     public static function forceHTTPS()
     {
-        if ($_SERVER['HTTPS'] != 'on') {
-            header('location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            exit();
-        }
+        if (!self::isSsl()) header('location: https://' . self::host() . @$_SERVER['REQUEST_URI']);
+        return false;
     }
 }

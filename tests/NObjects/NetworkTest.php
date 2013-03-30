@@ -15,6 +15,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $_SERVER['HTTP_HOST'] = 'www.example.org';
         $_SERVER['REMOTE_ADDR'] = '192.168.0.1';
         $_SERVER['REQUEST_URI'] = '/index.php';
+        ob_start();
     }
 
     protected function tearDown()
@@ -38,6 +39,16 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $response = Network::curlRequest('http://www.google.com', 'BLAH');
         $this->assertFalse($response);
     }
+
+    public function testCurlRequestOptions()
+    {
+        $ops = array('includeHeader' => true, 'maxRedirects' => 1, CURLOPT_USERAGENT => 'spider');
+        $response = Network::curlRequest('http://www.google.com', 'GET', null, $ops);
+
+        $start = 'HTTP/1.1 200';
+        $this->assertEquals($start, substr($response->body, 0, strlen($start)));
+    }
+
 
     public function testDomain()
     {
@@ -122,5 +133,14 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
 
         $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
         $this->assertFalse(Network::isRemoteIpLocal());
+    }
+
+    public function testForceHTTPS()
+    {
+        putenv('HTTPS=on');
+        $this->assertFalse(Network::forceHTTPS());
+        putenv('HTTPS=off');
+        $this->assertNull(Network::forceHTTPS());
+        header_remove();
     }
 }

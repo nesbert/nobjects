@@ -9,7 +9,14 @@ class SessionTest extends \PHPUnit_Framework_TestCase
      * @var Session
      */
     private $o;
-    
+
+    public function setUp()
+    {
+        if (!extension_loaded('memcache')) {
+            $this->markTestSkipped('Memcache extension is not available.');
+        }
+    }
+
     public function testSessionOverRide()
     {
         $allowFailOver = true;

@@ -17,6 +17,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if (!extension_loaded('memcache')) {
+            $this->markTestSkipped('Memcache extension is not available.');
+        }
+
         $this->o = new Server();
         $this->x = array(
             'scheme' => 'udp',
@@ -93,7 +97,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $this->o = new Server(array(
                 'port' => 11211
             ));
-            $this->assertTrue($this->o->isOnline());
+            if ($this->o->isOnline()) {
+                $this->assertTrue($this->o->isOnline());
+            }
         }
     }
 }

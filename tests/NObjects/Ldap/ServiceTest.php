@@ -11,9 +11,12 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
      */
     private $ldap1;
 
-        public function setUp()
+    public function setUp()
     {
-        parent::setUp();
+        if (!extension_loaded('ldap')) {
+            $this->markTestSkipped('ldap extension is not available.');
+        }
+
         $this->ldap1 = new Service($this->getLdapServers()->offsetGet(0));
     }
 

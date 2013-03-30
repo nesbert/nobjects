@@ -17,7 +17,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        parent::setUp();
+        if (!extension_loaded('ldap')) {
+            $this->markTestSkipped('ldap extension is not available.');
+        }
 
         $this->server1 = array(
             'host' => 'ldap.testathon.net:389',

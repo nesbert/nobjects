@@ -9,25 +9,37 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
     {
         $current = dirname(__FILE__);
         $ls = Directory::ls($current);
+        // check if current file in list
         $this->assertTrue(array_search(__FILE__, $ls) !== false);
+    }
 
-        $root = dirname(dirname(__FILE__));
+    public function testLsOptions()
+    {
+        $current = dirname(__FILE__);
+        $root = dirname(dirname(dirname(__FILE__)));
+
         $ls = Directory::ls($root);
         $this->assertEquals(2, count($ls));
 
         $opts = array('showDirs' => true);
         $ls = Directory::ls($root, $opts);
+
         $this->assertEquals(4, count($ls));
 
+        $opts['showDirs'] = false;
         $opts['recursive'] = true;
         $opts['filter'] = '/.php$/';
         $ls = Directory::ls($root, $opts);
-        $this->assertEquals(49, count($ls));
+        $this->assertEquals(41, count($ls));
 
         $opts['group'] = true;
-        $opts['filter'] = '/.php$/';
         $ls = Directory::ls($root, $opts);
-        $this->assertEquals(9, count($ls));
+        $this->assertEquals(8, count($ls));
+        $this->assertEquals(11, count($ls[$current]));
+
+        $opts['showDirs'] = true;
+        $ls = Directory::ls($root, $opts);
+        $this->assertEquals(11, count($ls));
         $this->assertEquals(13, count($ls[$current]));
 
         $ls = Directory::ls($root, array('showDirs' => true, 'showInvisible' => true));
@@ -55,6 +67,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
 
         }
 
+        $current = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..';
         $ls = Directory::lsWithFilename($current, 'xml');
         $this->assertEquals(1, count($ls));
         $this->assertEquals($current . DIRECTORY_SEPARATOR . $phpunit, current($ls));

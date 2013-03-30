@@ -34,7 +34,7 @@ class Data extends Cluster implements \NObjects\Cache\Adapter
     public function __construct($servers = 'tcp://localhost', $compress = false)
     {
         parent::__construct($servers);
-        if ($compress) {
+        if ($compress && defined('MEMCACHE_COMPRESSED')) {
             $this->compress = \MEMCACHE_COMPRESSED;
         }
     }
