@@ -1,0 +1,22 @@
+{
+    "name": "nesbert/nobjects",
+    "description": "A collection of PHP classes for application development.",
+    "version": "0.2.0",
+    "license": "MIT",
+    "type": "library",
+    "keywords": ["php","utility"],
+    "homepage": "https://github.com/nesbert/nobjects",
+    "authors": [
+        {
+            "name": "Nesbert Hidalgo",
+            "email": "nesbert@gmail.com",
+            "homepage": "http://nesbert.com",
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": { "NObjects": "src" }
+    }
+}

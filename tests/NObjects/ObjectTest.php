@@ -58,7 +58,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals(array_values($data3), $obj3->getPropertyValues());
 
         $foo = new FooOne();
-        $this->assertEquals($foo, $foo->fromArray(array('bars' => new \ArrayObject(array(1,2,3)))));
+        $this->assertEquals($foo, $foo->fromArray(array('bars' => new \ArrayObject(array(1,2,3)), 'skip' => true)));
+        $this->assertEquals(array('bars' => array(1,2,3)), $foo->toArray());
         $this->assertEquals(new \ArrayObject(array(1,2,3)), $foo->getBars());
         $this->assertEquals($foo->toJSON(), (string)$foo);
     }
@@ -125,6 +126,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 class FooOne extends Object
 {
     private $bars;
+    private $_skip;
 
     public function setBars(\ArrayObject $bar)
     {
@@ -134,5 +136,15 @@ class FooOne extends Object
     public function getBars()
     {
         return $this->bars;
+    }
+
+    public function setSkip($skip)
+    {
+        $this->_skip = $skip;
+    }
+
+    public function getSkip()
+    {
+        return $this->_skip;
     }
 }

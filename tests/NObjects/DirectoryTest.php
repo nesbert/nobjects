@@ -19,12 +19,12 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $root = dirname(dirname(dirname(__FILE__)));
 
         $ls = Directory::ls($root);
-        $this->assertEquals(2, count($ls));
+        $this->assertEquals(3, count($ls));
 
         $opts = array('showDirs' => true);
         $ls = Directory::ls($root, $opts);
 
-        $this->assertEquals(4, count($ls));
+        $this->assertEquals(5, count($ls));
 
         $opts['showDirs'] = false;
         $opts['recursive'] = true;
@@ -43,8 +43,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(13, count($ls[$current]));
 
         $ls = Directory::ls($root, array('showDirs' => true, 'showInvisible' => true));
-
-        $this->assertEquals(6, count($ls));
+        $this->assertEquals(7, count($ls));
         $this->assertTrue(array_search($root . DIRECTORY_SEPARATOR . '.git', $ls) !== false);
     }
 

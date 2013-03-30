@@ -1,4 +1,4 @@
-<phpunit bootstrap="../src/NObjects/autoload.php" colors="false">
+<phpunit bootstrap="../src/NObjects/autoload.php" colors="true">
     <testsuites>
         <testsuite name="NObjects">
             <directory>.</directory>
