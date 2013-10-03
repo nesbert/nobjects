@@ -62,6 +62,12 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('bars' => array(1,2,3)), $foo->toArray());
         $this->assertEquals(new \ArrayObject(array(1,2,3)), $foo->getBars());
         $this->assertEquals($foo->toJSON(), (string)$foo);
+
+        // Gracefully handle empty keys in an associative array
+        $data4 = array('test' => 1212, '' => 'bar');
+        $obj4  = new \NObjects\Object($data4);
+        $this->assertTrue($obj4 instanceof Object);
+        $this->assertEquals(array('test' => 1212), $obj3->toArray()); // value for empty key ignored
     }
 
     public function testAncestors()
