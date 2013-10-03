@@ -46,7 +46,7 @@ class Object
             // if set method exists for a key set value
             if (method_exists($this, $method)) {
                 $this->{$method}($v);
-            } else {
+            } else if (!empty($k)) {
                 $this->{$k} = $v;
             }
         }
