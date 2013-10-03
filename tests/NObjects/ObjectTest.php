@@ -67,7 +67,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $data4 = array('test' => 1212, '' => 'bar');
         $obj4  = new \NObjects\Object($data4);
         $this->assertTrue($obj4 instanceof Object);
-        $this->assertEquals(array('test' => 1212), $obj3->toArray()); // value for empty key ignored
+        $this->assertEquals(array('test' => 1212), $obj4->toArray()); // value for empty key ignored
     }
 
     public function testAncestors()
