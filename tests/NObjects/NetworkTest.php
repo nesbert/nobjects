@@ -137,6 +137,8 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(Network::isRemoteIpLocal());
 
         $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = $_SERVER['REMOTE_ADDR'];
+        $_SERVER['HTTP_CLIENT_IP'] = $_SERVER['REMOTE_ADDR'];
         $this->assertFalse(Network::isRemoteIpLocal());
     }
 
