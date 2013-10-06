@@ -127,6 +127,16 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($date2, $bar['date2']);
         }
     }
+
+    public function testToArrayMore()
+    {
+        $bars = array(1,2,3,4,5);
+        $data = array('test' => 'testToArrayMore', 'fooTwo' => new FooTwo($bars));
+        $obj = new \NObjects\Object($data);
+
+        $data['fooTwo'] = $bars;
+        $this->assertEquals($data, $obj->toArray());
+    }
 }
 
 class FooOne extends Object
@@ -153,4 +163,20 @@ class FooOne extends Object
     {
         return $this->_skip;
     }
+}
+
+class FooTwo
+{
+    private $bars;
+
+    public function __construct(array $bars)
+    {
+        $this->bars = $bars;
+    }
+
+    public function toArray()
+    {
+        return $this->bars;
+    }
+
 }

@@ -83,7 +83,7 @@ class Object
             // skip functions that don't exist
             if ($rp->name{0} == '_'
                 || (!method_exists($this, $func) && !isset($this->{$rp->name}))
-                ) {
+            ) {
                 continue;
             }
 
@@ -97,14 +97,25 @@ class Object
 
             $base = __CLASS__;
 
-            if ($val instanceof $base) {
-                $array[$rp->name] = $val->toArray($valueClosure);
-            } else if (is_array($val) || ($val instanceof \ArrayObject)) {
-
-                if ($val instanceof \ArrayObject) {
+            switch (true) {
+                // is NObjects\Object instance
+                case $val instanceof $base:
+                    $array[$rp->name] = $val->toArray($valueClosure);
+                    break;
+                // intercept array types (ArrayObject, Collection) and convert $val to array
+                case method_exists($val, 'toArray'):
+                    $val = $val->toArray();
+                    break;
+                case $val instanceof \ArrayObject:
                     $val = $val->getArrayCopy();
-                }
+                    break;
+                default;
+                    $array[$rp->name] = self::valueClosure($valueClosure, $val);
+                    break;
+            }
 
+            // do extra work when $val is an array
+            if (is_array($val)) {
                 foreach ($val as $k => $v) {
                     if ($v instanceof $base) {
                         $val[$k] = $v->toArray($valueClosure);
@@ -116,8 +127,6 @@ class Object
                     }
                 }
                 $array[$rp->name] = $val;
-            } else {
-                $array[$rp->name] = self::valueClosure($valueClosure, $val);
             }
         }
 
