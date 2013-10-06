@@ -180,6 +180,131 @@ class Object
         return json_encode($this->toArray($valueClosure));
     }
 
+    // hinting helpers
+
+    /**
+     * @param array $value
+     * @param $valueType
+     * @return array
+     */
+    public function _typeHintArray(&$value, $valueType)
+    {
+        foreach ($value as $k => $v) {
+            $value[$k] = $this->_typeHint($v, $valueType);
+        }
+        return $value;
+    }
+
+    /**
+     * @param string $value
+     * @param string $valueType
+     * @return mixed
+     */
+    public function _typeHint($value, $valueType)
+    {
+        if (is_null($value)) return null;
+
+        if (!$value instanceof $valueType) {
+            if (class_exists($valueType)) {
+                $value = new $valueType($value ? $value : null);
+            } else {
+                settype($value, $valueType);
+            }
+        }
+        return $value;
+    }
+
+    /**
+     * @param $value
+     * @return string|null
+     */
+    public function _initStr($value)
+    {
+        return $this->_initString($value);
+    }
+
+    /**
+     * @param $value
+     * @return bool|null
+     */
+    public function _initBool($value)
+    {
+        return $this->_typeHint($value, 'boolean');
+    }
+
+    /**
+     * @param $value
+     * @return int|null
+     */
+    public function _initInt($value)
+    {
+        return $this->_typeHint($value, 'int');
+    }
+
+    /**
+     * @param $value
+     * @return double|null
+     */
+    public function _initDouble($value)
+    {
+        return $this->_typeHint($value, 'double');
+    }
+
+    /**
+     * @param $value
+     * @return float|null
+     */
+    public function _initFloat($value)
+    {
+        return $this->_typeHint($value, 'float');
+    }
+
+    /**
+     * @param $value
+     * @return array|null
+     */
+    public function _initArray($value)
+    {
+        return $this->_typeHint($value, 'array');
+    }
+
+    /**
+     * @param $value
+     * @return string|null
+     */
+    public function _initString($value)
+    {
+        return $this->_typeHint($value, 'string');
+    }
+
+    /**
+     * @param $value
+     * @param string $valueType
+     * @return null|Object
+     */
+    public function _initInstanceObject($value, $valueType)
+    {
+        return $this->_typeHint($value, $valueType);
+    }
+
+    /**
+     * @param $value
+     * @param string $valueType
+     * @return null|\ArrayObject
+     */
+    public function _initInstanceArrayObject($value, $valueType)
+    {
+        if (is_null($value)) return null;
+
+        if (!$value instanceof \ArrayObject) {
+            $value = new \ArrayObject($value);
+        }
+
+        $this->_typeHintArray($value, $valueType);
+
+        return $value;
+    }
+
     // static methods
 
     /**
@@ -215,4 +340,5 @@ class Object
 
         return $value;
     }
+
 }

@@ -137,6 +137,78 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $data['fooTwo'] = $bars;
         $this->assertEquals($data, $obj->toArray());
     }
+
+    public function testTypeHintingHelpers()
+    {
+        $data = array(
+            'int1' => '123',
+            'string1' => 123,
+            'bool1' => 1,
+            'bool0' => 0,
+            'float' => 555.55559,
+            'double' => 555.55559,
+            'array' => (object)array('foo'=>'bar'),
+            'instanceObject' => array('bar'=>'blah'),
+            'instanceArrayObject' => array(1,2,3,4,5),
+        );
+
+        $obj = new \NObjects\Object();
+
+        // int
+        $this->assertEquals((int)$data['int1'], $obj->_initInt($data['int1']));
+        $this->assertTrue((int)$data['int1'] === $obj->_initInt($data['int1']));
+        $this->assertNull($obj->_initInt(null));
+
+        // string
+        $this->assertEquals((string)$data['string1'], $obj->_initStr($data['string1']));
+        $this->assertTrue((string)$data['string1'] === $obj->_initStr($data['string1']));
+        $this->assertNull($obj->_initStr(null));
+
+        // boolean
+        $this->assertEquals((bool)$data['bool1'], $obj->_initBool($data['bool1']));
+        $this->assertTrue((bool)$data['bool1'] === $obj->_initBool($data['bool1']));
+        $this->assertNull($obj->_initBool(null));
+
+        // float
+        $this->assertEquals((float)$data['float'], $obj->_initFloat($data['float']));
+        $this->assertTrue((float)$data['float'] === $obj->_initFloat($data['float']));
+        $this->assertNull($obj->_initFloat(null));
+
+        // double
+        $this->assertEquals((double)$data['double'], $obj->_initDouble($data['double']));
+        $this->assertTrue((double)$data['double'] === $obj->_initDouble($data['double']));
+        $this->assertNull($obj->_initDouble(null));
+
+        // array
+        $this->assertEquals((array)$data['array'], $obj->_initArray($data['array']));
+        $this->assertTrue((array)$data['array'] === $obj->_initArray($data['array']));
+        $this->assertNull($obj->_initArray(null));
+
+        // Object instance
+        $valType = 'NObjects\Tests\FooThree';
+        $this->assertEquals(new FooThree($data['instanceObject']), $obj->_initInstanceObject($data['instanceObject'], $valType));
+        $this->assertInstanceOf($valType, $obj->_initInstanceObject($data['instanceObject'], $valType));
+        $this->assertNull($obj->_initInstanceObject(null, $valType));
+
+        // ArrayObject instance
+        $valType = '\ArrayObject';
+        $ints = $obj->_initInstanceArrayObject($data['instanceArrayObject'], 'integer');
+        $strs = $obj->_initInstanceArrayObject($data['instanceArrayObject'], 'string');
+        $this->assertEquals(new \ArrayObject($data['instanceArrayObject']), $ints);
+        $this->assertEquals(new \ArrayObject($data['instanceArrayObject']), $strs);
+        $this->assertInstanceOf($valType, $ints);
+        $this->assertInstanceOf($valType, $strs);
+        $this->assertNull($obj->_initInstanceArrayObject(null, $valType));
+
+        foreach ($ints as $int) {
+            $this->assertTrue(is_integer($int));
+        }
+
+        foreach ($strs as $str) {
+            $this->assertTrue(is_string($str));
+        }
+    }
+
 }
 
 class FooOne extends Object
@@ -177,6 +249,24 @@ class FooTwo
     public function toArray()
     {
         return $this->bars;
+    }
+
+}
+
+class FooThree extends Object
+{
+
+    private $bar;
+
+    public function setBar($bar)
+    {
+        $this->bar = $bar;
+        return $this;
+    }
+
+    public function getBar()
+    {
+        return $this->bar;
     }
 
 }
