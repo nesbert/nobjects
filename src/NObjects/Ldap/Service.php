@@ -24,11 +24,13 @@ class Service extends \NObjects\Object
 
     private $searchSizeLimit;
     private $searchTimeout;
+    private $networkTimeout;
 
     const DEFAULT_PORT = 389;
     const DEFAULT_PORT_SSL = 636;
     const DEFAULT_SEARCH_SIZE_LIMIT = 0;
     const DEFAULT_SEARCH_TIMEOUT = 0;
+    const DEFAULT_NETWORK_TIMEOUT = 0;
 
     const ACCOUNT_NAME_FORM_DN = 1;
     const ACCOUNT_NAME_FORM_USERNAME = 2;
@@ -74,6 +76,7 @@ class Service extends \NObjects\Object
         }
         $this->setSearchSizeLimit(self::DEFAULT_SEARCH_SIZE_LIMIT);
         $this->setSearchTimeout(self::DEFAULT_SEARCH_TIMEOUT);
+        $this->setNetworkTimeout(self::DEFAULT_NETWORK_TIMEOUT);
 
         // if host is domain name parse defaults from name
         if (!$isIp) {
@@ -140,6 +143,9 @@ class Service extends \NObjects\Object
 
         // set ldap version 3 as default
         $this->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
+
+        // set network timeout
+        $this->setOption(LDAP_OPT_NETWORK_TIMEOUT, $this->getNetworkTimeout());
 
         // if default user is set bind to connection
         if ($this->getDefaultUsername()) {
@@ -421,6 +427,28 @@ class Service extends \NObjects\Object
     public function getSearchTimeout()
     {
         return $this->searchTimeout;
+    }
+
+    /**
+     * Set the number of seconds to wait before assuming network timeout
+     *
+     * @param int $networkTimeout   Number of seconds to wait before timeout
+     * @return Service              The current Service object
+     */
+    public function setNetworkTimeout($networkTimeout)
+    {
+        $this->networkTimeout = (int)$networkTimeout;
+        return $this;
+    }
+
+    /**
+     * Get the number of seconds to wait before assuming network timeout
+     *
+     * @return int                  The number of seconds to wait
+     */
+    public function getNetworkTimeout()
+    {
+        return $this->networkTimeout;
     }
 
     public function setSsl($ssl)
