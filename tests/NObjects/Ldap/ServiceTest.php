@@ -169,6 +169,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Service::DEFAULT_PORT, $ldap->getPort());
         $this->assertEquals(Service::DEFAULT_SEARCH_SIZE_LIMIT, $ldap->getSearchSizeLimit());
         $this->assertEquals(Service::DEFAULT_SEARCH_TIMEOUT, $ldap->getSearchTimeout());
+        $this->assertEquals(Service::DEFAULT_NETWORK_TIMEOUT, $ldap->getNetworkTimeout());
         $this->assertEquals(false, $ldap->isSsl());
     }
 
@@ -192,6 +193,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->ldap1, $this->ldap1->setPort(5555));
         $this->assertEquals($this->ldap1, $this->ldap1->setSearchSizeLimit(100));
         $this->assertEquals($this->ldap1, $this->ldap1->setSearchTimeout(600));
+        $this->assertEquals($this->ldap1, $this->ldap1->setNetworkTimeout(10));
         $this->assertEquals($this->ldap1, $this->ldap1->setSsl(true));
 
         $this->assertEquals(Service::ACCOUNT_NAME_FORM_BACKSLASHES, $this->ldap1->getAccountCanonicalForm());
@@ -204,6 +206,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5555, $this->ldap1->getPort());
         $this->assertEquals(100, $this->ldap1->getSearchSizeLimit());
         $this->assertEquals(600, $this->ldap1->getSearchTimeout());
+        $this->assertEquals(10, $this->ldap1->getNetworkTimeout());
         $this->assertEquals(true, $this->ldap1->isSsl());
 
         try {
