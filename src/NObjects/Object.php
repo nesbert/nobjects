@@ -65,13 +65,20 @@ class Object
 
         // only reflect an object once
         static $props;
+        static $reflPropNames;
+
         if (empty($props[$class])) {
             $props[$class] = $this->__getAllReflectionProperties(new \ReflectionClass($this));
+            foreach($props[$class] as $prop) {
+                $reflPropNames[$class][$prop->getName()] = true;
+            }
         }
 
         // adding support for public properties
         foreach ($this as $k => $v) {
-            $props[$class][] = (object)array('name' => $k, 'value' => $v);
+            if (!isset($reflPropNames[$class][$k])) {
+                $props[$class][] = (object)array('name' => $k, 'value' => $v);
+            }
         }
 
         $array = array();
@@ -88,7 +95,7 @@ class Object
             }
 
             // if public use temp object and don't cache
-            if (isset($this->{$rp->name})) {
+            if (!isset($reflPropNames[$class][$rp->name]) && isset($this->{$rp->name})) {
                 $val = $rp->value;
                 unset($props[$class]);
             } else {

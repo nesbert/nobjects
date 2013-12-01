@@ -70,6 +70,19 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('test' => 1212), $obj4->toArray()); // value for empty key ignored
     }
 
+    public function testObjectHelpersWithPublicPropsAndSetters()
+    {
+        $data = array('bar' => '1212');
+        $obj = new FooFour();
+        $obj->fromArray($data);
+
+        $this->assertEquals('1212', $obj->getBar());
+        $this->assertEquals('1212', $obj->bar);
+
+        $outData = $obj->toArray();
+        $this->assertEquals(array('bar' => '1212'), $outData);
+    }
+
     public function testAncestors()
     {
         $ancestors = Object::ancestors('Object');
@@ -269,4 +282,25 @@ class FooThree extends Object
         return $this->bar;
     }
 
+}
+
+class FooFour extends Object
+{
+
+    public $bar;
+
+    public function setBar($bar)
+    {
+        $this->bar = $bar;
+        return $this;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getBar()
+    {
+        return $this->bar;
+    }
 }
