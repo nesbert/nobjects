@@ -57,7 +57,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         // NObject get translated to an array
         $this->assertNotEquals(array_values($data3), $obj3->getPropertyValues());
 
-        $foo = new FooOne();
+        $foo = new \NObjects\Tests\Object\Fake\FooOne();
         $this->assertEquals($foo, $foo->fromArray(array('bars' => new \ArrayObject(array(1,2,3)), 'skip' => true)));
         $this->assertEquals(array('bars' => array(1,2,3)), $foo->toArray());
         $this->assertEquals(new \ArrayObject(array(1,2,3)), $foo->getBars());
@@ -131,7 +131,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testToArrayMore()
     {
         $bars = array(1,2,3,4,5);
-        $data = array('test' => 'testToArrayMore', 'fooTwo' => new FooTwo($bars));
+        $data = array('test' => 'testToArrayMore', 'fooTwo' => new \NObjects\Tests\Object\Fake\FooTwo($bars));
         $obj = new \NObjects\Object($data);
 
         $data['fooTwo'] = $bars;
@@ -185,8 +185,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($obj->_initArray(null));
 
         // Object instance
-        $valType = 'NObjects\Tests\FooThree';
-        $this->assertEquals(new FooThree($data['instanceObject']), $obj->_initInstanceObject($data['instanceObject'], $valType));
+        $valType = 'NObjects\Tests\Object\Fake\FooThree';
+        $this->assertEquals(new \NObjects\Tests\Object\Fake\FooThree($data['instanceObject']), $obj->_initInstanceObject($data['instanceObject'], $valType));
         $this->assertInstanceOf($valType, $obj->_initInstanceObject($data['instanceObject'], $valType));
         $this->assertNull($obj->_initInstanceObject(null, $valType));
 
@@ -208,65 +208,4 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(is_string($str));
         }
     }
-
-}
-
-class FooOne extends Object
-{
-    private $bars;
-    private $_skip;
-
-    public function setBars(\ArrayObject $bar)
-    {
-        $this->bars = $bar;
-    }
-
-    public function getBars()
-    {
-        return $this->bars;
-    }
-
-    public function setSkip($skip)
-    {
-        $this->_skip = $skip;
-    }
-
-    public function getSkip()
-    {
-        return $this->_skip;
-    }
-}
-
-class FooTwo
-{
-    private $bars;
-
-    public function __construct(array $bars)
-    {
-        $this->bars = $bars;
-    }
-
-    public function toArray()
-    {
-        return $this->bars;
-    }
-
-}
-
-class FooThree extends Object
-{
-
-    private $bar;
-
-    public function setBar($bar)
-    {
-        $this->bar = $bar;
-        return $this;
-    }
-
-    public function getBar()
-    {
-        return $this->bar;
-    }
-
 }
