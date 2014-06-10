@@ -77,7 +77,7 @@ class Object
         $array = array();
         foreach ($props[$class] as $rp) {
 
-            $func = "get{$rp->name}";
+            $func = $this->_getAccessorMethod($rp->name);
 
             // skip properties that start with an _
             // skip functions that don't exist
@@ -88,11 +88,15 @@ class Object
             }
 
             // if public use temp object and don't cache
-            if (isset($this->{$rp->name})) {
+            if ($rp instanceof \ReflectionProperty) {
+                if ($rp->isPublic()) {
+                    $val = $rp->getValue($this);
+                } else {
+                    $val = $this->$func();
+                }
+            } else {
                 $val = $rp->value;
                 unset($props[$class]);
-            } else {
-                $val = $this->$func();
             }
 
             $base = __CLASS__;
@@ -131,6 +135,39 @@ class Object
         }
 
         return $array;
+    }
+
+    /**
+     * Determines the accessor method name for $propName. Returns false if no accessor is available.
+     *
+     * @param string $propName
+     *
+     * @return string|bool
+     */
+    protected function _getAccessorMethod($propName)
+    {
+        $camelProp = ucfirst($propName);
+
+        $funcName = 'get' . $camelProp;
+        if (method_exists($this, $funcName)) {
+            return $funcName;
+        }
+
+        foreach (array('is', 'has') as $prefix) {
+            // Cover the cases where the property '{is/has}Something' has accessor '{is/has}Something()'
+            if ($prefix == strtolower(substr($camelProp, 0, strlen($prefix)))) {
+                $funcName = strtolower(substr($camelProp, 0, 1)) . substr($camelProp, 1);
+            } else {
+                $funcName = $prefix . $camelProp;
+            }
+
+            if (method_exists($this, $funcName)) {
+                return $funcName;
+            }
+        }
+
+        // Fall-through
+        return false;
     }
 
     /**
