@@ -1,6 +1,8 @@
 <?php
 namespace NObjects;
 
+use NObjects\Reflection\ReflectionClass;
+
 /**
  * Base object for model.
  *
@@ -61,21 +63,19 @@ class Object
      */
     public function toArray($valueClosure = null)
     {
-        $class = get_class($this);
+        $refl = new ReflectionClass($this);
 
-        // only reflect an object once
-        static $props;
-        if (empty($props[$class])) {
-            $props[$class] = $this->__getAllReflectionProperties(new \ReflectionClass($this));
-        }
+        // Collect properties from this class as well as private property names from parents
+        // which may have accessor methods.
+        $props = array_unique(array_merge($refl->getProperties(), $refl->getAncestorPrivateProperties()));
 
         // adding support for public properties
         foreach ($this as $k => $v) {
-            $props[$class][] = (object)array('name' => $k, 'value' => $v);
+            $props[] = (object)array('name' => $k, 'value' => $v);
         }
 
         $array = array();
-        foreach ($props[$class] as $rp) {
+        foreach ($props as $rp) {
 
             $func = $this->_getAccessorMethod($rp->name);
 
@@ -96,7 +96,6 @@ class Object
                 }
             } else {
                 $val = $rp->value;
-                unset($props[$class]);
             }
 
             $base = __CLASS__;
