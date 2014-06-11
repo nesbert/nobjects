@@ -13,8 +13,8 @@ class Object
     // instance methods
 
     /**
-     * Class construct if an associative array is present calls fromArray().
-     *
+     * Public constructor
+     * If an associative array is passed as an argument, hydrate object using calls fromArray().
      */
     public function __construct()
     {
