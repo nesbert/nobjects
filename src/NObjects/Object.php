@@ -1,6 +1,8 @@
 <?php
 namespace NObjects;
 
+use NObjects\Reflection\ReflectionClass;
+
 /**
  * Base object for model.
  *
@@ -11,8 +13,8 @@ class Object
     // instance methods
 
     /**
-     * Class construct if an associative array is present calls fromArray().
-     *
+     * Public constructor
+     * If an associative array is passed as an argument, hydrate object using calls fromArray().
      */
     public function __construct()
     {
@@ -61,30 +63,21 @@ class Object
      */
     public function toArray($valueClosure = null)
     {
-        $class = get_class($this);
+        $refl = new ReflectionClass($this);
 
-        // only reflect an object once
-        static $props;
-        static $reflPropNames;
-
-        if (empty($props[$class])) {
-            $props[$class] = $this->__getAllReflectionProperties(new \ReflectionClass($this));
-            foreach($props[$class] as $prop) {
-                $reflPropNames[$class][$prop->getName()] = true;
-            }
-        }
+        // Collect properties from this class as well as private property names from parents
+        // which may have accessor methods.
+        $props = array_unique(array_merge($refl->getProperties(), $refl->getAncestorPrivateProperties()));
 
         // adding support for public properties
         foreach ($this as $k => $v) {
-            if (!isset($reflPropNames[$class][$k])) {
-                $props[$class][] = (object)array('name' => $k, 'value' => $v);
-            }
+            $props[] = (object)array('name' => $k, 'value' => $v);
         }
 
         $array = array();
-        foreach ($props[$class] as $rp) {
+        foreach ($props as $rp) {
 
-            $func = "get{$rp->name}";
+            $func = $this->_getAccessorMethod($rp->name);
 
             // skip properties that start with an _
             // skip functions that don't exist
@@ -95,11 +88,14 @@ class Object
             }
 
             // if public use temp object and don't cache
-            if (!isset($reflPropNames[$class][$rp->name]) && isset($this->{$rp->name})) {
-                $val = $rp->value;
-                unset($props[$class]);
+            if ($rp instanceof \ReflectionProperty) {
+                if ($rp->isPublic()) {
+                    $val = $rp->getValue($this);
+                } else {
+                    $val = $this->$func();
+                }
             } else {
-                $val = $this->$func();
+                $val = $rp->value;
             }
 
             $base = __CLASS__;
@@ -138,6 +134,39 @@ class Object
         }
 
         return $array;
+    }
+
+    /**
+     * Determines the accessor method name for $propName. Returns false if no accessor is available.
+     *
+     * @param string $propName
+     *
+     * @return string|bool
+     */
+    protected function _getAccessorMethod($propName)
+    {
+        $camelProp = ucfirst($propName);
+
+        $funcName = 'get' . $camelProp;
+        if (method_exists($this, $funcName)) {
+            return $funcName;
+        }
+
+        foreach (array('is', 'has') as $prefix) {
+            // Cover the cases where the property '{is/has}Something' has accessor '{is/has}Something()'
+            if ($prefix == strtolower(substr($camelProp, 0, strlen($prefix)))) {
+                $funcName = strtolower(substr($camelProp, 0, 1)) . substr($camelProp, 1);
+            } else {
+                $funcName = $prefix . $camelProp;
+            }
+
+            if (method_exists($this, $funcName)) {
+                return $funcName;
+            }
+        }
+
+        // Fall-through
+        return false;
     }
 
     /**

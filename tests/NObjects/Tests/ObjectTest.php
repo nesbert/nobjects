@@ -2,6 +2,12 @@
 namespace NObjects\Tests;
 
 use NObjects\Object;
+use NObjects\Tests\Object\Fake\BooleanAccessorDifferentName;
+use NObjects\Tests\Object\Fake\BooleanAccessorDifferentNameWithHas;
+use NObjects\Tests\Object\Fake\BooleanAccessorSameName;
+use NObjects\Tests\Object\Fake\BooleanAccessorSameNameWithHas;
+use NObjects\Tests\Object\Fake\ChildOfParentWithPrivateProps;
+use NObjects\Tests\Object\Fake\ChildOfParentWithPrivatePropsNoAccessor;
 
 class ObjectTest extends \PHPUnit_Framework_TestCase
 {
@@ -56,12 +62,6 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
         // NObject get translated to an array
         $this->assertNotEquals(array_values($data3), $obj3->getPropertyValues());
-
-        $foo = new FooOne();
-        $this->assertEquals($foo, $foo->fromArray(array('bars' => new \ArrayObject(array(1,2,3)), 'skip' => true)));
-        $this->assertEquals(array('bars' => array(1,2,3)), $foo->toArray());
-        $this->assertEquals(new \ArrayObject(array(1,2,3)), $foo->getBars());
-        $this->assertEquals($foo->toJSON(), (string)$foo);
 
         // Gracefully handle empty keys in an associative array
         $data4 = array('test' => 1212, '' => 'bar');
@@ -144,7 +144,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testToArrayMore()
     {
         $bars = array(1,2,3,4,5);
-        $data = array('test' => 'testToArrayMore', 'fooTwo' => new FooTwo($bars));
+        $data = array('test' => 'testToArrayMore', 'fooTwo' => new \NObjects\Tests\Object\Fake\FooTwo($bars));
         $obj = new \NObjects\Object($data);
 
         $data['fooTwo'] = $bars;
@@ -198,8 +198,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($obj->_initArray(null));
 
         // Object instance
-        $valType = 'NObjects\Tests\FooThree';
-        $this->assertEquals(new FooThree($data['instanceObject']), $obj->_initInstanceObject($data['instanceObject'], $valType));
+        $valType = 'NObjects\Tests\Object\Fake\FooThree';
+        $this->assertEquals(new \NObjects\Tests\Object\Fake\FooThree($data['instanceObject']), $obj->_initInstanceObject($data['instanceObject'], $valType));
         $this->assertInstanceOf($valType, $obj->_initInstanceObject($data['instanceObject'], $valType));
         $this->assertNull($obj->_initInstanceObject(null, $valType));
 
@@ -222,66 +222,118 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-}
-
-class FooOne extends Object
-{
-    private $bars;
-    private $_skip;
-
-    public function setBars(\ArrayObject $bar)
+    /**
+     * @covers \NObjects\Object::toJSON
+     */
+    public function testToJSONCreatesJSONString()
     {
-        $this->bars = $bar;
+        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
+        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $this->assertJson($fixture->toJSON());
+        $this->assertJsonStringEqualsJsonString($fixture->toJSON(), '{ "bars": [1, 2, 3] }');
     }
 
-    public function getBars()
+    /**
+     * @covers \NObjects\Object::__toString
+     */
+    public function testToStringCreatesJSONString()
     {
-        return $this->bars;
+        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
+        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $this->assertJson((string) $fixture);
+        $this->assertJsonStringEqualsJsonString((string) $fixture, '{ "bars": [1, 2, 3] }');
     }
 
-    public function setSkip($skip)
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayOmitsPropertiesBeginningWithUnderscore()
     {
-        $this->_skip = $skip;
+        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
+        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $this->assertEquals(array('bars' => array(1, 2, 3)), $fixture->toArray());
+        $this->assertEquals(new \ArrayObject(array(1, 2, 3)), $fixture->getBars());
     }
 
-    public function getSkip()
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayIncludesDynamicPublicProperties()
     {
-        return $this->_skip;
-    }
-}
+        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
+        $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true));
 
-class FooTwo
-{
-    private $bars;
+        $fixture->newProperty = 'dynamicVal';
 
-    public function __construct(array $bars)
-    {
-        $this->bars = $bars;
+        $this->assertEquals(array('newProperty' => 'dynamicVal', 'bars' => array(1, 2, 3)), $fixture->toArray());
     }
 
-    public function toArray()
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayIncludesInheritedPrivatePropsWithAccessors()
     {
-        return $this->bars;
+        $fixture = new ChildOfParentWithPrivateProps();
+        $fixture->foo = 'fooValue';
+        $fixture->setPrivParentProp('barValue');
+
+        $this->assertEquals(array('foo' => 'fooValue', 'privParentProp' => 'barValue'), $fixture->toArray());
     }
 
-}
-
-class FooThree extends Object
-{
-
-    private $bar;
-
-    public function setBar($bar)
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayOmitsInheritedPrivatePropsWithoutAccessors()
     {
-        $this->bar = $bar;
-        return $this;
+        $fixture = new ChildOfParentWithPrivatePropsNoAccessor();
+        $fixture->foo = 'fooValue';
+
+        $this->assertEquals(array('foo' => 'fooValue'), $fixture->toArray());
     }
 
-    public function getBar()
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayIncludesBooleansWithIsConventionAccessorsWithSameName()
     {
-        return $this->bar;
+        $fixture = new BooleanAccessorSameName();
+        $fixture->setIsStored(true);
+
+        $this->assertEquals(array('isStored' => true), $fixture->toArray());
     }
 
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayIncludesBooleanWithIsConventionAccessors()
+    {
+        $fixture = new BooleanAccessorDifferentName();
+        $fixture->setStored(true);
+
+        $this->assertEquals(array('stored' => true), $fixture->toArray());
+    }
+
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayIncludesBooleansWithHasConventionAccessorsWithSameName()
+    {
+        $fixture = new BooleanAccessorSameNameWithHas();
+        $fixture->setHasAvailableSeating(true);
+
+        $this->assertEquals(array('hasAvailableSeating' => true), $fixture->toArray());
+    }
+
+    /**
+     * @covers \NObjects\Object::toArray
+     */
+    public function testToArrayIncludesBooleanWithHasConventionAccessors()
+    {
+        $fixture = new BooleanAccessorDifferentNameWithHas();
+        $fixture->setAvailableSeating(true);
+
+        $this->assertEquals(array('availableSeating' => true), $fixture->toArray());
+    }
 }
 
 class FooFour extends Object

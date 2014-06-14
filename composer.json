@@ -19,6 +19,9 @@
         "phpunit/phpunit": "3.7.x"
     },
     "autoload": {
-        "psr-0": { "NObjects": "src/" }
+        "psr-0": {
+            "NObjects\\Tests": "tests/",
+            "NObjects": "src/"
+        }
     }
 }
