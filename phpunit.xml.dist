@@ -22,4 +22,10 @@
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
 
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+
 </phpunit>

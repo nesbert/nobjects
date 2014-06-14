@@ -6,47 +6,42 @@ use NObjects\Ldap\Service,
     NObjects\Ldap\User,
     NObjects\Ldap\UserException;
 
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends ServiceTest
 {
-    private $server1 = array();
-
     /**
      * @var User
      */
     private static $user;
 
-    public function setUp()
-    {
-        if (!extension_loaded('ldap')) {
-            $this->markTestSkipped('ldap extension is not available.');
-        }
-
-        $this->server1 = array(
-            'host' => 'ldap.testathon.net:389',
-            'baseDn' => 'OU=users,DC=testathon,DC=net',
-            'accountCanonicalForm' => Service::ACCOUNT_NAME_FORM_DN,
-        );
-    }
-
     public function testAuthenticate()
     {
-        self::$user = User::authenticate('john', 'john', $this->server1);
-        
+        self::$user = User::authenticate('john', 'john', $this->ldap1);
+
         $this->assertEquals('john', self::$user->getUsername());
         $this->assertEquals('John', self::$user->getFirstName());
         $this->assertEquals('Smith', self::$user->getLastName());
         $this->assertEquals('john.smith@testathon.net', self::$user->getEmail());
     }
 
+    /**
+     * @depends testAuthenticate
+     */
     public function testGetGroupMembers()
     {
         // TODO
     }
+
+    /**
+     * @depends testAuthenticate
+     */
     public function testIsMemberOf()
     {
         // TODO
     }
 
+    /**
+     * @depends testAuthenticate
+     */
     public function testMagicGetter()
     {
         $this->assertEquals('john.smith@testathon.net', self::$user->mail);
@@ -55,6 +50,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('john', self::$user->cn);
     }
 
+    /**
+     * @depends testAuthenticate
+     */
     public function testSettersGetters()
     {
         $this->assertEquals('john.smith@testathon.net', self::$user->getEmail());

@@ -4,12 +4,17 @@ namespace NObjects\Tests\Ldap;
 use NObjects\Ldap\Service,
     NObjects\Ldap\ServiceException;
 
+/**
+ * Class ServiceTest
+ * @package NObjects\Tests\Ldap
+ * @link http://blog.stuartlewis.com/2008/07/07/test-ldap-service/
+ */
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Service
      */
-    private $ldap1;
+    protected $ldap1;
 
     public function setUp()
     {
@@ -55,20 +60,19 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('ldap link', get_resource_type($ldap->link()));
 
         try {
-            $ldap = new Service(array());
+            new Service(array());
             $this->fail('Exception expected!');
         } catch (\Exception $e) {
             $this->assertEquals('LDAP host required.', $e->getMessage());
         }
 
-        // TODO need an Active Directory test server
-//        try {
-//            $ldap = new Service(array('host' => 'ad.example.com:636'));
-//            $ldap->connect();
-//            $this->fail('Exception expected!');
-//        } catch (\Exception $e) {
-//            $this->assertEquals('Unable to connect to ad.example.com:636', $e->getMessage());
-//        }
+        $settings = $this->getLdapServers()->offsetGet(0);
+        try {
+            $ldap = new Service($settings);
+            $this->assertEquals($ldap, $ldap->connect());
+        } catch (\Exception $e) {
+            $this->assertEquals('Unable to connect to ' . $settings['host'], $e->getMessage());
+        }
     }
 
     public function testDisconnect()
@@ -80,13 +84,13 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     public function testBind()
     {
         try {
-            $ldap = $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('john'), 'wrong password');
+            $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('john'), 'wrong password');
             $this->fail('Expected exception');
         } catch (ServiceException $e) {
             $this->assertEquals('Unable to BIND RDN.', $e->getMessage());
         }
 
-        $ldap = $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('john'), 'john');
+        $ldap = $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('carol'), 'carol');
         $this->assertTrue($ldap instanceof Service);
     }
 
