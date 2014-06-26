@@ -170,21 +170,6 @@ class Object
     }
 
     /**
-     * @param \ReflectionClass $class
-     * @return array|\ReflectionProperty[]
-     */
-    private function __getAllReflectionProperties(\ReflectionClass $class)
-    {
-        $props = $class->getProperties();
-
-        if ($parent = $class->getParentClass()) {
-            $props = array_merge($props, $this->__getAllReflectionProperties($parent));
-        }
-
-        return $props;
-    }
-
-    /**
      * Get an array of class properties.
      *
      * @return array
