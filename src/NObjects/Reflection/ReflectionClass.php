@@ -72,12 +72,12 @@ class ReflectionClass extends \ReflectionClass
     {
         if (empty(self::$ancestorPrivProps[$this->getName()])) {
             self::$ancestorPrivProps[$this->getName()] = array();
-        }
 
-        if ($parent = $this->getParentClass()) {
-            $collected = array();
-            $this->recurGetPrivateProps(self::$ancestorPrivProps[$this->getName()], $collected, $parent);
-        };
+            if ($parent = $this->getParentClass()) {
+                $collected = array();
+                $this->recurGetPrivateProps(self::$ancestorPrivProps[$this->getName()], $collected, $parent);
+            };
+        }
 
         return self::$ancestorPrivProps[$this->getName()];
     }
