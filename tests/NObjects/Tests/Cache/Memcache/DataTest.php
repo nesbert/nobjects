@@ -43,7 +43,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->o->exists('test789'));
         $this->assertFalse($this->o->exists(null));
 
-        $this->assertEquals(array('test123' => true,'test456' => true), $this->o->exists(array('test123','test456','test789')));
+        $this->assertEquals(
+            array(
+                'test123' => true,
+                'test456' => true
+            ),
+            $this->o->exists(array('test123','test456','test789'))
+        );
     }
 
     public function testDelete()
@@ -94,5 +100,4 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($o->clear());
         $this->assertFalse($o->stats());
     }
-
 }

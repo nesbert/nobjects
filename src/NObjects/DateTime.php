@@ -3,7 +3,7 @@ namespace NObjects;
 
 /**
  * Utility DateTime helper.
- * 
+ *
  * @author Nesbert Hidalgo
  */
 class DateTime extends \DateTime
@@ -41,7 +41,7 @@ class DateTime extends \DateTime
     
     /**
      * Print object as string.
-     * 
+     *
      * @return string
      */
     public function __toString()
@@ -51,7 +51,7 @@ class DateTime extends \DateTime
     
     /**
      * Get unix timestamp.
-     * 
+     *
      * @return integer
      */
     public function getTimestamp()
@@ -107,9 +107,10 @@ class DateTime extends \DateTime
      * @return \DateInterval
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */
-    public function diff($now = 'now', $absolute = false) {
-        if(!($now instanceOf \DateTime)
-            || !($now instanceOf DateTime)) {
+    public function diff($now = 'now', $absolute = false)
+    {
+        if (!($now instanceof \DateTime)
+            || !($now instanceof DateTime)) {
             $now = new DateTime($now);
         }
         return parent::diff($now, $absolute);
@@ -122,13 +123,14 @@ class DateTime extends \DateTime
      * @return Integer
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */
-    public function getAge($now = 'now') {
+    public function getAge($now = 'now')
+    {
         return $this->diff($now)->format('%y');
     }
     
     /**
      * Get a formatted string of time since passed $time.
-     * 
+     *
      * @param string $time
      * @param bool $showSeconds
      * @return string
@@ -163,7 +165,7 @@ class DateTime extends \DateTime
     
     /**
      * Return a date string in the date format of YYYY-MM-DD.
-     * 
+     *
      * @param string $format
      * @return string
      */

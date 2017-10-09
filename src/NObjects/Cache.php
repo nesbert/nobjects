@@ -26,7 +26,9 @@ class Cache extends Cache\Base implements Cache\Adapter
      */
     public function __construct($adapter = null)
     {
-        if ($adapter) $this->setAdapter($adapter);
+        if ($adapter) {
+            $this->setAdapter($adapter);
+        }
     }
 
     /**

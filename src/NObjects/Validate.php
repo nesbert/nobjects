@@ -74,7 +74,9 @@ class Validate
     public static function isDateString($string)
     {
         try {
-            if (!is_string($string)) return false;
+            if (!is_string($string)) {
+                return false;
+            }
 
             $date = new \DateTime($string);
             return true;
@@ -95,7 +97,6 @@ class Validate
             return false;
         }
         return preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/', $string) > 0;
-
     }
     
     /**
@@ -106,7 +107,9 @@ class Validate
      **/
     public static function isAlpha($var)
     {
-        if (!is_string($var)) return false;
+        if (!is_string($var)) {
+            return false;
+        }
         return preg_match('/^[a-z]+$/i', $var) ? true : false;
     }
     
@@ -118,7 +121,9 @@ class Validate
      **/
     public static function isAlphaNumeric($var)
     {
-        if (!is_string($var) && !is_numeric($var)) return false;
+        if (!is_string($var) && !is_numeric($var)) {
+            return false;
+        }
         return preg_match('/^[a-zA-Z0-9]+$/', $var) ? true : false;
     }
     
@@ -130,7 +135,9 @@ class Validate
      **/
     public static function isNumber($var)
     {
-        if (!is_string($var) && !is_numeric($var)) return false;
+        if (!is_string($var) && !is_numeric($var)) {
+            return false;
+        }
         return preg_match('/^[0-9]+?[.]?[0-9]*$/', $var) ? true : false;
     }
     
@@ -181,9 +188,9 @@ class Validate
     public static function isLength($var, $length)
     {
         if (is_string($var)) {
-           return count(str_split($var)) == $length;
+            return count(str_split($var)) == $length;
         } elseif (is_array($var)) {
-          return count($var) == $length;
+            return count($var) == $length;
         }
         return false;
     }
@@ -228,7 +235,9 @@ class Validate
      **/
     public static function isEven($var)
     {
-        if (!self::isNumber($var)) return false;
+        if (!self::isNumber($var)) {
+            return false;
+        }
         return !self::isOdd($var);
     }
     
@@ -240,7 +249,9 @@ class Validate
      **/
     public static function isOdd($var)
     {
-        if (!self::isNumber($var)) return false;
+        if (!self::isNumber($var)) {
+            return false;
+        }
         return ($var % 2) == 1;
     }
     
@@ -271,7 +282,9 @@ class Validate
         }
         
         foreach (array_keys($array) as $k => $v) {
-            if ($k !== $v) return true;
+            if ($k !== $v) {
+                return true;
+            }
         }
         
         return false;
@@ -288,5 +301,5 @@ class Validate
     public static function inString($needle, $haystack)
     {
         return String::contains($needle, $haystack);
-    }    
+    }
 }

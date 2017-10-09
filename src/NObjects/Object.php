@@ -41,14 +41,14 @@ class Object
      * @param array $params
      * @return Object
      */
-    public function fromArray(Array $params)
+    public function fromArray(array $params)
     {
         foreach ($params as $k => $v) {
             $method = 'set' . $k;
             // if set method exists for a key set value
             if (method_exists($this, $method)) {
                 $this->{$method}($v);
-            } else if (!empty($k)) {
+            } elseif (!empty($k)) {
                 $this->{$k} = $v;
             }
         }
@@ -76,7 +76,6 @@ class Object
 
         $array = array();
         foreach ($props as $rp) {
-
             $func = $this->_getAccessorMethod($rp->name);
 
             // skip properties that start with an _
@@ -112,7 +111,7 @@ class Object
                 case $val instanceof \ArrayObject:
                     $val = $val->getArrayCopy();
                     break;
-                default;
+                default:
                     $array[$rp->name] = self::valueClosure($valueClosure, $val);
                     break;
             }
@@ -122,7 +121,7 @@ class Object
                 foreach ($val as $k => $v) {
                     if ($v instanceof $base) {
                         $val[$k] = $v->toArray($valueClosure);
-                    } else if (\NObjects\Validate::isAssociativeArray($v)) {
+                    } elseif (\NObjects\Validate::isAssociativeArray($v)) {
                         $newObj = new \NObjects\Object($v);
                         $val[$k] = $newObj->toArray($valueClosure);
                     } else {
@@ -223,7 +222,9 @@ class Object
      */
     public function _typeHint($value, $valueType)
     {
-        if (is_null($value)) return null;
+        if (is_null($value)) {
+            return null;
+        }
 
         if (!$value instanceof $valueType) {
             if (class_exists($valueType)) {
@@ -315,7 +316,9 @@ class Object
      */
     public function _initInstanceArrayObject($value, $valueType)
     {
-        if (is_null($value)) return null;
+        if (is_null($value)) {
+            return null;
+        }
 
         if (!$value instanceof \ArrayObject) {
             $value = new \ArrayObject($value);
@@ -339,7 +342,9 @@ class Object
     public static function ancestors($class, $reverseOrder = false)
     {
         $classes = array($class);
-        while ($class = get_parent_class($class)) { $classes[] = $class; }
+        while ($class = get_parent_class($class)) {
+            $classes[] = $class;
+        }
         array_shift($classes);
         return $reverseOrder ? array_reverse($classes) : $classes;
     }
@@ -361,5 +366,4 @@ class Object
 
         return $value;
     }
-
 }

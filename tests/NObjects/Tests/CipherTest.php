@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests;
+
 use NObjects\Cipher;
 
 class CipherTest extends \PHPUnit_Framework_TestCase
@@ -13,7 +14,7 @@ class CipherTest extends \PHPUnit_Framework_TestCase
     {
         if (!extension_loaded('mcrypt')) {
             $this->markTestSkipped(
-              'The Mcrypt extension is not available.'
+                'The Mcrypt extension is not available.'
             );
         }
 

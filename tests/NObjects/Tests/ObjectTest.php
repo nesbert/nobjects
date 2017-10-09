@@ -36,7 +36,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             'foo' => 'bar',
             'roles' => array('Father','Husband','Geek','Developer','Thinker'),
             'movie' => (object) array('name' => 'Star Wars'),
-            'favorites' => new \NObjects\Object( (object)array('toy'=>'Legos') ),
+            'favorites' => new \NObjects\Object((object)array('toy'=>'Legos')),
         );
 
         $data3['nested'] = $data3;
@@ -108,7 +108,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             // flatten date objects
             if ($value instanceof \NObjects\DateTime) {
                 $value = $value->toISO8601();
-            } else if ($value instanceof \DateTime) {
+            } elseif ($value instanceof \DateTime) {
                 $value = $value->format('c');
             }
 
@@ -194,7 +194,10 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
         // Object instance
         $valType = 'NObjects\Tests\Object\Fake\FooThree';
-        $this->assertEquals(new Fake\FooThree($data['instanceObject']), $obj->_initInstanceObject($data['instanceObject'], $valType));
+        $this->assertEquals(
+            new Fake\FooThree($data['instanceObject']),
+            $obj->_initInstanceObject($data['instanceObject'], $valType)
+        );
         $this->assertInstanceOf($valType, $obj->_initInstanceObject($data['instanceObject'], $valType));
         $this->assertNull($obj->_initInstanceObject(null, $valType));
 
@@ -223,7 +226,15 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testToJSONCreatesJSONString()
     {
         $fixture = new Fake\FooOne();
-        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $this->assertEquals(
+            $fixture,
+            $fixture->fromArray(
+                array(
+                    'bars' => new \ArrayObject(array(1, 2, 3)),
+                    'skip' => true
+                )
+            )
+        );
         $this->assertJson($fixture->toJSON());
         $this->assertJsonStringEqualsJsonString($fixture->toJSON(), '{ "bars": [1, 2, 3] }');
     }
@@ -234,7 +245,15 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testToStringCreatesJSONString()
     {
         $fixture = new Fake\FooOne();
-        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $this->assertEquals(
+            $fixture,
+            $fixture->fromArray(
+                array(
+                    'bars' => new \ArrayObject(array(1, 2, 3)),
+                    'skip' => true
+                )
+            )
+        );
         $this->assertJson((string) $fixture);
         $this->assertJsonStringEqualsJsonString((string) $fixture, '{ "bars": [1, 2, 3] }');
     }
@@ -245,7 +264,15 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testToArrayOmitsPropertiesBeginningWithUnderscore()
     {
         $fixture = new Fake\FooOne();
-        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $this->assertEquals(
+            $fixture,
+            $fixture->fromArray(
+                array(
+                    'bars' => new \ArrayObject(array(1, 2, 3)),
+                    'skip' => true
+                )
+            )
+        );
         $this->assertEquals(array('bars' => array(1, 2, 3)), $fixture->toArray());
         $this->assertEquals(new \ArrayObject(array(1, 2, 3)), $fixture->getBars());
     }

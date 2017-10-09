@@ -2,8 +2,8 @@
 
 namespace NObjects\Tests\Ldap;
 
-use NObjects\Ldap\Service,
-    NObjects\Ldap\ServiceException;
+use NObjects\Ldap\Service;
+use NObjects\Ldap\ServiceException;
 
 /**
  * Class ServiceTest
@@ -43,7 +43,6 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
                 'baseDn' => 'DC=example,DC=org',
                 'accountCanonicalForm' => Service::ACCOUNT_NAME_FORM_DN,
             );
-
         }
 
         return $servers;
@@ -219,14 +218,17 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     public function testSettersGetters()
     {
         $server1 = $this->getLdapServers()->offsetGet(0);
-        $h = explode(':',$server1['host']);
+        $h = explode(':', $server1['host']);
 
         $this->assertEquals($h[0], $this->ldap1->getHost());
         $this->assertEquals($h[1], $this->ldap1->getPort());
         $this->assertEquals($server1['baseDn'], $this->ldap1->getBaseDn());
         $this->assertEquals($server1['accountCanonicalForm'], $this->ldap1->getAccountCanonicalForm());
 
-        $this->assertEquals($this->ldap1, $this->ldap1->setAccountCanonicalForm(Service::ACCOUNT_NAME_FORM_BACKSLASHES));
+        $this->assertEquals(
+            $this->ldap1,
+            $this->ldap1->setAccountCanonicalForm(Service::ACCOUNT_NAME_FORM_BACKSLASHES)
+        );
         $this->assertEquals($this->ldap1, $this->ldap1->setAccountDomainName('AccountDomainName'));
         $this->assertEquals($this->ldap1, $this->ldap1->setAccountDomainNameShort('AccountDomainNameShort'));
         $this->assertEquals($this->ldap1, $this->ldap1->setBaseDn('BaseDn'));
@@ -258,6 +260,5 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         } catch (\Exception $e) {
             $this->assertEquals('Invalid accountCanonicalForm value.', $e->getMessage());
         }
-
     }
 }

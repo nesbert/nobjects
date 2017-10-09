@@ -11,7 +11,9 @@ class Apc extends Base implements Adapter
      */
     public function exists($key)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return apc_exists($key);
     }
 
@@ -23,7 +25,9 @@ class Apc extends Base implements Adapter
      */
     public function get($key)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return apc_fetch($key);
     }
 
@@ -37,7 +41,9 @@ class Apc extends Base implements Adapter
      */
     public function set($key, $value, $ttl = 0)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return apc_store($key, $value, $this->stringToTime($ttl, true));
     }
 
@@ -50,7 +56,9 @@ class Apc extends Base implements Adapter
      */
     public function delete($key, $delay = 0)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return apc_delete($key);
     }
 

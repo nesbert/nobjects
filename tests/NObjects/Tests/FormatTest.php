@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests;
+
 use NObjects\Format;
 
 class FormatTest extends \PHPUnit_Framework_TestCase

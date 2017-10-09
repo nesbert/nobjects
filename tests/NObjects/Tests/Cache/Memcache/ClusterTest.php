@@ -76,18 +76,28 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
 
     public function testSavePath()
     {
-        $this->assertEquals('tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15', $this->o->savePath());
+        $this->assertEquals(
+            'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15',
+            $this->o->savePath()
+        );
 
         $s1 = new Server(array('host' => 'vader'));
         $s2 = new Server(array('host' => 'maul'));
         $s3 = new Server(array('host' => 'malgus'));
         $c = new Cluster(array($s1, $s2, $s3));
-        $this->assertEquals('tcp://vader:11211?persistent=1&weight=1&timeout=1&retry_interval=15, tcp://maul:11211?persistent=1&weight=1&timeout=1&retry_interval=15, tcp://malgus:11211?persistent=1&weight=1&timeout=1&retry_interval=15', $c->savePath());
+        $this->assertEquals(
+            'tcp://vader:11211?persistent=1&weight=1&timeout=1&retry_interval=15, ' .
+            'tcp://maul:11211?persistent=1&weight=1&timeout=1&retry_interval=15, ' .
+            'tcp://malgus:11211?persistent=1&weight=1&timeout=1&retry_interval=15',
+            $c->savePath()
+        );
     }
 
     public function testGetMemcacheObject()
     {
-        if (!extension_loaded('memcache')) return;
+        if (!extension_loaded('memcache')) {
+            return;
+        }
 
         $this->assertTrue($this->o->getMemcacheObject() instanceof \Memcache);
         $this->assertTrue($this->o->getMemcacheObject() === $this->o->getMemcacheObject());
@@ -95,14 +105,18 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
 
     public function testFlush()
     {
-        if (!extension_loaded('memcache')) return;
+        if (!extension_loaded('memcache')) {
+            return;
+        }
 
         $this->assertTrue($this->o->flush());
     }
 
     public function testIsOnline()
     {
-        if (!extension_loaded('memcache')) return;
+        if (!extension_loaded('memcache')) {
+            return;
+        }
 
         $this->assertTrue($this->o->isOnline());
         $this->assertTrue($this->o->isOnline(true));
@@ -114,7 +128,9 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
 
     public function testStatus()
     {
-        if (!extension_loaded('memcache')) return;
+        if (!extension_loaded('memcache')) {
+            return;
+        }
 
         $this->assertEquals(array('127.0.0.1:11211' => true), $this->o->status());
 
@@ -124,7 +140,9 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
 
     public function testStats()
     {
-        if (!extension_loaded('memcache')) return;
+        if (!extension_loaded('memcache')) {
+            return;
+        }
 
         $stats = $this->o->stats();
         $this->assertTrue(isset($stats['127.0.0.1:11211']));
@@ -134,7 +152,9 @@ class ClusterTest extends \PHPUnit_Framework_TestCase
 
     public function testMonitorStats()
     {
-        if (!extension_loaded('memcache')) return;
+        if (!extension_loaded('memcache')) {
+            return;
+        }
 
         $stats = $this->o->monitorStats();
         $this->assertTrue(isset($stats->servers));

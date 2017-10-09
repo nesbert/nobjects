@@ -34,10 +34,12 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $s = 'abcdefghijklmnopqrstuvwxyz';
         $this->assertEquals(
             'abcdEfghijklmNopqrStuvwxyz',
-            String::replaceByArray($s, array('n' => 'N', 'e' => 'E', 's' => 'S')));
+            String::replaceByArray($s, array('n' => 'N', 'e' => 'E', 's' => 'S'))
+        );
         $this->assertEquals(
             'abcdefghijkl | mnopqrstuvwxyz',
-            String::replaceByArray($s, array('mno' => ' | mno')));
+            String::replaceByArray($s, array('mno' => ' | mno'))
+        );
     }
 
     public function testRetrieveNumber()

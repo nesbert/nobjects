@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests;
+
 use NObjects\FlashMessage;
 
 class FlashMessageTest extends \PHPUnit_Framework_TestCase
@@ -125,5 +126,4 @@ class FlashMessageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->o, $this->o->setType(FlashMessage::TYPE_ERROR));
         $this->assertEquals(FlashMessage::TYPE_ERROR, $this->o->getType());
     }
-
 }

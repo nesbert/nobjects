@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests;
+
 use NObjects\Cache;
 
 class CacheTest extends \PHPUnit_Framework_TestCase
@@ -39,36 +40,40 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        if ($this->apc) $this->apc->clear();
-        if ($this->mc) $this->mc->clear();
+        if ($this->apc) {
+            $this->apc->clear();
+        }
+        if ($this->mc) {
+            $this->mc->clear();
+        }
     }
 
     public function testBuildKey()
     {
         if ($this->apc) {
-            $this->assertEquals('a.b.c', $this->apc->buildKey('a','b','c'));
-            $this->assertEquals('My_Class.method.id.123', $this->apc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('a.b.c', $this->apc->buildKey('a', 'b', 'c'));
+            $this->assertEquals('My_Class.method.id.123', $this->apc->buildKey('My Class', 'method', 'id', 123));
             $this->apc->setKeyGlue('::');
-            $this->assertEquals('a::b::c', $this->apc->buildKey('a','b','c'));
-            $this->assertEquals('My_Class::method::id::123', $this->apc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('a::b::c', $this->apc->buildKey('a', 'b', 'c'));
+            $this->assertEquals('My_Class::method::id::123', $this->apc->buildKey('My Class', 'method', 'id', 123));
             $this->apc->setKeySpecialGlue('.');
-            $this->assertEquals('a::b::c', $this->apc->buildKey('a','b','c'));
-            $this->assertEquals('My.Class::method::id::123', $this->apc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('a::b::c', $this->apc->buildKey('a', 'b', 'c'));
+            $this->assertEquals('My.Class::method::id::123', $this->apc->buildKey('My Class', 'method', 'id', 123));
             $this->assertEquals($this->apc, $this->apc->setKeySpecial(array('/')));
-            $this->assertEquals('My Class::method::id::123', $this->apc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('My Class::method::id::123', $this->apc->buildKey('My Class', 'method', 'id', 123));
         }
 
         if ($this->mc) {
-            $this->assertEquals('a.b.c', $this->mc->buildKey('a','b','c'));
-            $this->assertEquals('My_Class.method.id.123', $this->mc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('a.b.c', $this->mc->buildKey('a', 'b', 'c'));
+            $this->assertEquals('My_Class.method.id.123', $this->mc->buildKey('My Class', 'method', 'id', 123));
             $this->mc->setKeyGlue('::');
-            $this->assertEquals('a::b::c', $this->mc->buildKey('a','b','c'));
-            $this->assertEquals('My_Class::method::id::123', $this->mc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('a::b::c', $this->mc->buildKey('a', 'b', 'c'));
+            $this->assertEquals('My_Class::method::id::123', $this->mc->buildKey('My Class', 'method', 'id', 123));
             $this->mc->setKeySpecialGlue('.');
-            $this->assertEquals('a::b::c', $this->mc->buildKey('a','b','c'));
-            $this->assertEquals('My.Class::method::id::123', $this->mc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('a::b::c', $this->mc->buildKey('a', 'b', 'c'));
+            $this->assertEquals('My.Class::method::id::123', $this->mc->buildKey('My Class', 'method', 'id', 123));
             $this->assertEquals($this->mc, $this->mc->setKeySpecial(array('/')));
-            $this->assertEquals('My Class::method::id::123', $this->mc->buildKey('My Class','method','id', 123));
+            $this->assertEquals('My Class::method::id::123', $this->mc->buildKey('My Class', 'method', 'id', 123));
         }
     }
 
@@ -77,7 +82,12 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         if ($this->apc) {
             $this->assertEquals(time(), $this->apc->stringToTime('now'));
             $this->assertEquals(strtotime(date('Y-m-d 23:59:59')), $this->apc->stringToTime('midnite'));
-            $this->assertEquals(strtotime(date('Y-m-d 00:00:00', strtotime('+1 day'))), $this->apc->stringToTime('tomorrow'));
+            $this->assertEquals(
+                strtotime(
+                    date('Y-m-d 00:00:00', strtotime('+1 day'))
+                ),
+                $this->apc->stringToTime('tomorrow')
+            );
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->apc->stringToTime('1min'));
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->apc->stringToTime('1 min'));
             $this->assertEquals(time()+\NObjects\Date::HOUR, $this->apc->stringToTime('1hr'));
@@ -90,7 +100,12 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         if ($this->mc) {
             $this->assertEquals(time(), $this->mc->stringToTime('now'));
             $this->assertEquals(strtotime(date('Y-m-d 23:59:59')), $this->mc->stringToTime('midnite'));
-            $this->assertEquals(strtotime(date('Y-m-d 00:00:00', strtotime('+1 day'))), $this->mc->stringToTime('tomorrow'));
+            $this->assertEquals(
+                strtotime(
+                    date('Y-m-d 00:00:00', strtotime('+1 day'))
+                ),
+                $this->mc->stringToTime('tomorrow')
+            );
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->mc->stringToTime('1min'));
             $this->assertEquals(time()+\NObjects\Date::MINUTE, $this->mc->stringToTime('1 min'));
             $this->assertEquals(time()+\NObjects\Date::HOUR, $this->mc->stringToTime('1hr'));
@@ -183,11 +198,11 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     public function testGettersSetters()
     {
         if ($this->apc) {
-            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertEquals($this->apc, $this->apc->setKey('a', 'b', 'c'));
             $this->assertEquals('a.b.c', $this->apc->getKey());
         }
         if ($this->mc) {
-            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertEquals($this->mc, $this->mc->setKey('a', 'b', 'c'));
             $this->assertEquals('a.b.c', $this->mc->getKey());
         }
     }
@@ -196,13 +211,13 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     {
         if ($this->apc) {
             $this->assertFalse($this->apc->keyExists());
-            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertEquals($this->apc, $this->apc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->apc->setValue(123));
             $this->assertTrue($this->apc->keyExists());
         }
         if ($this->mc) {
             $this->assertFalse($this->mc->keyExists());
-            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertEquals($this->mc, $this->mc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->mc->setValue(123));
             $this->assertTrue($this->mc->keyExists());
         }
@@ -211,12 +226,12 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     public function testGetValue()
     {
         if ($this->apc) {
-            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertEquals($this->apc, $this->apc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->apc->setValue(123));
             $this->assertEquals(123, $this->apc->getValue());
         }
         if ($this->mc) {
-            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertEquals($this->mc, $this->mc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->mc->setValue(123));
             $this->assertEquals(123, $this->mc->getValue());
         }
@@ -225,11 +240,11 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     public function testSetValue()
     {
         if ($this->apc) {
-            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertEquals($this->apc, $this->apc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->apc->setValue(123));
         }
         if ($this->mc) {
-            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertEquals($this->mc, $this->mc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->mc->setValue(123));
         }
     }
@@ -238,7 +253,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     {
         if ($this->apc) {
             $this->assertFalse($this->apc->keyExists());
-            $this->assertEquals($this->apc, $this->apc->setKey('a','b','c'));
+            $this->assertEquals($this->apc, $this->apc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->apc->setValue(123));
             $this->assertTrue($this->apc->deleteKey());
             $this->assertFalse($this->apc->keyExists());
@@ -246,7 +261,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         }
         if ($this->mc) {
             $this->assertFalse($this->mc->keyExists());
-            $this->assertEquals($this->mc, $this->mc->setKey('a','b','c'));
+            $this->assertEquals($this->mc, $this->mc->setKey('a', 'b', 'c'));
             $this->assertTrue($this->mc->setValue(123));
             $this->assertTrue($this->mc->deleteKey());
             $this->assertFalse($this->mc->keyExists());

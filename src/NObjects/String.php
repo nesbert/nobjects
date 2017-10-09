@@ -87,7 +87,7 @@ class String
      * @return string
      * @author Nesbert Hidalgo
      **/
-    public static function replaceByArray($string, Array $array)
+    public static function replaceByArray($string, array $array)
     {
         return str_replace(array_keys($array), array_values($array), $string);
     }
@@ -124,13 +124,14 @@ class String
     public static function sub($string, $pattern, $replace, $times = 1, &$count = null)
     {
         return preg_replace(
-                        (Validate::isRegex($pattern)
+            (Validate::isRegex($pattern)
                             ? $pattern
                             : "~{$pattern}~"),
-                        $replace,
-                        $string,
-                        $times,
-                        $count);
+            $replace,
+            $string,
+            $times,
+            $count
+        );
     }
 
     /**
@@ -143,7 +144,7 @@ class String
      * @param string $bcc
      * @return string
      */
-    public static function mailTo($to, $subject  = '', $body = '', $cc = '', $bcc = '')
+    public static function mailTo($to, $subject = '', $body = '', $cc = '', $bcc = '')
     {
         $params = array(
             'to' => $to,

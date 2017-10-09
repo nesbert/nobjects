@@ -66,14 +66,19 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', ini_get('session.save_path'));
 
         // if no extension return
-        if (!extension_loaded('memcache')) return;
+        if (!extension_loaded('memcache')) {
+            return;
+        }
 
         // reset & initialize
         $this->o = new Session('tcp://localhost');
         $this->o->init();
 
         $this->assertEquals('memcache', ini_get('session.save_handler'));
-        $this->assertEquals('tcp://localhost:11211?persistent=1&weight=1&timeout=1&retry_interval=15', ini_get('session.save_path'));
+        $this->assertEquals(
+            'tcp://localhost:11211?persistent=1&weight=1&timeout=1&retry_interval=15',
+            ini_get('session.save_path')
+        );
 
         $this->assertEquals(1, ini_get('memcache.allow_failover'));
         $this->assertEquals(20, ini_get('memcache.max_failover_attempts'));
@@ -94,7 +99,10 @@ class SessionTest extends \PHPUnit_Framework_TestCase
             ->init();
 
         $this->assertEquals('memcache', ini_get('session.save_handler'));
-        $this->assertEquals('tcp://localhost:11211?persistent=1&weight=1&timeout=1&retry_interval=15', ini_get('session.save_path'));
+        $this->assertEquals(
+            'tcp://localhost:11211?persistent=1&weight=1&timeout=1&retry_interval=15',
+            ini_get('session.save_path')
+        );
 
         $this->assertEquals($allowFailOver, ini_get('memcache.allow_failover'));
         $this->assertEquals($maxFailOverAttempts, ini_get('memcache.max_failover_attempts'));

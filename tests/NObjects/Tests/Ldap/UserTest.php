@@ -72,5 +72,4 @@ class UserTest extends ServiceTest
         $this->assertEquals($ldapUser, $ldapUser->setData($testData));
         $this->assertEquals($testData, $ldapUser->getData());
     }
-
 }

@@ -33,7 +33,7 @@ interface Adapter
      * @param int $ttl
      * @return bool
      */
-    public function set($key, $value, $ttl=0);
+    public function set($key, $value, $ttl = 0);
 
     /**
      * Delete cache by $key. Optional $delay seconds if supported.

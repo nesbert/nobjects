@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests;
+
 use NObjects\Date;
 
 class DateTest extends \PHPUnit_Framework_TestCase
@@ -21,7 +22,7 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $datetime['month'] = 3;
         $datetime['day'] = 6;
         $datetime['year'] = 2010;
-        
+
         $this->assertEquals($now, Date::datetime());
         $this->assertEquals($now, Date::datetime(null));
         $this->assertEquals($now, Date::datetime(time()));
@@ -88,20 +89,44 @@ class DateTest extends \PHPUnit_Framework_TestCase
     public function testToISO8601()
     {
         // default GMT
-        $this->assertEquals('2012-10-09T17:35:30Z', Date::toISO8601('2012-10-09 17:35:30'));
-        $this->assertEquals('2012-08-17T01:43:00Z', Date::toISO8601('2012-08-16 18:43:00 -0700'));
+        $this->assertEquals(
+            '2012-10-09T17:35:30Z',
+            Date::toISO8601('2012-10-09 17:35:30')
+        );
+        $this->assertEquals(
+            '2012-08-17T01:43:00Z',
+            Date::toISO8601('2012-08-16 18:43:00 -0700')
+        );
 
         // America/Los_Angeles
-        $this->assertEquals('2012-10-09T17:35:30-07:00', Date::toISO8601('2012-10-09 17:35:30', 'America/Los_Angeles'));
-        $this->assertEquals('2012-08-16T18:43:00-07:00', Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Los_Angeles'));
-        
+        $this->assertEquals(
+            '2012-10-09T17:35:30-07:00',
+            Date::toISO8601('2012-10-09 17:35:30', 'America/Los_Angeles')
+        );
+        $this->assertEquals(
+            '2012-08-16T18:43:00-07:00',
+            Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Los_Angeles')
+        );
+
         // America/Chicago
-        $this->assertEquals('2012-10-09T17:35:30-05:00', Date::toISO8601('2012-10-09 17:35:30', 'America/Chicago'));
-        $this->assertEquals('2012-08-16T20:43:00-05:00', Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Chicago'));
-        
+        $this->assertEquals(
+            '2012-10-09T17:35:30-05:00',
+            Date::toISO8601('2012-10-09 17:35:30', 'America/Chicago')
+        );
+        $this->assertEquals(
+            '2012-08-16T20:43:00-05:00',
+            Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Chicago')
+        );
+
         // America/New_York
-        $this->assertEquals('2012-10-09T17:35:30-04:00', Date::toISO8601('2012-10-09 17:35:30', 'America/New_York'));
-        $this->assertEquals('2012-08-16T21:43:00-04:00', Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/New_York'));
+        $this->assertEquals(
+            '2012-10-09T17:35:30-04:00',
+            Date::toISO8601('2012-10-09 17:35:30', 'America/New_York')
+        );
+        $this->assertEquals(
+            '2012-08-16T21:43:00-04:00',
+            Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/New_York')
+        );
     }
 
     public function testTimeSince()

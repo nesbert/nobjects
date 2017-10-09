@@ -34,39 +34,43 @@ class Cipher
         switch ($level) {
             case self::LEVEL1:
             default:
-                $return = mcrypt_encrypt(MCRYPT_XTEA,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv1()
-                                        );
+                $return = mcrypt_encrypt(
+                    MCRYPT_XTEA,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv1()
+                );
                 break;
 
             case self::LEVEL2:
-                $return = mcrypt_encrypt(MCRYPT_SERPENT,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv2()
-                                        );
+                $return = mcrypt_encrypt(
+                    MCRYPT_SERPENT,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv2()
+                );
                 break;
 
             case self::LEVEL3:
-                $return = mcrypt_encrypt(MCRYPT_SAFERPLUS,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv3()
-                                        );
+                $return = mcrypt_encrypt(
+                    MCRYPT_SAFERPLUS,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv3()
+                );
                 break;
 
             case self::LEVEL4:
-                $return = mcrypt_encrypt(MCRYPT_RIJNDAEL_256,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv4()
-                                        );
+                $return = mcrypt_encrypt(
+                    MCRYPT_RIJNDAEL_256,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv4()
+                );
                 break;
         }
         return base64_encode($return);
@@ -93,39 +97,43 @@ class Cipher
         switch ($level) {
             case self::LEVEL1:
             default:
-                $return = mcrypt_decrypt(MCRYPT_XTEA,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv1()
-                                        );
+                $return = mcrypt_decrypt(
+                    MCRYPT_XTEA,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv1()
+                );
                 break;
 
             case self::LEVEL2:
-                $return = mcrypt_decrypt(MCRYPT_SERPENT,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv2()
-                                        );
+                $return = mcrypt_decrypt(
+                    MCRYPT_SERPENT,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv2()
+                );
                 break;
 
             case self::LEVEL3:
-                $return = mcrypt_decrypt(MCRYPT_SAFERPLUS,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv3()
-                                        );
+                $return = mcrypt_decrypt(
+                    MCRYPT_SAFERPLUS,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv3()
+                );
                 break;
 
             case self::LEVEL4:
-                $return = mcrypt_decrypt(MCRYPT_RIJNDAEL_256,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv4()
-                                        );
+                $return = mcrypt_decrypt(
+                    MCRYPT_RIJNDAEL_256,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv4()
+                );
                 break;
         }
         return trim($return);
@@ -134,29 +142,33 @@ class Cipher
     private static function iv1()
     {
         return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_XTEA, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
+            mcrypt_get_iv_size(MCRYPT_XTEA, MCRYPT_MODE_ECB),
+            MCRYPT_RAND
+        );
     }
 
     private static function iv2()
     {
         return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_SERPENT, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
+            mcrypt_get_iv_size(MCRYPT_SERPENT, MCRYPT_MODE_ECB),
+            MCRYPT_RAND
+        );
     }
 
     private static function iv3()
     {
         return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_SAFERPLUS, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
+            mcrypt_get_iv_size(MCRYPT_SAFERPLUS, MCRYPT_MODE_ECB),
+            MCRYPT_RAND
+        );
     }
 
     private static function iv4()
     {
         return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
+            mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB),
+            MCRYPT_RAND
+        );
     }
 
     /**

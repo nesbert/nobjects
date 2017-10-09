@@ -142,7 +142,9 @@ class Data extends Cluster implements \NObjects\Cache\Adapter
      **/
     public function open()
     {
-        if (!extension_loaded('memcache')) return false;
+        if (!extension_loaded('memcache')) {
+            return false;
+        }
 
         // only check cluster once
         if (!is_null($this->clusterOnline)) {

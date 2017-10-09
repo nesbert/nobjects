@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Ldap;
+
 /**
  * LDAP helper class.
  *
@@ -54,7 +55,7 @@ class Service extends \NObjects\Object
      * @param array $options
      * @throws ServiceException
      */
-    public function __construct(Array $options)
+    public function __construct(array $options)
     {
         if (empty($options['host'])) {
             throw new ServiceException('LDAP host required.');
@@ -116,7 +117,9 @@ class Service extends \NObjects\Object
      */
     public function link()
     {
-        if (is_resource($this->link)) return $this->link;
+        if (is_resource($this->link)) {
+            return $this->link;
+        }
         return $this->connect()->link();
     }
 
@@ -131,7 +134,7 @@ class Service extends \NObjects\Object
         $host = $this->getHost();
         $this->link = ldap_connect($host, $this->getPort());
 
-        if (!is_resource($this->link))  {
+        if (!is_resource($this->link)) {
             throw new ServiceException("Unable to connect to {$host}:{$this->getPort()}");
         }
 
@@ -192,7 +195,7 @@ class Service extends \NObjects\Object
      */
     public function getOption($option, &$retval)
     {
-        return ldap_get_option($this->link() , $option , $retval);
+        return ldap_get_option($this->link(), $option, $retval);
     }
 
     /**
@@ -220,31 +223,45 @@ class Service extends \NObjects\Object
      * @param string $baseDn
      * @return array
      */
-    public function search($filter, Array $attributes = array(), $baseDn = '')
+    public function search($filter, array $attributes = array(), $baseDn = '')
     {
         $baseDn = empty($baseDn) ? $this->getBaseDn() : $baseDn;
         $data = array();
-        if ($result = @ldap_search($this->link(), $baseDn, $filter, $attributes, 0, $this->getSearchSizeLimit(), $this->getSearchTimeout())) {
+        $result = @ldap_search(
+            $this->link(),
+            $baseDn,
+            $filter,
+            $attributes,
+            0,
+            $this->getSearchSizeLimit(),
+            $this->getSearchTimeout()
+        );
+
+        if ($result) {
             $entries = @ldap_get_entries($this->link(), $result);
 
             if (!empty($entries['count'])) {
-                for ($i=0; $i<=$entries['count'];$i++) {
-                    if (!isset($entries[$i])) continue;
-                    for ($j=0;$j<=$entries[$i]["count"];$j++) {
-                        if (!isset($entries[$i][$j])) continue;
+                for ($i=0; $i<=$entries['count']; $i++) {
+                    if (!isset($entries[$i])) {
+                        continue;
+                    }
+                    for ($j=0; $j<=$entries[$i]["count"]; $j++) {
+                        if (!isset($entries[$i][$j])) {
+                            continue;
+                        }
                         $valCount = $entries[$i][$entries[$i][$j]]['count'];
                         if ($valCount <= 1) {
                             $data[$i][$entries[$i][$j]] = $entries[$i][$entries[$i][$j]][0];
                         } else {
                             $data[$i][$entries[$i][$j]] = array();
-                            for ($k=0;$k<=$valCount;$k++) {
-                                if (!isset($entries[$i][$entries[$i][$j]][$k])) continue;
+                            for ($k=0; $k<=$valCount; $k++) {
+                                if (!isset($entries[$i][$entries[$i][$j]][$k])) {
+                                    continue;
+                                }
                                 $data[$i][$entries[$i][$j]][] = $entries[$i][$entries[$i][$j]][$k];
                             }
                         }
-
                     }
-
                 }
             }
         }
@@ -259,7 +276,7 @@ class Service extends \NObjects\Object
      * @return string
      * @throws ServiceException
      */
-    public function getCanonicalFormUsername($username, $form=0)
+    public function getCanonicalFormUsername($username, $form = 0)
     {
         if ($form == 0) {
             if (!$form = $this->getAccountCanonicalForm()) {
@@ -315,7 +332,6 @@ class Service extends \NObjects\Object
 
             default:
                 throw new ServiceException('Invalid accountCanonicalForm value.');
-
         }
 
         $this->accountCanonicalForm = $accountCanonicalForm;
@@ -454,6 +470,3 @@ class Service extends \NObjects\Object
         return $this;
     }
 }
-
-class ServiceException extends \Exception
-{}
