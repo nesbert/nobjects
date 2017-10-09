@@ -1,4 +1,5 @@
 <?php
+
 namespace NObjects\Tests\Ldap;
 
 use NObjects\Ldap\Service,
@@ -7,8 +8,7 @@ use NObjects\Ldap\Service,
 /**
  * Class ServiceTest
  * @package NObjects\Tests\Ldap
- * @link http://blog.stuartlewis.com/2008/07/07/test-ldap-service/
- */
+  */
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -16,7 +16,10 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected $ldap1;
 
-    public function setUp()
+    /**
+     * setUp runs before each unit test
+     */
+    protected function setUp()
     {
         if (!extension_loaded('ldap')) {
             $this->markTestSkipped('ldap extension is not available.');
@@ -28,7 +31,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array|\ArrayObject
      */
-    public function getLdapServers()
+    protected function getLdapServers()
     {
         static $servers;
 
@@ -36,8 +39,8 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
             $servers = new \ArrayObject();
 
             $servers[] = array(
-                'host' => 'ldap.testathon.net:389',
-                'baseDn' => 'OU=users,DC=testathon,DC=net',
+                'host' => 'localhost:1389',
+                'baseDn' => 'DC=example,DC=org',
                 'accountCanonicalForm' => Service::ACCOUNT_NAME_FORM_DN,
             );
 
@@ -46,12 +49,18 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         return $servers;
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testLink()
     {
         $this->assertTrue(is_resource($this->ldap1->link()));
         $this->assertEquals('ldap link', get_resource_type($this->ldap1->link()));
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testConnect()
     {
         $ldap = $this->ldap1->connect();
@@ -75,25 +84,34 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testDisconnect()
     {
         $this->ldap1->connect()->disconnect();
         $this->assertFalse($this->ldap1->isLive());
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testBind()
     {
         try {
             $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('john'), 'wrong password');
             $this->fail('Expected exception');
         } catch (ServiceException $e) {
-            $this->assertEquals('Unable to BIND RDN.', $e->getMessage());
+            $this->assertRegExp('/Unable to BIND RDN/', $e->getMessage());
         }
 
         $ldap = $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('carol'), 'carol');
         $this->assertTrue($ldap instanceof Service);
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testSearch()
     {
         $attributes = array(
@@ -107,26 +125,35 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
             'memberof',
         );
 
-        $data1 = $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('john'), 'john')
+        $data1 = $this->ldap1->bind($this->ldap1->getCanonicalFormUsername('carol'), 'carol')
             ->search("(cn=john)", $attributes);
         $data1 = current($data1);
 
         $this->assertEquals('john', $data1['cn']);
-        $this->assertEquals('john.smith@testathon.net', $data1['mail']);
+        $this->assertEquals('john@example.org', $data1['mail']);
         $this->assertEquals('John', $data1['givenname']);
         $this->assertEquals('Smith', $data1['sn']);
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testGetCanonicalFormUsername()
     {
-        $this->assertEquals('CN=john,OU=users,DC=testathon,DC=net', $this->ldap1->getCanonicalFormUsername('john'));
+        $this->assertEquals('CN=john,DC=example,DC=org', $this->ldap1->getCanonicalFormUsername('john'));
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testIsSsl()
     {
         $this->assertFalse($this->ldap1->isSsl());
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testIsLive()
     {
         $this->assertFalse($this->ldap1->isLive());
@@ -136,6 +163,9 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->ldap1->isLive());
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testSetOption()
     {
         $this->assertTrue($this->ldap1->getOption(LDAP_OPT_PROTOCOL_VERSION, $retval));
@@ -153,12 +183,18 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, $retval);
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testGetOption()
     {
         $this->assertTrue($this->ldap1->getOption(LDAP_OPT_PROTOCOL_VERSION, $retval));
         $this->assertEquals(3, $retval);
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testDefaults()
     {
         $ldap = new Service(array('host' => 'subdomain.domain.tld'));
@@ -177,6 +213,9 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $ldap->isSsl());
     }
 
+    /**
+     * @group ldap_integration
+     */
     public function testSettersGetters()
     {
         $server1 = $this->getLdapServers()->offsetGet(0);

@@ -30,7 +30,7 @@ class Service extends \NObjects\Object
     const DEFAULT_PORT_SSL = 636;
     const DEFAULT_SEARCH_SIZE_LIMIT = 0;
     const DEFAULT_SEARCH_TIMEOUT = 0;
-    const DEFAULT_NETWORK_TIMEOUT = 0;
+    const DEFAULT_NETWORK_TIMEOUT = 30;
 
     const ACCOUNT_NAME_FORM_DN = 1;
     const ACCOUNT_NAME_FORM_USERNAME = 2;
@@ -129,9 +129,6 @@ class Service extends \NObjects\Object
     public function connect()
     {
         $host = $this->getHost();
-        if (substr($host, 0, 4) != 'ldap') {
-            $host = 'ldap' . ($this->isSsl() ? 's' : '') . '://' . $host;
-        }
         $this->link = ldap_connect($host, $this->getPort());
 
         if (!is_resource($this->link))  {
@@ -209,7 +206,7 @@ class Service extends \NObjects\Object
     public function bind($rdn = null, $password = null)
     {
         if (!@ldap_bind($this->link(), $rdn, $password)) {
-            throw new ServiceException('Unable to BIND RDN.');
+            throw new ServiceException('Unable to BIND RDN: ' . ldap_error($this->link()));
         }
         return $this;
     }

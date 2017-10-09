@@ -1,11 +1,11 @@
 <?php
 namespace NObjects\Tests\Ldap;
 
-use NObjects\Ldap\Service,
-    NObjects\Ldap\ServiceException,
-    NObjects\Ldap\User,
-    NObjects\Ldap\UserException;
+use NObjects\Ldap\User;
 
+/**
+ * UserTest provides integration tests for Ldap\User
+ */
 class UserTest extends ServiceTest
 {
     /**
@@ -15,12 +15,12 @@ class UserTest extends ServiceTest
 
     public function testAuthenticate()
     {
-        self::$user = User::authenticate('john', 'john', $this->ldap1);
+        self::$user = User::authenticate('john', 'carol', $this->ldap1);
 
         $this->assertEquals('john', self::$user->getUsername());
         $this->assertEquals('John', self::$user->getFirstName());
         $this->assertEquals('Smith', self::$user->getLastName());
-        $this->assertEquals('john.smith@testathon.net', self::$user->getEmail());
+        $this->assertEquals('john@example.org', self::$user->getEmail());
     }
 
     /**
@@ -40,22 +40,26 @@ class UserTest extends ServiceTest
     }
 
     /**
+     * @group ldap_integration
+     *
      * @depends testAuthenticate
      */
     public function testMagicGetter()
     {
-        $this->assertEquals('john.smith@testathon.net', self::$user->mail);
+        $this->assertEquals('john@example.org', self::$user->mail);
         $this->assertEquals('John', self::$user->givenname);
         $this->assertEquals('Smith', self::$user->sn);
         $this->assertEquals('john', self::$user->cn);
     }
 
     /**
+     * @group ldap_integration
+     *
      * @depends testAuthenticate
      */
     public function testSettersGetters()
     {
-        $this->assertEquals('john.smith@testathon.net', self::$user->getEmail());
+        $this->assertEquals('john@example.org', self::$user->getEmail());
         $this->assertEquals('John', self::$user->getFirstName());
         $this->assertEquals('Smith', self::$user->getLastName());
         $this->assertEquals('john', self::$user->getUsername());

@@ -1,0 +1,23 @@
+dn: cn=john,{{ LDAP_BASE_DN }}
+changetype: add
+cn: john
+objectClass: simpleSecurityObject
+objectClass: person
+objectClass: inetOrgPerson
+userPassword: {SSHA}t1tqfm13EQ/TwkoCOibJ2fUScKqDEtJY
+description: John
+mail: john@example.org
+givenName: John
+sn: Smith
+
+dn: cn=carol,{{ LDAP_BASE_DN }}
+changetype: add
+cn: carol
+objectClass: simpleSecurityObject
+objectClass: person
+objectClass: inetOrgPerson
+userPassword: {SSHA}t1tqfm13EQ/TwkoCOibJ2fUScKqDEtJY
+description: Carol
+mail: carol@example.org
+givenName: Carol
+sn: Smith

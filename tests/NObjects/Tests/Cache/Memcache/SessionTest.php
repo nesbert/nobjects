@@ -68,12 +68,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
         // if no extension return
         if (!extension_loaded('memcache')) return;
 
-        $this->assertEquals(1, ini_get('memcache.allow_failover'));
-        $this->assertEquals(20, ini_get('memcache.max_failover_attempts'));
-        $this->assertEquals(11211, ini_get('memcache.default_port'));
-        $this->assertEquals('consistent', ini_get('memcache.hash_strategy'));
-        $this->assertEquals('crc32', ini_get('memcache.hash_function'));
-
         // reset & initialize
         $this->o = new Session('tcp://localhost');
         $this->o->init();

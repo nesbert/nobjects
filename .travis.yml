@@ -1,3 +1,6 @@
+sudo: required
+services:
+  - docker
 language: php
 php:
   - "5.5"
@@ -5,4 +8,8 @@ php:
   - "5.4"
 before_script:
   - composer install
+before_install:
+  - echo "extension=ldap.so" >>php --ini | grep "Loaded Configuration" | sed -e "s|.:\s||"``
+  - docker pull osixia/openldap:1.1.9
+  - docker run -p 127.0.0.1:1389:389 --detach --volume $TRAVIS_BUILD_DIR/tests/assets/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom osixia/openldap:1.1.9 --copy-service
 script: ./vendor/bin/phpunit --coverage-text
