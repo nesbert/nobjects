@@ -16,7 +16,7 @@ cn: carol
 objectClass: simpleSecurityObject
 objectClass: person
 objectClass: inetOrgPerson
-userPassword: {SSHA}t1tqfm13EQ/TwkoCOibJ2fUScKqDEtJY
+userPassword: {SSHA}g4nQg+y1ln73OiM9GEE4QzuMI4bO/7+j
 description: Carol
 mail: carol@example.org
 givenName: Carol

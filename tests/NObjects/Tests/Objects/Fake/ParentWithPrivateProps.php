@@ -1,13 +1,13 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\Fake;
 
-use NObjects\Object;
+use NObjects\Nobject;
 
 /**
  * ParentWithPrivateProps is a fake testing class.
  */
-class ParentWithPrivateProps extends Object
+class ParentWithPrivateProps extends Nobject
 {
     /**
      * @var string

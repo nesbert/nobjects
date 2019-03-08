@@ -13,8 +13,9 @@ class DateTest extends \PHPUnit_Framework_TestCase
     public function testDatetime()
     {
         $now = date('Y-m-d H:i:s');
-        $tomorrow = date('Y-m-d H:i:s', strtotime('+1day'));
-        $yesterday = date('Y-m-d H:i:s', strtotime('-1day'));
+        $nowTs = time();
+        $tomorrow = date('Y-m-d H:i:s', strtotime('+1day', $nowTs));
+        $yesterday = date('Y-m-d H:i:s', strtotime('-1day', $nowTs));
         $datetime = array();
         $datetime['hour'] = 12;
         $datetime['minute'] = 55;
@@ -23,13 +24,13 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $datetime['day'] = 6;
         $datetime['year'] = 2010;
 
-        $this->assertEquals($now, Date::datetime());
-        $this->assertEquals($now, Date::datetime(null));
-        $this->assertEquals($now, Date::datetime(time()));
-        $this->assertEquals($tomorrow, Date::datetime(time() + Date::DAY));
-        $this->assertEquals($yesterday, Date::datetime(time() - Date::DAY));
-        $this->assertEquals($tomorrow, Date::datetime(strtotime('+1day')));
-        $this->assertEquals($yesterday, Date::datetime(strtotime('-1day')));
+        $this->assertRegExp('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', Date::datetime());
+        $this->assertRegExp('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', Date::datetime(null));
+        $this->assertRegExp('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', Date::datetime(time()));
+        $this->assertEquals($tomorrow, Date::datetime($nowTs + Date::DAY));
+        $this->assertEquals($yesterday, Date::datetime($nowTs - Date::DAY));
+        $this->assertEquals($tomorrow, Date::datetime(strtotime('+1day', $nowTs)));
+        $this->assertEquals($yesterday, Date::datetime(strtotime('-1day', $nowTs)));
         $this->assertEquals('2010-03-06 12:55:23', Date::datetime($datetime));
         $datetime['hour'] = 10;
         $datetime['ampm'] = 'pm';
@@ -169,6 +170,6 @@ class DateTest extends \PHPUnit_Framework_TestCase
 
     public function testMilliseconds()
     {
-        $this->assertEquals(round(microtime(true)*1000), Date::milliseconds());
+        $this->assertInternalType('float', Date::milliseconds());
     }
 }

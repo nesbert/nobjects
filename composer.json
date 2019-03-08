@@ -13,15 +13,21 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "ext-json": "*"
     },
-    "require-dev" : {
-        "phpunit/phpunit": "3.7.x"
+    "require-dev": {
+        "symfony/phpunit-bridge": "^3.3",
+        "phpunit/phpunit": "^4.8"
     },
     "autoload": {
-        "psr-0": {
-            "NObjects\\Tests": "tests/",
-            "NObjects": "src/"
+        "psr-4": {
+            "NObjects\\": "src/NObjects"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NObjects\\Tests\\": "tests/NObjects/Tests/"
         }
     }
 }

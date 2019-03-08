@@ -19,6 +19,7 @@ class Memcache extends Base implements Adapter
      */
     public function __construct($servers = 'tcp://localhost', $compress = false)
     {
+        @trigger_error('Class NObjects\Cache\Memcache is deprecated. Migrate your code a PSR-6 or PSR-16 compatible implementation.', E_USER_DEPRECATED);
         $this->setData(new Data($servers, $compress));
     }
 

@@ -6,9 +6,8 @@ use NObjects\Ldap\Service;
 use NObjects\Ldap\ServiceException;
 
 /**
- * Class ServiceTest
- * @package NObjects\Tests\Ldap
-  */
+ * @requires extension ldap
+ */
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -17,14 +16,31 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     protected $ldap1;
 
     /**
+     * @var string
+     */
+    private static $ldapHost;
+
+    /**
+     * @var string
+     */
+    private static $ldapPort;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        $host = getenv('PHPUNIT_LDAP_SERVER_HOST') ? getenv('PHPUNIT_LDAP_SERVER_HOST') : 'localhost';
+        $port = getenv('PHPUNIT_LDAP_SERVER_PORT') ? getenv('PHPUNIT_LDAP_SERVER_PORT') : 389;
+
+        self::$ldapHost = $host;
+        self::$ldapPort = $port;
+    }
+
+    /**
      * setUp runs before each unit test
      */
     protected function setUp()
     {
-        if (!extension_loaded('ldap')) {
-            $this->markTestSkipped('ldap extension is not available.');
-        }
-
         $this->ldap1 = new Service($this->getLdapServers()->offsetGet(0));
     }
 
@@ -39,7 +55,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
             $servers = new \ArrayObject();
 
             $servers[] = array(
-                'host' => 'localhost:1389',
+                'host' => self::$ldapHost . ':' . self::$ldapPort,
                 'baseDn' => 'DC=example,DC=org',
                 'accountCanonicalForm' => Service::ACCOUNT_NAME_FORM_DN,
             );

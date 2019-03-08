@@ -139,7 +139,7 @@ class Cluster
      **/
     public function getMemcacheObject($poolConnections = true)
     {
-        if (!extension_loaded('memcache')) {
+        if (!class_exists('\Memcache')) {
             return false;
         }
 
@@ -322,7 +322,7 @@ class Cluster
     }
 
     /**
-     * Get an array of all constants that use 'MEMCACHE_SERVERS_'.
+     * Get an array of all constants that use 'MEMCACHE_CLUSTER_'.
      *
      * @return array
      **/
@@ -331,6 +331,10 @@ class Cluster
         $constants = get_defined_constants(true);
         $key = self::CLUSTER_KEY_PREFIX;
         $clusters = array();
+
+        if (empty($constants['user'])) {
+            return $clusters;
+        }
 
         foreach ($constants['user'] as $k => $v) {
             if (preg_match('/^'.$key.'/', $k)) {

@@ -3,6 +3,10 @@ namespace NObjects\Tests\Cache;
 
 use NObjects\Cache\Memcache;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @requires extension memcache
+ */
 class MemcacheTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -10,16 +14,27 @@ class MemcacheTest extends \PHPUnit_Framework_TestCase
      */
     private $o;
 
+    /**
+     * @var string
+     */
+    private static $memcachedPath;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        $host = getenv('PHPUNIT_MEMCACHED_SERVER_HOST') ? getenv('PHPUNIT_MEMCACHED_SERVER_HOST') : 'localhost';
+        $port = getenv('PHPUNIT_MEMCACHED_SERVER_PORT') ? getenv('PHPUNIT_MEMCACHED_SERVER_PORT') : 11211;
+
+        static::$memcachedPath = $host.':'.$port;
+    }
+
     public function setUp()
     {
-        if (!extension_loaded('memcache')) {
-            $this->markTestSkipped('Memcache extension is not available.');
-        }
-
-        $this->o = new Memcache('tcp://localhost');
+        $this->o = new Memcache('tcp://' . static::$memcachedPath);
 
         if (!$this->o->open()) {
-            $this->markTestSkipped('Memcache extension is not available.');
+            $this->markTestSkipped('Memcache server is not available.');
         }
     }
 

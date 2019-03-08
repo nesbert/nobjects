@@ -1,11 +1,11 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\Fake;
 
 /**
  * ChildObject is a fake object used for testing
  */
-class ChildObject extends \NObjects\Object
+class ChildObject extends \NObjects\Nobject
 {
     /**
      * @var string

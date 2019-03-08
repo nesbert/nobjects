@@ -131,7 +131,7 @@ class Date
      * @param mixed $time Accepts unix timestamp or datetime string.
      * @return string
      **/
-    public static function timeSince($time)
+    public static function timeSince($time = null)
     {
         if (empty($time)) {
             return false;
@@ -142,8 +142,6 @@ class Date
         if ($time <= 0) {
             return false;
         }
-
-        $return = '';
 
         switch (true) {
             case ($time < self::MINUTE):

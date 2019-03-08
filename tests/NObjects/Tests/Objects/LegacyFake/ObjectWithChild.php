@@ -1,6 +1,6 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\LegacyFake;
 
 /**
  * ObjectWithChild is a fake object used for testing
@@ -44,7 +44,7 @@ class ObjectWithChild extends \NObjects\Object
      */
     public function setChildObject($childObject)
     {
-        $this->childObject = $this->_initInstanceObject($childObject, 'NObjects\Tests\Object\Fake\ChildObject');
+        $this->childObject = $this->_initInstanceObject($childObject, 'NObjects\Tests\Objects\Fake\ChildObject');
 
         return $this;
     }

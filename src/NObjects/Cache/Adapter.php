@@ -10,8 +10,8 @@ interface Adapter
      * if no matches
      *
      * @abstract
-     * @param string/array $key
-     * @return mixed
+     * @param string|array $key
+     * @return bool|array
      */
     public function exists($key);
 
@@ -19,7 +19,7 @@ interface Adapter
      * Get/check if key exists.
      *
      * @abstract
-     * @param string/array $key
+     * @param string|array $key
      * @return mixed
      */
     public function get($key);
@@ -28,7 +28,7 @@ interface Adapter
      * Set a key, value and ttl.
      *
      * @abstract
-     * @param string/array $key
+     * @param string|array $key
      * @param $value
      * @param int $ttl
      * @return bool
@@ -39,7 +39,7 @@ interface Adapter
      * Delete cache by $key. Optional $delay seconds if supported.
      *
      * @abstract
-     * @param string/array $key
+     * @param string|array $key
      * @param int $delay
      * @return bool
      */

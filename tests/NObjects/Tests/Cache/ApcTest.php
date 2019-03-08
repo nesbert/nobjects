@@ -12,13 +12,13 @@ class ApcTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if (!extension_loaded('apc')) {
-            $this->markTestSkipped('APC extension is not available.');
+        if (!function_exists('apc_add') && !function_exists('apcu_add')) {
+            $this->markTestSkipped('APC extension is not available (apc_add and apcu_add not available)');
         }
 
         $this->o = new Cache\Apc();
 
-        if (!$this->o->open() || !ini_get('apc.enable_cli')) {
+        if (!$this->o->open()) {
             $this->markTestSkipped('APC extension is not available.');
         }
     }

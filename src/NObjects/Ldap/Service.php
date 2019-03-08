@@ -6,7 +6,7 @@ namespace NObjects\Ldap;
  *
  * @author Nesbert Hidalgo
  */
-class Service extends \NObjects\Object
+class Service extends \NObjects\Nobject
 {
     private $link;
 

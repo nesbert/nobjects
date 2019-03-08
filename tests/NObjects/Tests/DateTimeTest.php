@@ -32,17 +32,6 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
 
         $o = new DateTime($this->datetime . '.1234');
         $this->assertEquals(strtotime($this->datetime), $o->getTimestamp());
-
-        try {
-            $o = new DateTime('0000-00-00 00:00:00');
-            $this->assertEquals($time, $o->getTimestamp());
-            $this->fail('Exception expected!');
-        } catch (\Exception $e) {
-            $this->assertEquals(
-                'DateTime::format(): The DateTime object has not been correctly initialized by its constructor',
-                $e->getMessage()
-            );
-        }
     }
 
     public function testGetDate()

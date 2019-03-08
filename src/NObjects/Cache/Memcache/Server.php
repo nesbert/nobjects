@@ -134,13 +134,13 @@ class Server
     public function isOnline()
     {
         try {
-            if (!extension_loaded('memcache')) {
+            if (!class_exists('\Memcache')) {
                 return false;
             }
 
             $memcache = new \Memcache;
-            $online = $memcache->connect($this->host, $this->port);
-            $memcache->close();
+            $online = @$memcache->connect($this->host, $this->port);
+            @$memcache->close();
             return $online;
         } catch (\Exception $e) {
             return false;

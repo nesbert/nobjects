@@ -98,7 +98,7 @@ class Validate
         }
         return preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/', $string) > 0;
     }
-    
+
     /**
      * Checks if $var a variable only contains characters A-Z or a-z
      *
@@ -112,7 +112,7 @@ class Validate
         }
         return preg_match('/^[a-z]+$/i', $var) ? true : false;
     }
-    
+
     /**
      * Checks if $var only contains characters A-Z or a-z or 0-9.
      *
@@ -126,7 +126,7 @@ class Validate
         }
         return preg_match('/^[a-zA-Z0-9]+$/', $var) ? true : false;
     }
-    
+
     /**
      * Checks if $var is a number.
      *
@@ -140,7 +140,7 @@ class Validate
         }
         return preg_match('/^[0-9]+?[.]?[0-9]*$/', $var) ? true : false;
     }
-    
+
     /**
      * Checks if $var is a positive number.
      *
@@ -151,7 +151,7 @@ class Validate
     {
         return self::isNumber($var) && $var > 0;
     }
-    
+
     /**
      * Checks if $var1 is equal to $var2.
      *
@@ -163,7 +163,7 @@ class Validate
     {
         return $var1 === $var2;
     }
-    
+
     /**
      * Checks if $var is between $min and $max.
      *
@@ -177,7 +177,7 @@ class Validate
         return (is_numeric($min) && is_numeric($max))
             && ($var >= $min && $var <= $max);
     }
-    
+
     /**
      * Checks if $var length equals $length.
      *
@@ -194,7 +194,7 @@ class Validate
         }
         return false;
     }
-    
+
     /**
      * Checks if $var length is between $min and $max.
      *
@@ -214,7 +214,7 @@ class Validate
         }
         return ( $length >= $min ) && ( $length <= $max );
     }
-    
+
     /**
      * Finds whether a $var is a regular expression.
      *
@@ -226,7 +226,7 @@ class Validate
         @preg_match($var, '', $test);
         return is_array($test);
     }
-    
+
     /**
      * Finds whether a $var is an odd number.
      *
@@ -240,7 +240,7 @@ class Validate
         }
         return !self::isOdd($var);
     }
-    
+
     /**
      * Finds whether a $var is an odd number.
      *
@@ -254,7 +254,7 @@ class Validate
         }
         return ($var % 2) == 1;
     }
-    
+
     /**
      * Check is request is using AJAX by checking headers.
      *
@@ -280,16 +280,16 @@ class Validate
         if (is_array($array) == false) {
             return false;
         }
-        
+
         foreach (array_keys($array) as $k => $v) {
             if ($k !== $v) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * A faster/less memory substitute for strstr() or preg_match
      * used to check the occurrence of a subject in a string.
@@ -300,6 +300,6 @@ class Validate
      **/
     public static function inString($needle, $haystack)
     {
-        return String::contains($needle, $haystack);
+        return StringUtil::contains($needle, $haystack);
     }
 }

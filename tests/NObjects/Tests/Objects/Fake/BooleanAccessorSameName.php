@@ -1,13 +1,13 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\Fake;
 
-use NObjects\Object;
+use NObjects\Nobject;
 
 /**
  * BooleanAccessorSameName is a fake testing class.
  */
-class BooleanAccessorSameName extends Object
+class BooleanAccessorSameName extends Nobject
 {
     /**
      * @var bool

@@ -1,10 +1,11 @@
 <?php
+
 namespace NObjects;
 
 /**
  * String utility helper.
  *
- * @author Nesbert Hidalgo
+ * @deprecated
  */
 class String
 {
@@ -12,11 +13,16 @@ class String
      * Retrieve a number from a string.
      *
      * @param string $str
+     *
      * @return float
-     **/
+     *
+     * @deprecated
+     */
     public static function retrieveNumber($str)
     {
-        return floatval(preg_replace('/[^0-9.-]/', '', $str));
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::retrieveNumber instead.', E_USER_DEPRECATED);
+
+        return StringUtil::retrieveNumber($str);
     }
 
     /**
@@ -24,11 +30,16 @@ class String
      *
      * @param string $string
      * @param int $count
+     *
      * @return string
+     *
+     * @deprecated
      */
     public static function times($string, $count)
     {
-        return str_repeat($string, $count);
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::retrieveNumber instead.', E_USER_DEPRECATED);
+
+        return StringUtil::times($string, $count);
     }
 
     /**
@@ -36,11 +47,16 @@ class String
      *
      * @param string $needle
      * @param string $haystack
+     *
      * @return boolean
-     **/
+     *
+     * @deprecated
+     */
     public static function contains($needle, $haystack)
     {
-        return !(strpos($haystack, (string) $needle) === false);
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::contains instead.', E_USER_DEPRECATED);
+
+        return StringUtil::contains($needle, $haystack);
     }
 
     /**
@@ -48,11 +64,16 @@ class String
      *
      * @param string $needle
      * @param string $haystack
+     *
      * @return bool
-     **/
+     *
+     * @deprecated
+     */
     public static function startsWith($needle, $haystack)
     {
-        return substr($haystack, 0, strlen($needle)) == $needle;
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::startsWith instead.', E_USER_DEPRECATED);
+
+        return StringUtil::startsWith($needle, $haystack);
     }
 
     /**
@@ -60,11 +81,16 @@ class String
      *
      * @param string $needle
      * @param string $haystack
+     *
      * @return bool
-     **/
+     *
+     * @deprecated
+     */
     public static function endsWith($needle, $haystack)
     {
-        return substr($haystack, -strlen($needle)) == $needle;
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::endsWith instead.', E_USER_DEPRECATED);
+
+        return StringUtil::endsWith($needle, $haystack);
     }
 
     /**
@@ -72,11 +98,16 @@ class String
      * the result.
      *
      * @param string $string
+     *
      * @return array
-     **/
+     *
+     * @deprecated
+     */
     public static function toArray($string)
     {
-        return preg_split('//', $string, -1, PREG_SPLIT_NO_EMPTY);
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::toArray instead.', E_USER_DEPRECATED);
+
+        return StringUtil::toArray($string);
     }
 
     /**
@@ -84,12 +115,18 @@ class String
      *
      * @param string $string
      * @param array $array
+     *
      * @return string
+     *
+     * @deprecated
+     *
      * @author Nesbert Hidalgo
-     **/
+     */
     public static function replaceByArray($string, array $array)
     {
-        return str_replace(array_keys($array), array_values($array), $string);
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::replaceByArray instead.', E_USER_DEPRECATED);
+
+        return StringUtil::replaceByArray($string, $array);
     }
 
     /**
@@ -100,12 +137,17 @@ class String
      * @param string $string
      * @param string $pattern
      * @param string $replace
-     * @param null $count
+     * @param int|null $count
+     *
      * @return string
+     *
+     * @deprecated
      */
     public static function gsub($string, $pattern, $replace, &$count = null)
     {
-        return self::sub($string, $pattern, $replace, -1, $count);
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::gsub instead.', E_USER_DEPRECATED);
+
+        return StringUtil::gsub($string, $pattern, $replace, $count);
     }
 
     /**
@@ -119,51 +161,35 @@ class String
      * @param string $replace
      * @param int $times
      * @param null $count
+     *
      * @return string
+     *
+     * @deprecated
      */
     public static function sub($string, $pattern, $replace, $times = 1, &$count = null)
     {
-        return preg_replace(
-            (Validate::isRegex($pattern)
-                            ? $pattern
-                            : "~{$pattern}~"),
-            $replace,
-            $string,
-            $times,
-            $count
-        );
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::sub instead.', E_USER_DEPRECATED);
+
+        return StringUtil::sub($string, $pattern, $replace, $times, $count);
     }
 
     /**
      * Build a link href mailto string.
      *
-     * @param $to
+     * @param string $to
      * @param string $subject
      * @param string $body
      * @param string $cc
      * @param string $bcc
+     *
      * @return string
+     *
+     * @deprecated
      */
     public static function mailTo($to, $subject = '', $body = '', $cc = '', $bcc = '')
     {
-        $params = array(
-            'to' => $to,
-            'cc' => $cc,
-            'bcc' => $bcc,
-            'subject' => rawurlencode($subject),
-            'body'=> rawurlencode($body),
-        );
-        $extra = array();
+        @trigger_error('NObjects\String is deprecated. Migrate to using NObjects\StringUtil::mailTo instead.', E_USER_DEPRECATED);
 
-        $href = 'mailto:' . $params['to'];
-        unset($params['to']);
-
-        foreach ($params as $k => $v) {
-            if (!empty($v)) {
-                $extra[] = $k . '=' . $v;
-            }
-        }
-
-        return $href . ($extra ? '?' . implode('&', $extra) : '');
+        return StringUtil::mailTo($to, $subject, $body, $cc, $bcc);
     }
 }

@@ -1,14 +1,51 @@
-sudo: required
 services:
-  - docker
+  - memcached
+
 language: php
-php:
-  - "5.4"
-  - "5.5"
-before_script:
-  - composer install
+
+sudo: required
+dist: precise
+
+matrix:
+  include:
+    - php: 5.3
+      env: CACHE_EXTENSION=apc
+    - php: 5.3
+      env: CACHE_EXTENSION=apcu APCU_VERSION=4.0.11
+    - php: 5.4
+      env: CACHE_EXTENSION=apc
+    - php: 5.4
+      env: CACHE_EXTENSION=apcu APCU_VERSION=4.0.11
+    - php: 5.5
+      env: CACHE_EXTENSION=apcu APCU_VERSION=4.0.11
+    - php: 5.6
+      env: CACHE_EXTENSION=apcu
+    - php: 7.0
+      env: SKIP_GROUPS=legacy CACHE_EXTENSION=apcu
+    - php: 7.1
+      env: SKIP_GROUPS=legacy CACHE_EXTENSION=apcu
+
 before_install:
-  - echo "extension=ldap.so" >>php --ini | grep "Loaded Configuration" | sed -e "s|.:\s||"``
-  - docker pull osixia/openldap:1.1.9
-  - docker run -p 127.0.0.1:1389:389 --detach --volume $TRAVIS_BUILD_DIR/tests/assets/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom osixia/openldap:1.1.9 --copy-service
-script: ./vendor/bin/phpunit --coverage-text
+  - |
+    if [ "${CACHE_EXTENSION}" == "apcu" ]; then
+      pecl info apcu >/dev/null 2>&1 && printf "extension=apcu.so\n" >> ~/.phpenv/versions/$(phpenv version-name)/etc/apcu.ini
+      pecl info apcu >/dev/null 2>&1 || yes '' | pecl install "apcu${APCU_VERSION+"-"}${APCU_VERSION:-""}"
+      printf "[apcu]\napc.enabled=1\napc.enable_cli=1\n" >> ~/.phpenv/versions/$(phpenv version-name)/etc/apcu.ini
+      phpenv config-add ~/.phpenv/versions/$(phpenv version-name)/etc/apcu.ini
+    fi
+  - |
+    if [ "${CACHE_EXTENSION}" == "apc" ]; then
+      printf "[apc]\nextension=apc.so\napc.enabled=1\napc.enable_cli=1\n" >> ~/.phpenv/versions/$(phpenv version-name)/etc/apc.ini
+      phpenv config-add ~/.phpenv/versions/$(phpenv version-name)/etc/apc.ini
+    fi
+  - |
+    if [ "${TRAVIS_PHP_VERSION:0:1}" == "5" ] ; then
+      printf "extension=memcache.so\n" > ~/.phpenv/versions/$(phpenv version-name)/etc/memcache.ini
+      phpenv config-add ~/.phpenv/versions/$(phpenv version-name)/etc/memcache.ini
+    fi
+  - phpenv rehash
+  - php -i
+
+install: composer install
+
+script: ./vendor/bin/phpunit -v --coverage-text --exclude-group requires-separate-process,ldap_integration${SKIP_GROUPS+","}${SKIP_GROUPS:-""} -c phpunit.travis.xml

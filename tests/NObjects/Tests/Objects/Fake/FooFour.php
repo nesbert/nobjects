@@ -1,23 +1,21 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\Fake;
 
-use NObjects\Object;
-
-/**
- * FooThree is a fake testing class.
- */
-class FooThree extends Object
+class FooFour extends \NObjects\Nobject
 {
-    private $bar;
+    public $bar;
 
     public function setBar($bar)
     {
         $this->bar = $bar;
-
         return $this;
     }
 
+
+    /**
+     * @return mixed
+     */
     public function getBar()
     {
         return $this->bar;

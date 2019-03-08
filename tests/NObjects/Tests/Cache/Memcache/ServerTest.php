@@ -3,6 +3,9 @@ namespace NObjects\Tests\Cache\Memcache;
 
 use NObjects\Cache\Memcache\Server;
 
+/**
+ * @requires extension memcache
+ */
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -17,10 +20,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if (!extension_loaded('memcache')) {
-            $this->markTestSkipped('Memcache extension is not available.');
-        }
-
         $this->o = new Server();
         $this->x = array(
             'scheme' => 'udp',
@@ -98,7 +97,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         ));
         $this->assertFalse($this->o->isOnline());
 
-        if (extension_loaded('memcache')) {
+        if (class_exists('\Memcache')) {
             $this->o = new Server(array(
                 'port' => 11211
             ));

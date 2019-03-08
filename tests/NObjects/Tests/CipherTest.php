@@ -3,6 +3,10 @@ namespace NObjects\Tests;
 
 use NObjects\Cipher;
 
+/**
+ * Class CipherTest
+ * @requires extension mcrypt
+ */
 class CipherTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -12,9 +16,9 @@ class CipherTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (!extension_loaded('mcrypt')) {
+        if (\PHP_MAJOR_VERSION > 5 || (\PHP_MAJOR_VERSION == 5 && \PHP_MINOR_VERSION > 5)) {
             $this->markTestSkipped(
-                'The Mcrypt extension is not available.'
+              'MCrypt functionality throws deprecation errors after PHP 5.5'
             );
         }
 
@@ -42,6 +46,9 @@ class CipherTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group legacy
+     */
     public function testEncrypt()
     {
         $s = 'www.creovel.org';
@@ -49,6 +56,9 @@ class CipherTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($e, Cipher::encrypt($s));
     }
 
+    /**
+     * @group legacy
+     */
     public function testDecrypt()
     {
         $s = 'www.creovel.org';
@@ -57,7 +67,6 @@ class CipherTest extends \PHPUnit_Framework_TestCase
         // level tests
         $this->all($s, 2);
         $this->all($s, 3);
-        $this->all($s, 4);
         $this->all($s, 5); // will default to 1
 
         // level tests with key/salt
@@ -65,22 +74,21 @@ class CipherTest extends \PHPUnit_Framework_TestCase
         $this->all($s, 1, $k);
         $this->all($s, 2, $k);
         $this->all($s, 3, $k);
-        $this->all($s, 4, $k);
     }
 
+    public function testDecryptRijndael()
+    {
+        $s = 'www.creovel.org';
+        $this->all($s, 4);
+        $this->all($s, 4, 'keepitDRY');
+    }
+
+    /**
+     * @group legacy
+     * @expectedDeprecation Method NObjects\Cipher::md5Data is deprecated. Migrate to using NObjects\Hash::md5 instead.
+     */
     public function testMd5Data()
     {
-        $str = 'Lego Star Wars!';
-        $this->assertEquals(md5($str), Cipher::md5Data($str));
-
-        $array = array(1,2,3);
-        $this->assertEquals(md5(json_encode($array)), Cipher::md5Data($array));
-
-        $array2 = array(3,2,1);
-        $this->assertEquals(md5(json_encode($array)), Cipher::md5Data($array2));
-
-
-        $object = (object)array('id' => 555, 'name' => 'Luke S.');
-        $this->assertEquals(md5(serialize($object)), Cipher::md5Data($object));
+        Cipher::md5Data('deprecation');
     }
 }

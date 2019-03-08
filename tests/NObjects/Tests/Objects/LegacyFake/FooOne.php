@@ -1,6 +1,6 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\LegacyFake;
 
 use NObjects\Object;
 

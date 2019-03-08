@@ -6,7 +6,7 @@ namespace NObjects\Ldap;
  *
  * @author Nesbert Hidalgo
  */
-class User extends \NObjects\Object
+class User extends \NObjects\Nobject
 {
     private $data;
 
