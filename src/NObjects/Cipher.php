@@ -7,7 +7,7 @@ namespace NObjects;
  * variety of block algorithms.
  *
  * @author Nesbert Hidalgo
- **/
+ */
 class Cipher
 {
     const LEVEL1 = 1;
@@ -35,7 +35,7 @@ class Cipher
         switch ($level) {
             case self::LEVEL1:
             default:
-                @trigger_error('Encryption level 1 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                @trigger_error('Encryption level 1 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
                 $return = @mcrypt_encrypt(
                     MCRYPT_XTEA,
                     $key,
@@ -46,7 +46,7 @@ class Cipher
                 break;
 
             case self::LEVEL2:
-                @trigger_error('Encryption level 2 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                @trigger_error('Encryption level 2 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
                 $return = @mcrypt_encrypt(
                     MCRYPT_SERPENT,
                     $key,
@@ -57,7 +57,7 @@ class Cipher
                 break;
 
             case self::LEVEL3:
-                @trigger_error('Encryption level 3 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                @trigger_error('Encryption level 3 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
                 $return = @mcrypt_encrypt(
                     MCRYPT_SAFERPLUS,
                     $key,
@@ -68,12 +68,11 @@ class Cipher
                 break;
 
             case self::LEVEL4:
-                $return = openssl_encrypt(
-                    $str,
-                    'aes-256-ecb',
+                @trigger_error('Encryption level 4 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
+                $return = mcrypt_encrypt(MCRYPT_RIJNDAEL_256,
                     $key,
-                    2 xor 1 // OPENSSL_ZERO_PADDING xor OPENSSL_RAW_DATA
-//                    self::iv4(), ECB cipher does not use IV input
+                    $str,
+                    MCRYPT_MODE_ECB
                 );
                 break;
         }
@@ -101,7 +100,7 @@ class Cipher
         switch ($level) {
             case self::LEVEL1:
             default:
-                @trigger_error('Encryption level 1 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                @trigger_error('Encryption level 1 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
                 $return = @mcrypt_decrypt(
                     MCRYPT_XTEA,
                     $key,
@@ -112,7 +111,7 @@ class Cipher
                 break;
 
             case self::LEVEL2:
-                @trigger_error('Encryption level 2 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                @trigger_error('Encryption level 2 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
                 $return = @mcrypt_decrypt(
                     MCRYPT_SERPENT,
                     $key,
@@ -123,7 +122,7 @@ class Cipher
                 break;
 
             case self::LEVEL3:
-                @trigger_error('Encryption level 3 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                @trigger_error('Encryption level 3 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
                 $return = @mcrypt_decrypt(
                     MCRYPT_SAFERPLUS,
                     $key,
@@ -134,12 +133,11 @@ class Cipher
                 break;
 
             case self::LEVEL4:
-                $return = openssl_decrypt(
-                    $str,
-                    'aes-256-ecb',
+                @trigger_error('Encryption level 4 is deprecated. Migrate your encrypted data to an alternative.', E_USER_DEPRECATED);
+                $return = mcrypt_decrypt(MCRYPT_RIJNDAEL_256,
                     $key,
-                    2 xor 1 // OPENSSL_ZERO_PADDING xor OPENSSL_RAW_DATA
-//                    self::iv4(), ECB cipher does not use IV input
+                    $str,
+                    MCRYPT_MODE_ECB
                 );
                 break;
         }

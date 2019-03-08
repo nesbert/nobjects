@@ -34,14 +34,11 @@ The Mcrypt library interface is deprecated as of PHP 7.1. The encryption algorit
 "levels" 1, 2, and 3 do not have equivalents in the OpenSSL library or in currently available
 polyfill libraries, so these algorithms will no longer be able to be supported.
 
-| NObjects\Cipher Level | Algorithm Name | Status     |
-|-----------------------|----------------|------------|
-| 1                     | XTEA           | Deprecated |
-| 2                     | SERPENT        | Deprecated |
-| 3                     | SAFERPLUS      | Deprecated |
-| 4                     | RIJNDAEL 256   | Supported  |
- 
-You are recommended to migrate your encryption and hashing needs to a different library. 
+NObjects encryption level 4 maps to the Mcrypt implementation of Rijndael 256. This algorithm slightly
+differs from AES-256 because of its variable key size. AES-256 is offered in openssl, but not Rinjndael 256.
+
+Both Cipher::encrypt and Cipher::decrypt methods are deprecated. You are recommended to migrate your 
+encryption and hashing needs to a different library. 
 
 For example, this is a popular and well-maintained encryption and hashing library.
 
