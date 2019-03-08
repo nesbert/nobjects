@@ -1,6 +1,6 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\Fake;
 
 /**
  * ChildOfParentWithPrivatePropsNoAccessor is a fake testing class.

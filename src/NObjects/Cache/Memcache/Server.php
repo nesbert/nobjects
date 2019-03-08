@@ -71,9 +71,11 @@ class Server
      * @return Server
      * @see Server::load()
      */
-    public function __construct(Array $properties = array())
+    public function __construct(array $properties = array())
     {
-        if (count($properties)) $this->load($properties);
+        if (count($properties)) {
+            $this->load($properties);
+        }
     }
 
     /**
@@ -96,7 +98,7 @@ class Server
      * @param array $properties
      * @return Server
      **/
-    public function load(Array $properties)
+    public function load(array $properties)
     {
         foreach ($properties as $k => $v) {
             if (isset($this->{$k})) {
@@ -132,11 +134,13 @@ class Server
     public function isOnline()
     {
         try {
-            if (!extension_loaded('memcache')) return false;
+            if (!class_exists('\Memcache')) {
+                return false;
+            }
 
             $memcache = new \Memcache;
-            $online = $memcache->connect($this->host, $this->port);
-            $memcache->close();
+            $online = @$memcache->connect($this->host, $this->port);
+            @$memcache->close();
             return $online;
         } catch (\Exception $e) {
             return false;

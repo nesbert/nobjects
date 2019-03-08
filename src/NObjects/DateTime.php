@@ -3,7 +3,7 @@ namespace NObjects;
 
 /**
  * Utility DateTime helper.
- * 
+ *
  * @author Nesbert Hidalgo
  */
 class DateTime extends \DateTime
@@ -17,13 +17,16 @@ class DateTime extends \DateTime
     private static $globalFormat = 'F j, Y g:i A';
 
     /**
+     * @todo It should throw instead of returning null when initialized by an invalid time.
+     *
      * Similar to DateTime construct but accepts unix timestamp as well.
      *
      * @param string $time
-     * @param \DateTimeZone $timezone
+     * @param \DateTimeZone|null $timezone
+     *
      * @return \NObjects\DateTime
      */
-    public function __construct($time = 'now', \DateTimeZone $timezone = null)
+    public function __construct($time = 'now', $timezone = null)
     {
         if (is_numeric($time)) {
             $time = date('Y-m-d H:i:s', $time);
@@ -35,30 +38,34 @@ class DateTime extends \DateTime
         } elseif ($time == '0000-00-00 00:00:00' || $time === false) {
             return null;
         }
-        
-        parent::__construct($time, $timezone);
+
+        if (null !== $timezone) {
+            parent::__construct($time, $timezone);
+        } else {
+            parent::__construct($time);
+        }
     }
-    
+
     /**
      * Print object as string.
-     * 
+     *
      * @return string
      */
     public function __toString()
     {
         return $this->getDateTime();
     }
-    
+
     /**
      * Get unix timestamp.
-     * 
+     *
      * @return integer
      */
     public function getTimestamp()
     {
         return (int) $this->format('U');
     }
-    
+
     /**
      * Get date string (YYYY-MM-DD).
      *
@@ -68,7 +75,7 @@ class DateTime extends \DateTime
     {
         return $this->format('Y-m-d');
     }
-    
+
     /**
      * Get time string (HH:MM:SS).
      *
@@ -78,7 +85,7 @@ class DateTime extends \DateTime
     {
         return $this->format('H:i:s');
     }
-    
+
     /**
      * Get date & time string (YYYY-MM-DD HH:MM:SS).
      *
@@ -88,7 +95,7 @@ class DateTime extends \DateTime
     {
         return $this->getDate() . ' ' . $this->getTime();
     }
-    
+
     /**
      * Get a datetime string using the global format.
      *
@@ -107,14 +114,15 @@ class DateTime extends \DateTime
      * @return \DateInterval
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */
-    public function diff($now = 'now', $absolute = false) {
-        if(!($now instanceOf \DateTime)
-            || !($now instanceOf DateTime)) {
+    public function diff($now = 'now', $absolute = false)
+    {
+        if (!($now instanceof \DateTime)
+            || !($now instanceof DateTime)) {
             $now = new DateTime($now);
         }
         return parent::diff($now, $absolute);
     }
-    
+
     /**
      * Return Age in Years.
      *
@@ -122,13 +130,14 @@ class DateTime extends \DateTime
      * @return Integer
      * @link http://www.php.net/manual/en/class.datetime.php#95830
      */
-    public function getAge($now = 'now') {
+    public function getAge($now = 'now')
+    {
         return $this->diff($now)->format('%y');
     }
-    
+
     /**
      * Get a formatted string of time since passed $time.
-     * 
+     *
      * @param string $time
      * @param bool $showSeconds
      * @return string
@@ -157,13 +166,13 @@ class DateTime extends \DateTime
         if (!$showSeconds) {
             unset($timeSince['s']);
         }
-        
+
         return trim(implode(', ', $timeSince));
     }
-    
+
     /**
      * Return a date string in the date format of YYYY-MM-DD.
-     * 
+     *
      * @param string $format
      * @return string
      */

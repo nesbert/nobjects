@@ -19,6 +19,7 @@ class Memcache extends Base implements Adapter
      */
     public function __construct($servers = 'tcp://localhost', $compress = false)
     {
+        @trigger_error('Class NObjects\Cache\Memcache is deprecated. Migrate your code a PSR-6 or PSR-16 compatible implementation.', E_USER_DEPRECATED);
         $this->setData(new Data($servers, $compress));
     }
 
@@ -33,7 +34,9 @@ class Memcache extends Base implements Adapter
      */
     public function exists($key)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return $this->getData()->exists($key);
     }
 
@@ -45,7 +48,9 @@ class Memcache extends Base implements Adapter
      */
     public function get($key)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return $this->getData()->get($key);
     }
 
@@ -59,7 +64,9 @@ class Memcache extends Base implements Adapter
      */
     public function set($key, $value, $ttl = 0)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return $this->getData()->set($key, $value, $this->stringToTime($ttl));
     }
 
@@ -72,7 +79,9 @@ class Memcache extends Base implements Adapter
      */
     public function delete($key, $delay = 0)
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return $this->getData()->delete($key, $delay);
     }
 
@@ -83,7 +92,9 @@ class Memcache extends Base implements Adapter
      */
     public function clear()
     {
-        if (!$this->open()) return false;
+        if (!$this->open()) {
+            return false;
+        }
         return $this->getData()->flush();
     }
 

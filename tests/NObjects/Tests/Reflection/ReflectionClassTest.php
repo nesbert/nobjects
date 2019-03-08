@@ -60,12 +60,12 @@ class ReflectionClassTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5, $results);
 
-        $this->assertCount(1, array_filter($results, function($elem) {
+        $this->assertCount(1, array_filter($results, function ($elem) {
             /** @var \ReflectionProperty $elem */
             return $elem->getName() == 'childPubProp';
         }));
 
-        $this->assertCount(1, array_filter($results, function($elem) {
+        $this->assertCount(1, array_filter($results, function ($elem) {
             /** @var \ReflectionProperty $elem */
             return $elem->getName() == 'childProtProp';
         }));
@@ -180,12 +180,12 @@ class ReflectionClassTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5, $results);
 
-        $this->assertCount(1, array_filter($results, function($elem) {
+        $this->assertCount(1, array_filter($results, function ($elem) {
             /** @var \ReflectionProperty $elem */
             return $elem->getName() == 'childPubProp';
         }));
 
-        $this->assertCount(1, array_filter($results, function($elem) {
+        $this->assertCount(1, array_filter($results, function ($elem) {
             /** @var \ReflectionProperty $elem */
             return $elem->getName() == 'childProtProp';
         }));
@@ -210,12 +210,12 @@ class ReflectionClassTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(5, $results);
 
-        $this->assertCount(1, array_filter($results, function($elem) {
+        $this->assertCount(1, array_filter($results, function ($elem) {
             /** @var \ReflectionProperty $elem */
             return $elem->getName() == 'childPubProp';
         }));
 
-        $this->assertCount(1, array_filter($results, function($elem) {
+        $this->assertCount(1, array_filter($results, function ($elem) {
             /** @var \ReflectionProperty $elem */
             return $elem->getName() == 'childProtProp';
         }));

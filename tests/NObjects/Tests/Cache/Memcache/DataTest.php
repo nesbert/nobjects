@@ -3,6 +3,11 @@ namespace NObjects\Tests\Cache\Memcache;
 
 use NObjects\Cache\Memcache\Data;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ * @requires extension memcache
+ */
 class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -10,16 +15,27 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     private $o;
 
+    /**
+     * @var string
+     */
+    private static $memcachedPath;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        $host = getenv('PHPUNIT_MEMCACHED_SERVER_HOST') ? getenv('PHPUNIT_MEMCACHED_SERVER_HOST') : 'localhost';
+        $port = getenv('PHPUNIT_MEMCACHED_SERVER_PORT') ? getenv('PHPUNIT_MEMCACHED_SERVER_PORT') : 11211;
+
+        static::$memcachedPath = $host.':'.$port;
+    }
+
     public function setUp()
     {
-        if (!extension_loaded('memcache')) {
-            $this->markTestSkipped('Memcache extension is not available.');
-        }
-
-        $this->o = new Data('tcp://localhost', true);
+        $this->o = new Data('tcp://' . static::$memcachedPath, true);
 
         if (!$this->o->open()) {
-            $this->markTestSkipped('Memcache extension is not available.');
+            $this->markTestSkipped('Memcache server is not available.');
         }
     }
 
@@ -43,7 +59,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->o->exists('test789'));
         $this->assertFalse($this->o->exists(null));
 
-        $this->assertEquals(array('test123' => true,'test456' => true), $this->o->exists(array('test123','test456','test789')));
+        $this->assertEquals(
+            array(
+                'test123' => true,
+                'test456' => true
+            ),
+            $this->o->exists(array('test123','test456','test789'))
+        );
     }
 
     public function testDelete()
@@ -76,12 +98,12 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $stats = $this->o->stats();
         $this->assertTrue(is_array($stats));
         $this->assertEquals(1, count($stats));
-        $this->assertTrue(is_array($stats['localhost:11211']));
-        $this->assertEquals(48, count($stats['localhost:11211']));
+        $this->assertTrue(is_array($stats[static::$memcachedPath]));
+        $this->assertGreaterThanOrEqual(10, $stats[static::$memcachedPath]);
 
         $stats = $this->o->stats(false);
         $this->assertTrue(is_array($stats));
-        $this->assertEquals(48, count($stats));
+        $this->assertGreaterThanOrEqual(10, $stats);
     }
 
     public function testClosed()
@@ -94,5 +116,4 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($o->clear());
         $this->assertFalse($o->stats());
     }
-
 }

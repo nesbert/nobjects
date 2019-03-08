@@ -44,7 +44,9 @@ class FlashMessage
             } else {
                 $return = $messages;
             }
-            if ($unsetMessages) unset($_SESSION[self::SESSION_NAME]);
+            if ($unsetMessages) {
+                unset($_SESSION[self::SESSION_NAME]);
+            }
             return $return;
         }
 

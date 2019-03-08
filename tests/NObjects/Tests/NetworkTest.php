@@ -21,7 +21,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         putenv('HTTPS=off');
-        ob_clean();
+        ob_end_clean();
     }
 
     public function testCurlRequest()
@@ -34,7 +34,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($response->body));
         $this->assertTrue(strstr($response->body, 'Google') !== false);
 
-        $response = Network::curlRequest('http://badrequest');
+        $response = Network::curlRequest('http://127.0.0.0');
         $this->assertFalse($response);
 
         $response = Network::curlRequest('http://www.google.com', 'BLAH');
@@ -143,6 +143,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group requires-separate-process
      * @runInSeparateProcess
      */
     public function testForceHTTPS()

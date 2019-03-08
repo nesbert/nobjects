@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests;
+
 use NObjects\Date;
 
 class DateTest extends \PHPUnit_Framework_TestCase
@@ -12,8 +13,9 @@ class DateTest extends \PHPUnit_Framework_TestCase
     public function testDatetime()
     {
         $now = date('Y-m-d H:i:s');
-        $tomorrow = date('Y-m-d H:i:s', strtotime('+1day'));
-        $yesterday = date('Y-m-d H:i:s', strtotime('-1day'));
+        $nowTs = time();
+        $tomorrow = date('Y-m-d H:i:s', strtotime('+1day', $nowTs));
+        $yesterday = date('Y-m-d H:i:s', strtotime('-1day', $nowTs));
         $datetime = array();
         $datetime['hour'] = 12;
         $datetime['minute'] = 55;
@@ -21,14 +23,14 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $datetime['month'] = 3;
         $datetime['day'] = 6;
         $datetime['year'] = 2010;
-        
-        $this->assertEquals($now, Date::datetime());
-        $this->assertEquals($now, Date::datetime(null));
-        $this->assertEquals($now, Date::datetime(time()));
-        $this->assertEquals($tomorrow, Date::datetime(time() + Date::DAY));
-        $this->assertEquals($yesterday, Date::datetime(time() - Date::DAY));
-        $this->assertEquals($tomorrow, Date::datetime(strtotime('+1day')));
-        $this->assertEquals($yesterday, Date::datetime(strtotime('-1day')));
+
+        $this->assertRegExp('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', Date::datetime());
+        $this->assertRegExp('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', Date::datetime(null));
+        $this->assertRegExp('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', Date::datetime(time()));
+        $this->assertEquals($tomorrow, Date::datetime($nowTs + Date::DAY));
+        $this->assertEquals($yesterday, Date::datetime($nowTs - Date::DAY));
+        $this->assertEquals($tomorrow, Date::datetime(strtotime('+1day', $nowTs)));
+        $this->assertEquals($yesterday, Date::datetime(strtotime('-1day', $nowTs)));
         $this->assertEquals('2010-03-06 12:55:23', Date::datetime($datetime));
         $datetime['hour'] = 10;
         $datetime['ampm'] = 'pm';
@@ -88,20 +90,44 @@ class DateTest extends \PHPUnit_Framework_TestCase
     public function testToISO8601()
     {
         // default GMT
-        $this->assertEquals('2012-10-09T17:35:30Z', Date::toISO8601('2012-10-09 17:35:30'));
-        $this->assertEquals('2012-08-17T01:43:00Z', Date::toISO8601('2012-08-16 18:43:00 -0700'));
+        $this->assertEquals(
+            '2012-10-09T17:35:30Z',
+            Date::toISO8601('2012-10-09 17:35:30')
+        );
+        $this->assertEquals(
+            '2012-08-17T01:43:00Z',
+            Date::toISO8601('2012-08-16 18:43:00 -0700')
+        );
 
         // America/Los_Angeles
-        $this->assertEquals('2012-10-09T17:35:30-07:00', Date::toISO8601('2012-10-09 17:35:30', 'America/Los_Angeles'));
-        $this->assertEquals('2012-08-16T18:43:00-07:00', Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Los_Angeles'));
-        
+        $this->assertEquals(
+            '2012-10-09T17:35:30-07:00',
+            Date::toISO8601('2012-10-09 17:35:30', 'America/Los_Angeles')
+        );
+        $this->assertEquals(
+            '2012-08-16T18:43:00-07:00',
+            Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Los_Angeles')
+        );
+
         // America/Chicago
-        $this->assertEquals('2012-10-09T17:35:30-05:00', Date::toISO8601('2012-10-09 17:35:30', 'America/Chicago'));
-        $this->assertEquals('2012-08-16T20:43:00-05:00', Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Chicago'));
-        
+        $this->assertEquals(
+            '2012-10-09T17:35:30-05:00',
+            Date::toISO8601('2012-10-09 17:35:30', 'America/Chicago')
+        );
+        $this->assertEquals(
+            '2012-08-16T20:43:00-05:00',
+            Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/Chicago')
+        );
+
         // America/New_York
-        $this->assertEquals('2012-10-09T17:35:30-04:00', Date::toISO8601('2012-10-09 17:35:30', 'America/New_York'));
-        $this->assertEquals('2012-08-16T21:43:00-04:00', Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/New_York'));
+        $this->assertEquals(
+            '2012-10-09T17:35:30-04:00',
+            Date::toISO8601('2012-10-09 17:35:30', 'America/New_York')
+        );
+        $this->assertEquals(
+            '2012-08-16T21:43:00-04:00',
+            Date::toISO8601('2012-08-16 18:43:00 -0700', 'America/New_York')
+        );
     }
 
     public function testTimeSince()
@@ -144,6 +170,6 @@ class DateTest extends \PHPUnit_Framework_TestCase
 
     public function testMilliseconds()
     {
-        $this->assertEquals(round(microtime(true)*1000), Date::milliseconds());
+        $this->assertInternalType('float', Date::milliseconds());
     }
 }

@@ -15,6 +15,23 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
      */
     protected $o;
 
+    /**
+     * Detects usage of the MUSL C library (Alpine docker images)
+     * @var bool
+     */
+    static $isMusl = false;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        ob_start();
+        phpinfo(1);
+        $info = ob_get_contents();
+        ob_end_clean();
+
+        self::$isMusl = false !== preg_match('/\wmusl\w/', $info);
+    }
+
     protected function setUp()
     {
         $this->o = new Validate;
@@ -71,7 +88,13 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Validate::isEmail('this is"not\allowed@example.com'));
         $this->assertFalse(Validate::isEmail('this\ still\"not\\allowed@example.com'));
         $this->assertFalse(Validate::isEmail('@_example.org'));
+    }
 
+    public function testIsEmailWithDNS()
+    {
+        if (self::$isMusl) {
+            $this->markTestSkipped("checkdnsrr always returns 1 with MUSL C library");
+        }
         // check domain name
         $email = 'test@notavaliddomainname.com';
         $this->assertTrue(Validate::isEmail($email));

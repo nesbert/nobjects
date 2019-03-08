@@ -1,5 +1,6 @@
 <?php
 namespace NObjects\Tests;
+
 use NObjects\Directory;
 
 class DirectoryTest extends \PHPUnit_Framework_TestCase
@@ -54,14 +55,18 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $ls = Directory::ls($this->dir);
 
         foreach ($this->files as $file) {
-            if (strstr($file, 'hidden')) continue;
+            if (strstr($file, 'hidden')) {
+                continue;
+            }
             $this->assertTrue(array_search($file, $ls) !== false);
         }
 
         $ls = Directory::ls($this->subdir);
 
         foreach ($this->subfiles as $file) {
-            if (strstr($file, 'hidden')) continue;
+            if (strstr($file, 'hidden')) {
+                continue;
+            }
             $this->assertTrue(array_search($file, $ls) !== false);
         }
     }
@@ -121,5 +126,4 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($ls));
         $this->assertEquals($this->files[3], current($ls));
     }
-
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\Fake;
 
-use NObjects\Object;
+use NObjects\Nobject;
 
 /**
  * FooThree is a fake testing class.
  */
-class FooThree extends Object
+class FooThree extends Nobject
 {
     private $bar;
 

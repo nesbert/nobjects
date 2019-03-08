@@ -1,22 +1,27 @@
 <?php
+
 namespace NObjects\Tests;
 
+use NObjects\Tests\Objects\LegacyFake;
 use NObjects\Object;
-use NObjects\Tests\Object\Fake\BooleanAccessorDifferentName;
-use NObjects\Tests\Object\Fake\BooleanAccessorDifferentNameWithHas;
-use NObjects\Tests\Object\Fake\BooleanAccessorSameName;
-use NObjects\Tests\Object\Fake\BooleanAccessorSameNameWithHas;
-use NObjects\Tests\Object\Fake\ChildOfParentWithPrivateProps;
-use NObjects\Tests\Object\Fake\ChildOfParentWithPrivatePropsNoAccessor;
 
 class ObjectTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     */
     public function testObjectHelpers()
     {
         // simple
         $data = array('test' => 1212);
         $obj = new \NObjects\Object();
-        $this->assertTrue($obj instanceof Object);
+        $this->assertTrue($obj instanceof \NObjects\Nobject);
         $this->assertEquals($obj, $obj->fromArray($data));
         $this->assertTrue(isset($obj->test));
         $this->assertEquals($data['test'], $obj->test);
@@ -27,7 +32,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
         // simple 2 load via construct
         $obj2 = new \NObjects\Object($data);
-        $this->assertTrue($obj2 instanceof Object);
+        $this->assertTrue($obj2 instanceof \NObjects\Nobject);
         $this->assertTrue(isset($obj2->test));
         $this->assertEquals($data['test'], $obj2->test);
         $this->assertEquals($data, $obj2->toArray());
@@ -41,14 +46,14 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             'foo' => 'bar',
             'roles' => array('Father','Husband','Geek','Developer','Thinker'),
             'movie' => (object) array('name' => 'Star Wars'),
-            'favorites' => new \NObjects\Object( (object)array('toy'=>'Legos') ),
+            'favorites' => new \NObjects\Object((object)array('toy'=>'Legos')),
         );
 
         $data3['nested'] = $data3;
 
         $obj3 = new \NObjects\Object($data3);
 
-        $this->assertTrue($obj3 instanceof Object);
+        $this->assertTrue($obj3 instanceof \NObjects\Nobject);
 
         foreach ($data3 as $k => $v) {
             $this->assertTrue(isset($obj3->{$k}));
@@ -66,14 +71,18 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         // Gracefully handle empty keys in an associative array
         $data4 = array('test' => 1212, '' => 'bar');
         $obj4  = new \NObjects\Object($data4);
-        $this->assertTrue($obj4 instanceof Object);
+        $this->assertTrue($obj4 instanceof \NObjects\Nobject);
         $this->assertEquals(array('test' => 1212), $obj4->toArray()); // value for empty key ignored
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     */
     public function testObjectHelpersWithPublicPropsAndSetters()
     {
         $data = array('bar' => '1212');
-        $obj = new FooFour();
+        $obj = new LegacyFake\FooFour();
         $obj->fromArray($data);
 
         $this->assertEquals('1212', $obj->getBar());
@@ -83,9 +92,13 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('bar' => '1212'), $outData);
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     */
     public function testAncestors()
     {
-        $ancestors = Object::ancestors('Object');
+        $ancestors = Object::ancestors('Nobject');
         $this->assertTrue(empty($ancestors));
 
         $ancestors = Object::ancestors('\NObjects\DateTime');
@@ -95,6 +108,11 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('DateTime', $ancestors[0]);
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     */
     public function testValueClosure()
     {
         $date = '2012-05-02T12:00:00Z';
@@ -113,7 +131,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             // flatten date objects
             if ($value instanceof \NObjects\DateTime) {
                 $value = $value->toISO8601();
-            } else if ($value instanceof \DateTime) {
+            } elseif ($value instanceof \DateTime) {
                 $value = $value->format('c');
             }
 
@@ -141,16 +159,27 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     */
     public function testToArrayMore()
     {
         $bars = array(1,2,3,4,5);
-        $data = array('test' => 'testToArrayMore', 'fooTwo' => new \NObjects\Tests\Object\Fake\FooTwo($bars));
+        $data = array('test' => 'testToArrayMore', 'fooTwo' => new LegacyFake\FooTwo($bars));
         $obj = new \NObjects\Object($data);
 
         $data['fooTwo'] = $bars;
         $this->assertEquals($data, $obj->toArray());
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
+     */
     public function testTypeHintingHelpers()
     {
         $data = array(
@@ -197,9 +226,12 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue((array)$data['array'] === $obj->_initArray($data['array']));
         $this->assertNull($obj->_initArray(null));
 
-        // Object instance
-        $valType = 'NObjects\Tests\Object\Fake\FooThree';
-        $this->assertEquals(new \NObjects\Tests\Object\Fake\FooThree($data['instanceObject']), $obj->_initInstanceObject($data['instanceObject'], $valType));
+        // Nobject instance
+        $valType = 'NObjects\Tests\Objects\LegacyFake\FooThree';
+        $this->assertEquals(
+            new LegacyFake\FooThree($data['instanceObject']),
+            $obj->_initInstanceObject($data['instanceObject'], $valType)
+        );
         $this->assertInstanceOf($valType, $obj->_initInstanceObject($data['instanceObject'], $valType));
         $this->assertNull($obj->_initInstanceObject(null, $valType));
 
@@ -223,44 +255,72 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \NObjects\Object::toJSON
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToJSONCreatesJSONString()
     {
-        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
-        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $fixture = new LegacyFake\FooOne();
+        $this->assertEquals(
+            $fixture,
+            $fixture->fromArray(
+                array(
+                    'bars' => new \ArrayObject(array(1, 2, 3)),
+                    'skip' => true
+                )
+            )
+        );
         $this->assertJson($fixture->toJSON());
         $this->assertJsonStringEqualsJsonString($fixture->toJSON(), '{ "bars": [1, 2, 3] }');
     }
 
     /**
-     * @covers \NObjects\Object::__toString
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToStringCreatesJSONString()
     {
-        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
-        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $fixture = new LegacyFake\FooOne();
+        $this->assertEquals(
+            $fixture,
+            $fixture->fromArray(
+                array(
+                    'bars' => new \ArrayObject(array(1, 2, 3)),
+                    'skip' => true
+                )
+            )
+        );
         $this->assertJson((string) $fixture);
         $this->assertJsonStringEqualsJsonString((string) $fixture, '{ "bars": [1, 2, 3] }');
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayOmitsPropertiesBeginningWithUnderscore()
     {
-        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
-        $this->assertEquals($fixture, $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true)));
+        $fixture = new LegacyFake\FooOne();
+        $this->assertEquals(
+            $fixture,
+            $fixture->fromArray(
+                array(
+                    'bars' => new \ArrayObject(array(1, 2, 3)),
+                    'skip' => true
+                )
+            )
+        );
         $this->assertEquals(array('bars' => array(1, 2, 3)), $fixture->toArray());
         $this->assertEquals(new \ArrayObject(array(1, 2, 3)), $fixture->getBars());
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayIncludesDynamicPublicProperties()
     {
-        $fixture = new \NObjects\Tests\Object\Fake\FooOne();
+        $fixture = new LegacyFake\FooOne();
         $fixture->fromArray(array('bars' => new \ArrayObject(array(1, 2, 3)), 'skip' => true));
 
         $fixture->newProperty = 'dynamicVal';
@@ -269,11 +329,12 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayIncludesInheritedPrivatePropsWithAccessors()
     {
-        $fixture = new ChildOfParentWithPrivateProps();
+        $fixture = new LegacyFake\ChildOfParentWithPrivateProps();
         $fixture->foo = 'fooValue';
         $fixture->setPrivParentProp('barValue');
 
@@ -281,78 +342,87 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayOmitsInheritedPrivatePropsWithoutAccessors()
     {
-        $fixture = new ChildOfParentWithPrivatePropsNoAccessor();
+        $fixture = new LegacyFake\ChildOfParentWithPrivatePropsNoAccessor();
         $fixture->foo = 'fooValue';
 
         $this->assertEquals(array('foo' => 'fooValue'), $fixture->toArray());
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayIncludesBooleansWithIsConventionAccessorsWithSameName()
     {
-        $fixture = new BooleanAccessorSameName();
+        $fixture = new LegacyFake\BooleanAccessorSameName();
         $fixture->setIsStored(true);
 
         $this->assertEquals(array('isStored' => true), $fixture->toArray());
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayIncludesBooleanWithIsConventionAccessors()
     {
-        $fixture = new BooleanAccessorDifferentName();
+        $fixture = new LegacyFake\BooleanAccessorDifferentName();
         $fixture->setStored(true);
 
         $this->assertEquals(array('stored' => true), $fixture->toArray());
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayIncludesBooleansWithHasConventionAccessorsWithSameName()
     {
-        $fixture = new BooleanAccessorSameNameWithHas();
+        $fixture = new LegacyFake\BooleanAccessorSameNameWithHas();
         $fixture->setHasAvailableSeating(true);
 
         $this->assertEquals(array('hasAvailableSeating' => true), $fixture->toArray());
     }
 
     /**
-     * @covers \NObjects\Object::toArray
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
     public function testToArrayIncludesBooleanWithHasConventionAccessors()
     {
-        $fixture = new BooleanAccessorDifferentNameWithHas();
+        $fixture = new LegacyFake\BooleanAccessorDifferentNameWithHas();
         $fixture->setAvailableSeating(true);
 
         $this->assertEquals(array('availableSeating' => true), $fixture->toArray());
     }
-}
-
-class FooFour extends Object
-{
-
-    public $bar;
-
-    public function setBar($bar)
-    {
-        $this->bar = $bar;
-        return $this;
-    }
-
 
     /**
-     * @return mixed
+     * @group legacy
+     * @expectedDeprecation Class NObjects\Object is deprecated. Migrate your code to NObjects\Nobject.
      */
-    public function getBar()
+    public function testFromArrayHydratesSubobjects()
     {
-        return $this->bar;
+        $fixture = new LegacyFake\ObjectWithChild();
+
+        $fixture->fromArray(
+            array(
+                'foo' => 'x',
+                'childObject' => array(
+                    'foo' => 'a',
+                    'bar' => 'b',
+                    'baz' => 'c'
+                )
+            )
+        );
+
+        $this->assertEquals('x', $fixture->getFoo());
+        $this->assertEquals('a', $fixture->getChildObject()->getFoo());
+        $this->assertEquals('b', $fixture->getChildObject()->getBar());
+        $this->assertEquals('c', $fixture->getChildObject()->getBaz());
     }
 }

@@ -26,7 +26,11 @@ class Cache extends Cache\Base implements Cache\Adapter
      */
     public function __construct($adapter = null)
     {
-        if ($adapter) $this->setAdapter($adapter);
+        @trigger_error('Class NObjects\Cache\Memcache is deprecated. Migrate your code a PSR-6 or PSR-16 compatible library.', E_USER_DEPRECATED);
+
+        if ($adapter) {
+            $this->setAdapter($adapter);
+        }
     }
 
     /**

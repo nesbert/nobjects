@@ -1,0 +1,39 @@
+version: "3"
+services:
+  php53:
+    build: docker/php53/
+    volumes:
+      - .:/app
+    networks:
+      - mynetwork
+    depends_on:
+      - memcached
+      - ldap
+
+  php70:
+    build: docker/php70/
+    volumes:
+      - .:/app
+    networks:
+      - mynetwork
+    depends_on:
+      - memcached
+      - ldap
+
+  memcached:
+    image: memcached
+    networks:
+      - mynetwork
+
+  ldap:
+    image: osixia/openldap
+    volumes:
+      - ./tests/assets/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    command: --copy-service
+    ports:
+      - 3890:389
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

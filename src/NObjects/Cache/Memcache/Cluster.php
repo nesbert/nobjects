@@ -68,7 +68,9 @@ class Cluster
         if (is_string($servers)) {
             $servers = explode(',', $servers);
             foreach ($servers as $server) {
-                if (!$server) continue;
+                if (!$server) {
+                    continue;
+                }
                 $server = parse_url(trim($server));
                 // additional args from query string
                 if (!empty($server['query'])) {
@@ -78,10 +80,11 @@ class Cluster
                 $this->addServer(new Server($server));
             }
         // if array of Memcache_Server objects
-        } else if (is_array($servers)) {
-            foreach ($servers as $server)
+        } elseif (is_array($servers)) {
+            foreach ($servers as $server) {
                 $this->addServer($server);
-        } else if ($servers instanceof Server) {
+            }
+        } elseif ($servers instanceof Server) {
             $this->addServer($servers);
         }
         return $this;
@@ -122,7 +125,9 @@ class Cluster
     public function savePath()
     {
         $servers = array();
-        foreach ($this->getServers() as $server) $servers[] = $server->path();
+        foreach ($this->getServers() as $server) {
+            $servers[] = $server->path();
+        }
         return implode(', ', $servers);
     }
 
@@ -134,7 +139,9 @@ class Cluster
      **/
     public function getMemcacheObject($poolConnections = true)
     {
-        if (!extension_loaded('memcache')) return false;
+        if (!class_exists('\Memcache')) {
+            return false;
+        }
 
         // check connection pool
         if ($poolConnections) {
@@ -216,7 +223,10 @@ class Cluster
             $return["{$server->host}:{$server->port}"] = $server->isOnline();
             if ($echo) {
                 echo "Memcache on {$server->host}:{$server->port} " .
-                '<span style="' . ($return["{$server->host}:{$server->port}"] ? 'color:green;' : 'color:red;font-weight:bold;') . '">' .
+                '<span style="' . ($return["{$server->host}:{$server->port}"] ?
+                    'color:green;' :
+                    'color:red;font-weight:bold;')
+                . '">' .
                 ($return["{$server->host}:{$server->port}"] ? '[Ok]' : '[FAIL]') ."</span>";
             }
         }
@@ -262,26 +272,48 @@ class Cluster
         $exclude = array('pid','uptime','time','version','pointer_size');
 
         // init values
-        if (is_array($return['stats'])) foreach ($return['stats'] as $server => $stats) {
-            if (is_array($stats)) foreach ($stats as $k => $v) {
-                if (in_array($k, $exclude)) continue;
-                $return['totals'][$k] = 0;
+        if (is_array($return['stats'])) {
+            foreach ($return['stats'] as $server => $stats) {
+                if (is_array($stats)) {
+                    foreach ($stats as $k => $v) {
+                        if (in_array($k, $exclude)) {
+                            continue;
+                        }
+                                        $return['totals'][$k] = 0;
+                    }
+                }
             }
         }
 
         // get totals
-        if (is_array($return['servers'])) foreach ($return['servers'] as $ip => $status) {
-            if (empty($status)) continue;
-            if ($status) $return['totals']['ok_count']++;
-            $stat = $return['stats'][$ip];
-            if (is_array($stat)) foreach ($stat as $k => $v) {
-                if (in_array($k, $exclude)) {
-                    if ($stat['time'] < $return['totals']['time']) $return['totals']['time'] = $stat['time'];
-                    if ($stat['uptime'] > $return['totals']['uptime']) $return['totals']['uptime'] = $stat['uptime'];
-                    if ($stat['version'] > $return['totals']['latest_version']) $return['totals']['latest_version'] = $stat['version'];
-                    if ($stat['version'] < $return['totals']['earliest_version']) $return['totals']['earliest_version'] = $stat['version'];
-                } else {
-                    $return['totals'][$k] += $stat[$k];
+        if (is_array($return['servers'])) {
+            foreach ($return['servers'] as $ip => $status) {
+                if (empty($status)) {
+                    continue;
+                }
+                if ($status) {
+                    $return['totals']['ok_count']++;
+                }
+                $stat = $return['stats'][$ip];
+                if (is_array($stat)) {
+                    foreach ($stat as $k => $v) {
+                        if (in_array($k, $exclude)) {
+                            if ($stat['time'] < $return['totals']['time']) {
+                                $return['totals']['time'] = $stat['time'];
+                            }
+                            if ($stat['uptime'] > $return['totals']['uptime']) {
+                                $return['totals']['uptime'] = $stat['uptime'];
+                            }
+                            if ($stat['version'] > $return['totals']['latest_version']) {
+                                $return['totals']['latest_version'] = $stat['version'];
+                            }
+                            if ($stat['version'] < $return['totals']['earliest_version']) {
+                                $return['totals']['earliest_version'] = $stat['version'];
+                            }
+                        } else {
+                            $return['totals'][$k] += $stat[$k];
+                        }
+                    }
                 }
             }
         }
@@ -290,7 +322,7 @@ class Cluster
     }
 
     /**
-     * Get an array of all constants that use 'MEMCACHE_SERVERS_'.
+     * Get an array of all constants that use 'MEMCACHE_CLUSTER_'.
      *
      * @return array
      **/
@@ -299,6 +331,10 @@ class Cluster
         $constants = get_defined_constants(true);
         $key = self::CLUSTER_KEY_PREFIX;
         $clusters = array();
+
+        if (empty($constants['user'])) {
+            return $clusters;
+        }
 
         foreach ($constants['user'] as $k => $v) {
             if (preg_match('/^'.$key.'/', $k)) {

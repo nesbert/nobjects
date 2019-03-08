@@ -1,11 +1,12 @@
 <?php
 namespace NObjects\Tests\Ldap;
 
-use NObjects\Ldap\Service,
-    NObjects\Ldap\ServiceException,
-    NObjects\Ldap\User,
-    NObjects\Ldap\UserException;
+use NObjects\Ldap\User;
 
+/**
+ * UserTest provides integration tests for Ldap\User
+ * @requires extension ldap
+ */
 class UserTest extends ServiceTest
 {
     /**
@@ -13,17 +14,22 @@ class UserTest extends ServiceTest
      */
     private static $user;
 
+    /**
+     * @group ldap_integration
+     */
     public function testAuthenticate()
     {
-        self::$user = User::authenticate('john', 'john', $this->ldap1);
+        self::$user = User::authenticate('carol', 'carol', $this->ldap1);
 
-        $this->assertEquals('john', self::$user->getUsername());
-        $this->assertEquals('John', self::$user->getFirstName());
+        $this->assertEquals('carol', self::$user->getUsername());
+        $this->assertEquals('Carol', self::$user->getFirstName());
         $this->assertEquals('Smith', self::$user->getLastName());
-        $this->assertEquals('john.smith@testathon.net', self::$user->getEmail());
+        $this->assertEquals('carol@example.org', self::$user->getEmail());
     }
 
     /**
+     * @group ldap_integration
+     *
      * @depends testAuthenticate
      */
     public function testGetGroupMembers()
@@ -32,6 +38,8 @@ class UserTest extends ServiceTest
     }
 
     /**
+     * @group ldap_integration
+     *
      * @depends testAuthenticate
      */
     public function testIsMemberOf()
@@ -40,25 +48,29 @@ class UserTest extends ServiceTest
     }
 
     /**
+     * @group ldap_integration
+     *
      * @depends testAuthenticate
      */
     public function testMagicGetter()
     {
-        $this->assertEquals('john.smith@testathon.net', self::$user->mail);
-        $this->assertEquals('John', self::$user->givenname);
+        $this->assertEquals('carol@example.org', self::$user->mail);
+        $this->assertEquals('Carol', self::$user->givenname);
         $this->assertEquals('Smith', self::$user->sn);
-        $this->assertEquals('john', self::$user->cn);
+        $this->assertEquals('carol', self::$user->cn);
     }
 
     /**
+     * @group ldap_integration
+     *
      * @depends testAuthenticate
      */
     public function testSettersGetters()
     {
-        $this->assertEquals('john.smith@testathon.net', self::$user->getEmail());
-        $this->assertEquals('John', self::$user->getFirstName());
+        $this->assertEquals('carol@example.org', self::$user->getEmail());
+        $this->assertEquals('Carol', self::$user->getFirstName());
         $this->assertEquals('Smith', self::$user->getLastName());
-        $this->assertEquals('john', self::$user->getUsername());
+        $this->assertEquals('carol', self::$user->getUsername());
 
         $testData = array(1,2,3,4,5);
         $ldapUser = new User($testData);
@@ -68,5 +80,4 @@ class UserTest extends ServiceTest
         $this->assertEquals($ldapUser, $ldapUser->setData($testData));
         $this->assertEquals($testData, $ldapUser->getData());
     }
-
 }

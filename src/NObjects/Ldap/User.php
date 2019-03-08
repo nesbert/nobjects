@@ -6,7 +6,7 @@ namespace NObjects\Ldap;
  *
  * @author Nesbert Hidalgo
  */
-class User extends \NObjects\Object
+class User extends \NObjects\Nobject
 {
     private $data;
 
@@ -97,11 +97,10 @@ class User extends \NObjects\Object
 
         foreach ($results as $row) {
             $users[] = new User($row);
-
         }
 
         // sort by name TODO use $options to change comparison property
-        usort($users, function($a, $b) {
+        usort($users, function ($a, $b) {
             $al = strtolower($a->getName());
             $bl = strtolower($b->getName());
             if ($al == $bl) {
@@ -115,9 +114,11 @@ class User extends \NObjects\Object
 
     // instance methods
 
-    public function __construct(Array $data = null)
+    public function __construct(array $data = null)
     {
-        if (is_array($data)) $this->setData($data);
+        if (is_array($data)) {
+            $this->setData($data);
+        }
     }
 
     public function getFirstName()
@@ -173,7 +174,7 @@ class User extends \NObjects\Object
 
     // getters & setters
 
-    public function setData(Array $data)
+    public function setData(array $data)
     {
         $this->data = $data;
         return $this;
@@ -184,6 +185,3 @@ class User extends \NObjects\Object
         return $this->data;
     }
 }
-
-class UserException extends \Exception
-{}

@@ -3,6 +3,9 @@ namespace NObjects\Tests\Cache\Memcache;
 
 use NObjects\Cache\Memcache\Server;
 
+/**
+ * @requires extension memcache
+ */
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -17,10 +20,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if (!extension_loaded('memcache')) {
-            $this->markTestSkipped('Memcache extension is not available.');
-        }
-
         $this->o = new Server();
         $this->x = array(
             'scheme' => 'udp',
@@ -74,16 +73,21 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->x['weight'], $this->o->weight);
         $this->assertEquals($this->x['timeout'], $this->o->timeout);
         $this->assertEquals($this->x['retry_interval'], $this->o->retry_interval);
-
     }
 
     public function testPath()
     {
         $this->o = new Server();
-        $this->assertEquals('tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15', $this->o->path());
+        $this->assertEquals(
+            'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15',
+            $this->o->path()
+        );
 
         $this->o = new Server($this->x);
-        $this->assertEquals('udp://xwing:11212?persistent=0&weight=5&timeout=2&retry_interval=10', $this->o->path());
+        $this->assertEquals(
+            'udp://xwing:11212?persistent=0&weight=5&timeout=2&retry_interval=10',
+            $this->o->path()
+        );
     }
 
     public function testIsOnline()
@@ -93,7 +97,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         ));
         $this->assertFalse($this->o->isOnline());
 
-        if (extension_loaded('memcache')) {
+        if (class_exists('\Memcache')) {
             $this->o = new Server(array(
                 'port' => 11211
             ));

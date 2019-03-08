@@ -2,12 +2,12 @@
 
 namespace NObjects\Tests\Reflection\Fake;
 
-use NObjects\Object;
+use NObjects\Nobject;
 
 /**
  * Potpourri is a fake object used for testing.
  */
-class Potpourri extends Object
+class Potpourri extends Nobject
 {
     /**
      * Public object property

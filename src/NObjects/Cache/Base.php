@@ -20,9 +20,18 @@ abstract class Base
         $args = func_get_args();
         // remove empty vars
         foreach ($args as $k => $v) {
-            if (empty($v)) unset($args[$k]);
+            if (empty($v)) {
+                unset($args[$k]);
+            }
         }
-        return urldecode(str_replace($this->getKeySpecial(), $this->getKeySpecialGlue(), implode($this->getKeyGlue(), $args)));
+
+        return urldecode(
+            str_replace(
+                $this->getKeySpecial(),
+                $this->getKeySpecialGlue(),
+                implode($this->getKeyGlue(), $args)
+            )
+        );
     }
 
     /**
@@ -42,7 +51,9 @@ abstract class Base
      */
     public function stringToTime($string, $seconds = false)
     {
-        if (is_int($string)) return $string;
+        if (is_int($string)) {
+            return $string;
+        }
 
         // get first integer from string
         $n = (int) preg_replace('/[^0-9.-]/', '', $string);
@@ -116,5 +127,4 @@ abstract class Base
     {
         return $this->keySpecialGlue;
     }
-
 }

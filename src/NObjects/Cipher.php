@@ -1,4 +1,5 @@
 <?php
+
 namespace NObjects;
 
 /**
@@ -34,39 +35,46 @@ class Cipher
         switch ($level) {
             case self::LEVEL1:
             default:
-                $return = mcrypt_encrypt(MCRYPT_XTEA,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv1()
-                                        );
+                @trigger_error('Encryption level 1 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                $return = @mcrypt_encrypt(
+                    MCRYPT_XTEA,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv1()
+                );
                 break;
 
             case self::LEVEL2:
-                $return = mcrypt_encrypt(MCRYPT_SERPENT,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv2()
-                                        );
+                @trigger_error('Encryption level 2 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                $return = @mcrypt_encrypt(
+                    MCRYPT_SERPENT,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv2()
+                );
                 break;
 
             case self::LEVEL3:
-                $return = mcrypt_encrypt(MCRYPT_SAFERPLUS,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv3()
-                                        );
+                @trigger_error('Encryption level 3 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                $return = @mcrypt_encrypt(
+                    MCRYPT_SAFERPLUS,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv3()
+                );
                 break;
 
             case self::LEVEL4:
-                $return = mcrypt_encrypt(MCRYPT_RIJNDAEL_256,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv4()
-                                        );
+                $return = openssl_encrypt(
+                    $str,
+                    'aes-256-ecb',
+                    $key,
+                    2 xor 1 // OPENSSL_ZERO_PADDING xor OPENSSL_RAW_DATA
+//                    self::iv4(), ECB cipher does not use IV input
+                );
                 break;
         }
         return base64_encode($return);
@@ -93,39 +101,46 @@ class Cipher
         switch ($level) {
             case self::LEVEL1:
             default:
-                $return = mcrypt_decrypt(MCRYPT_XTEA,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv1()
-                                        );
+                @trigger_error('Encryption level 1 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                $return = @mcrypt_decrypt(
+                    MCRYPT_XTEA,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv1()
+                );
                 break;
 
             case self::LEVEL2:
-                $return = mcrypt_decrypt(MCRYPT_SERPENT,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv2()
-                                        );
+                @trigger_error('Encryption level 2 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                $return = @mcrypt_decrypt(
+                    MCRYPT_SERPENT,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv2()
+                );
                 break;
 
             case self::LEVEL3:
-                $return = mcrypt_decrypt(MCRYPT_SAFERPLUS,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv3()
-                                        );
+                @trigger_error('Encryption level 3 is deprecated. Migrate your crypted strings to another algorithm.', E_USER_DEPRECATED);
+                $return = @mcrypt_decrypt(
+                    MCRYPT_SAFERPLUS,
+                    $key,
+                    $str,
+                    MCRYPT_MODE_ECB,
+                    self::iv3()
+                );
                 break;
 
             case self::LEVEL4:
-                $return = mcrypt_decrypt(MCRYPT_RIJNDAEL_256,
-                                        $key,
-                                        $str,
-                                        MCRYPT_MODE_ECB,
-                                        self::iv4()
-                                        );
+                $return = openssl_decrypt(
+                    $str,
+                    'aes-256-ecb',
+                    $key,
+                    2 xor 1 // OPENSSL_ZERO_PADDING xor OPENSSL_RAW_DATA
+//                    self::iv4(), ECB cipher does not use IV input
+                );
                 break;
         }
         return trim($return);
@@ -133,48 +148,37 @@ class Cipher
 
     private static function iv1()
     {
-        return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_XTEA, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
+        return @mcrypt_create_iv(
+            @mcrypt_get_iv_size(MCRYPT_XTEA, MCRYPT_MODE_ECB),
+            MCRYPT_RAND
+        );
     }
 
     private static function iv2()
     {
-        return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_SERPENT, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
+        return @mcrypt_create_iv(
+            @mcrypt_get_iv_size(MCRYPT_SERPENT, MCRYPT_MODE_ECB),
+            MCRYPT_RAND
+        );
     }
 
     private static function iv3()
     {
-        return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_SAFERPLUS, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
-    }
-
-    private static function iv4()
-    {
-        return mcrypt_create_iv(
-                    mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB),
-                    MCRYPT_RAND);
+        return @mcrypt_create_iv(
+            @mcrypt_get_iv_size(MCRYPT_SAFERPLUS, MCRYPT_MODE_ECB),
+            MCRYPT_RAND
+        );
     }
 
     /**
      * MD5 strings, objects and arrays.
      *
-     * @param mixed $data
-     * @return string
-     * @link http://stackoverflow.com/a/7723730
+     * @deprecated
      */
     public static function md5Data($data)
     {
-        if (is_array($data)) {
-            array_multisort($data);
-            return md5(json_encode($data));
-        } elseif (is_object($data)) {
-            return md5(serialize($data));
-        } else {
-            return md5($data);
-        }
+        @trigger_error('Method NObjects\Cipher::md5Data is deprecated. Migrate to using NObjects\Hash::md5 instead.', E_USER_DEPRECATED);
+
+        return Hash::md5($data);
     }
 }

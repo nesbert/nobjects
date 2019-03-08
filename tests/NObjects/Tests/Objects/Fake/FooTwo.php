@@ -1,6 +1,6 @@
 <?php
 
-namespace NObjects\Tests\Object\Fake;
+namespace NObjects\Tests\Objects\Fake;
 
 /**
  * FooTwo is a fake testing class.

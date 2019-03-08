@@ -60,7 +60,7 @@ class Date
      **/
     public static function gmtimestamp()
     {
-       return strtotime(gmdate('Y-m-d H:i:s'));
+        return strtotime(gmdate('Y-m-d H:i:s'));
     }
 
     /**
@@ -131,15 +131,17 @@ class Date
      * @param mixed $time Accepts unix timestamp or datetime string.
      * @return string
      **/
-    public static function timeSince($time)
+    public static function timeSince($time = null)
     {
-        if (empty($time)) return false;
+        if (empty($time)) {
+            return false;
+        }
 
         $time = time() - (is_string($time) ? strtotime($time) : $time);
 
-        if ($time <= 0) return false;
-
-        $return = '';
+        if ($time <= 0) {
+            return false;
+        }
 
         switch (true) {
             case ($time < self::MINUTE):

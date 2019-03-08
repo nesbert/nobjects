@@ -88,7 +88,9 @@ class Network
      */
     public static function intIp($ip = null)
     {
-        if (is_numeric($ip)) return long2ip($ip);
+        if (is_numeric($ip)) {
+            return long2ip($ip);
+        }
         return sprintf("%u", ip2long($ip ? $ip : self::remoteIp()));
     }
 
@@ -145,7 +147,7 @@ class Network
      * @param string $error
      * @return bool|\stdClass
      */
-    public static function curlRequest($url, $method = 'GET', $data = '', Array $options = array(), &$error = '')
+    public static function curlRequest($url, $method = 'GET', $data = '', array $options = array(), &$error = '')
     {
         // validate methods
         if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
@@ -170,12 +172,16 @@ class Network
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
-        if ($includeHeader) curl_setopt($ch, CURLOPT_HEADER, 1);
+        if ($includeHeader) {
+            curl_setopt($ch, CURLOPT_HEADER, 1);
+        }
         if ($maxRedirects) {
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_MAXREDIRS, (int)$maxRedirects);
         }
-        if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        if (!empty($data)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
 
         if (!empty($options)) {
             curl_setopt_array($ch, $options);

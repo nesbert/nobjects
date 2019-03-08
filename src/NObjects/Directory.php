@@ -27,33 +27,50 @@ class Directory
     public static function ls($path, $options = array())
     {
         // set default options
-        if (!is_array($options)) $options = array();
-        if (!isset($options['recursive'])) $options['recursive'] = false;
-        if (!isset($options['showDirs'])) $options['showDirs'] = false;
-        if (!isset($options['showInvisible'])) $options['showInvisible'] = false;
-        if (!isset($options['group'])) $options['group'] = false;
-        if (!isset($options['filter'])) $options['filter'] = '';
+        if (!is_array($options)) {
+            $options = array();
+        }
+        if (!isset($options['recursive'])) {
+            $options['recursive'] = false;
+        }
+        if (!isset($options['showDirs'])) {
+            $options['showDirs'] = false;
+        }
+        if (!isset($options['showInvisible'])) {
+            $options['showInvisible'] = false;
+        }
+        if (!isset($options['group'])) {
+            $options['group'] = false;
+        }
+        if (!isset($options['filter'])) {
+            $options['filter'] = '';
+        }
 
-        if (!is_dir($path)) return array();
+        if (!is_dir($path)) {
+            return array();
+        }
 
         $array_items = array();
         if ($handle = opendir($path)) {
             while (false !== ($file = readdir($handle))) {
-
-                if (!$options['showInvisible'] && $file{0} == '.') continue;
+                if (!$options['showInvisible'] && $file{0} == '.') {
+                    continue;
+                }
 
                 if ($file != '.' && $file != '..') {
-
                     $filepath = $path . DIRECTORY_SEPARATOR . $file;
 
                     // be nice to non *nix machines
                     $dir_regex = DIRECTORY_SEPARATOR == '/' ? '/\/\//si' : '/\\\\/si';
 
                     if (is_dir($filepath)) {
-
                         if ($options['showDirs']) {
                             if ($options['group']) {
-                                $array_items[dirname($filepath)][] = preg_replace($dir_regex, DIRECTORY_SEPARATOR, $filepath);
+                                $array_items[dirname($filepath)][] = preg_replace(
+                                    $dir_regex,
+                                    DIRECTORY_SEPARATOR,
+                                    $filepath
+                                );
                             } else {
                                 $array_items[] = preg_replace($dir_regex, DIRECTORY_SEPARATOR, $filepath);
                             }
@@ -61,19 +78,21 @@ class Directory
                         if ($options['recursive']) {
                             $array_items = array_merge($array_items, self::ls($filepath, $options));
                         }
-
                     } else {
-
-                        if ($options['filter'] && !preg_match($options['filter'], $file)) continue;
+                        if ($options['filter'] && !preg_match($options['filter'], $file)) {
+                            continue;
+                        }
 
                         if ($options['group']) {
-                            $array_items[dirname($filepath)][] = preg_replace($dir_regex, DIRECTORY_SEPARATOR, $filepath);
+                            $array_items[dirname($filepath)][] = preg_replace(
+                                $dir_regex,
+                                DIRECTORY_SEPARATOR,
+                                $filepath
+                            );
                         } else {
                             $array_items[] = preg_replace($dir_regex, DIRECTORY_SEPARATOR, $filepath);
                         }
-
                     }
-
                 }
             }
             closedir($handle);
