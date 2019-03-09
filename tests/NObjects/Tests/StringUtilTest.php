@@ -8,7 +8,7 @@ use NObjects\StringUtil;
  *
  * @access private
  **/
-class StringUtilTest extends \PHPUnit_Framework_TestCase
+class StringUtilTest extends \PHPUnit\Framework\TestCase
 {
     public function testContains()
     {

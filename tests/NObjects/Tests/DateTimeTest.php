@@ -3,7 +3,7 @@ namespace NObjects\Tests;
 
 use NObjects\DateTime;
 
-class DateTimeTest extends \PHPUnit_Framework_TestCase
+class DateTimeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DateTime

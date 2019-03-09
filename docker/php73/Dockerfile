@@ -1,4 +1,4 @@
-FROM php:7.0
+FROM php:7.3-cli-alpine
 
 RUN apk --no-cache add git subversion openssh mercurial tini bash patch zip unzip libldap libmemcached
 
@@ -9,9 +9,22 @@ RUN echo "memory_limit=-1" > "$PHP_INI_DIR/conf.d/memory-limit.ini" \
 RUN apk add --no-cache --virtual .build-deps autoconf zlib-dev openldap-dev libmemcached-dev $PHPIZE_DEPS \
     && docker-php-ext-configure hash --with-mhash \
     && docker-php-ext-install bcmath ldap \
-    && pecl install apcu \
-    && pecl install xdebug \
-    && docker-php-ext-enable apcu bcmath ldap mcrypt memcached xdebug \
+    && wget http://pecl.php.net/get/apcu-5.1.17.tgz \
+    && tar -xzf apcu-5.1.17.tgz \
+    && cd apcu-5.1.17 \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && docker-php-ext-enable apcu \
+    && wget http://pecl.php.net/get/xdebug-2.7.0.tgz \
+    && tar -xzf xdebug-2.7.0.tgz \
+    && cd xdebug-2.7.0 \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && docker-php-ext-enable xdebug \
     && runDeps="$( \
         scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
         | tr ',' '\n' \

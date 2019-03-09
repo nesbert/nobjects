@@ -7,7 +7,7 @@ use NObjects\Hash;
 /**
  * HashTest provides unit tests.
  */
-class HashTest extends \PHPUnit_Framework_TestCase
+class HashTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

@@ -1,7 +1,7 @@
 version: "3"
 services:
-  php53:
-    build: docker/php53/
+  php70:
+    build: docker/php70/
     volumes:
       - .:/app
     networks:
@@ -10,8 +10,28 @@ services:
       - memcached
       - ldap
 
-  php70:
-    build: docker/php70/
+  php71:
+    build: docker/php71/
+    volumes:
+      - .:/app
+    networks:
+      - mynetwork
+    depends_on:
+      - memcached
+      - ldap
+
+  php72:
+    build: docker/php72/
+    volumes:
+      - .:/app
+    networks:
+      - mynetwork
+    depends_on:
+      - memcached
+      - ldap
+
+  php73:
+    build: docker/php73/
     volumes:
       - .:/app
     networks:

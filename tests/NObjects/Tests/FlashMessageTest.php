@@ -3,7 +3,7 @@ namespace NObjects\Tests;
 
 use NObjects\FlashMessage;
 
-class FlashMessageTest extends \PHPUnit_Framework_TestCase
+class FlashMessageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FlashMessage

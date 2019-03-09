@@ -2,13 +2,12 @@
 
 namespace NObjects\Tests\Reflection;
 
-use NObjects\Cache;
 use NObjects\Reflection\ReflectionClass;
 
 /**
  * ReflectionClassTest provides unit tests for Reflection\ReflectionClass
  */
-class ReflectionClassTest extends \PHPUnit_Framework_TestCase
+class ReflectionClassTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \NObjects\Reflection\ReflectionClass

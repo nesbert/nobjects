@@ -8,7 +8,7 @@ use NObjects\Ldap\ServiceException;
 /**
  * @requires extension ldap
  */
-class ServiceTest extends \PHPUnit_Framework_TestCase
+class ServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Service
