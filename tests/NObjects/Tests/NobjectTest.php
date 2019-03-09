@@ -4,7 +4,7 @@ namespace NObjects\Tests;
 use NObjects\Nobject;
 use NObjects\Tests\Objects\Fake;
 
-class NobjectTest extends \PHPUnit_Framework_TestCase
+class NobjectTest extends \PHPUnit\Framework\TestCase
 {
     public function testObjectHelpers()
     {

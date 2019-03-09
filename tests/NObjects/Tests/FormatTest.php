@@ -3,7 +3,7 @@ namespace NObjects\Tests;
 
 use NObjects\Format;
 
-class FormatTest extends \PHPUnit_Framework_TestCase
+class FormatTest extends \PHPUnit\Framework\TestCase
 {
     public function testDefaults()
     {

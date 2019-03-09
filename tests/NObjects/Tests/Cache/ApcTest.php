@@ -3,7 +3,7 @@ namespace NObjects\Tests\Cache;
 
 use NObjects\Cache;
 
-class ApcTest extends \PHPUnit_Framework_TestCase
+class ApcTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Cache\Apc
@@ -12,14 +12,14 @@ class ApcTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if (!function_exists('apc_add') && !function_exists('apcu_add')) {
-            $this->markTestSkipped('APC extension is not available (apc_add and apcu_add not available)');
+        if (!extension_loaded('apcu')) {
+            $this->markTestSkipped('APCu extension is not available');
         }
 
         $this->o = new Cache\Apc();
 
         if (!$this->o->open()) {
-            $this->markTestSkipped('APC extension is not available.');
+            $this->markTestSkipped('APCu extension is not available.');
         }
     }
 

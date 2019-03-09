@@ -8,7 +8,7 @@ use NObjects\Network;
  *
  * @access private
  **/
-class NetworkTest extends \PHPUnit_Framework_TestCase
+class NetworkTest extends \PHPUnit\Framework\TestCase
 {
     protected function setUp()
     {

@@ -8,7 +8,7 @@ use NObjects\Validate;
  *
  * @access private
  **/
-class ValidateTest extends \PHPUnit_Framework_TestCase
+class ValidateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Validate

@@ -4,27 +4,12 @@ namespace NObjects\Cache;
 class Apc extends Base implements Adapter
 {
     /**
-     * Cache system to use (apcu vs apc)
-     *
-     * @var string
-     */
-    private static $USE_EXTENSION;
-
-    /**
      * Apc constructor.
      */
     public function __construct()
     {
-        if (function_exists('apcu_exists')) {
-            self::$USE_EXTENSION = 'apcu';
-        }
-
-        if (function_exists('apc_exists')) {
-            self::$USE_EXTENSION = 'apc';
-        }
-
-        if (empty(self::$USE_EXTENSION)) {
-         throw new \RuntimeException("Neither APC or APCU is loaded and enabled.");
+        if (!extension_loaded('apcu')) {
+            throw new \RuntimeException("The APCU extension is not enabled.");
         }
     }
 
@@ -40,8 +25,7 @@ class Apc extends Base implements Adapter
             return false;
         }
 
-
-        return $this->invokeApc('exists', array($key));
+        return apcu_exists($key);
     }
 
     /**
@@ -56,7 +40,7 @@ class Apc extends Base implements Adapter
             return false;
         }
 
-        return $this->invokeApc('fetch', array($key));
+        return apcu_fetch($key);
     }
 
     /**
@@ -73,7 +57,7 @@ class Apc extends Base implements Adapter
             return false;
         }
 
-        return $this->invokeApc('store', array($key, $value, $this->stringToTime($ttl, true)));
+        return apcu_store($key, $value, $this->stringToTime($ttl, true));
     }
 
     /**
@@ -89,7 +73,7 @@ class Apc extends Base implements Adapter
             return false;
         }
 
-        return $this->invokeApc('delete', array($key));
+        return apcu_delete($key);
     }
 
     /**
@@ -103,14 +87,7 @@ class Apc extends Base implements Adapter
             return false;
         }
 
-        $retVal = $this->invokeApc('clear_cache');
-
-        if ('apc' == self::$USE_EXTENSION) {
-            $retVal = $retVal && $this->invokeApc('clear_cache', array('user'));
-            $retVal = $retVal && $this->invokeApc('clear_cache', array('opcode'));
-        }
-
-        return $retVal;
+        return apcu_clear_cache();
     }
 
     /**
@@ -122,21 +99,8 @@ class Apc extends Base implements Adapter
     {
         static $isOpen;
         if (is_null($isOpen)) {
-            $isOpen = function_exists('apc_add') || function_exists('apcu_add');
+            $isOpen = function_exists('apcu_add');
         }
         return $isOpen;
-    }
-
-    /**
-     * Wraps the invocation of the appropriate APC extension
-     *
-     * @param string $methodName
-     * @param array $args
-     *
-     * @return mixed
-     */
-    private function invokeApc($methodName, $args = array())
-    {
-        return call_user_func_array(self::$USE_EXTENSION . '_' . $methodName, $args);
     }
 }

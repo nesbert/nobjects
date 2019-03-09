@@ -32,20 +32,20 @@ class UserTest extends ServiceTest
      *
      * @depends testAuthenticate
      */
-    public function testGetGroupMembers()
-    {
-        // TODO
-    }
+//    public function testGetGroupMembers()
+//    {
+//        // TODO
+//    }
 
     /**
      * @group ldap_integration
      *
      * @depends testAuthenticate
      */
-    public function testIsMemberOf()
-    {
-        // TODO
-    }
+//    public function testIsMemberOf()
+//    {
+//        // TODO
+//    }
 
     /**
      * @group ldap_integration
